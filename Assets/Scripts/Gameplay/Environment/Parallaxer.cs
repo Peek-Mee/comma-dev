@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,46 +6,31 @@ namespace Comma.Gameplay.Environment
 {
     public class Parallaxer : MonoBehaviour
     {
-        [SerializeField] private GameObject[] _backgroundsLoop;
-        [SerializeField] private Camera _mainCamera;
-        [SerializeField] private float _choke;
-        private Vector2 _screenBound;
-
+        private float _length, _startpos;
+        [SerializeField] private GameObject mainCamera;
+        [SerializeField] private float parallexEffect;
+        private float _speed;
         private void Start()
         {
-            _screenBound = _mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, _mainCamera.transform.position.z));
+            _startpos = transform.position.x;
+            _length = GetComponent<SpriteRenderer>().bounds.size.x;
         }
-        private void LateUpdate()
+
+        private void FixedUpdate()
         {
-            foreach (GameObject obj in _backgroundsLoop)
-            {
-                RepositionBackground(obj);
-            }
+            ScrollBackground();
         }
-        private void RepositionBackground(GameObject obj)
+
+        private void ScrollBackground()
         {
-            Transform[] bg = obj.GetComponentsInChildren<Transform>();
-            if (bg.Length > 1)
-            {
-                GameObject first = bg[1].gameObject;
-                GameObject last = bg[bg.Length - 1].gameObject;
-
-                float lastExtent = last.GetComponent<SpriteRenderer>().bounds.extents.x - _choke;
-                float firsExtent = first.GetComponent<SpriteRenderer>().bounds.extents.x - _choke;
-
-                if (_mainCamera.transform.position.x + _screenBound.x > last.transform.position.x - lastExtent)
-                {
-                    // Reposition Background to right
-                    first.transform.SetAsLastSibling();
-                    first.transform.position = new Vector3(last.transform.position.x + lastExtent * 2, last.transform.position.y, last.transform.position.z);
-                }
-                else if (_mainCamera.transform.position.x - _screenBound.x < first.transform.position.x - firsExtent)
-                {
-                    // Reposition Background to left
-                    last.transform.SetAsFirstSibling();
-                    last.transform.position = new Vector3(first.transform.position.x - firsExtent * 2, first.transform.position.y, first.transform.position.z);
-                }
-            }
+            _speed = parallexEffect * -1f;
+            float temp = (mainCamera.transform.position.x * (1 - _speed));
+            float dist = (mainCamera.transform.position.x * _speed);
+            
+            transform.position = new Vector3(_startpos + dist, transform.position.y, transform.position.z);
+            
+            if (temp > _startpos + _length) _startpos += _length;
+            else if (temp < _startpos - _length) _startpos -= _length;
         }
     }
 }
