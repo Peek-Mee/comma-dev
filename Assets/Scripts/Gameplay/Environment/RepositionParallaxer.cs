@@ -2,12 +2,11 @@ using UnityEngine;
 
 namespace Comma.Gameplay.Environment
 {
-    public class RepeatParallaxer : MonoBehaviour
+    public class RepositionParallaxer : MonoBehaviour
     {
         [SerializeField] private GameObject[] _backgroundsLoop;
         [SerializeField] private Camera _mainCamera;
-        [SerializeField] private float _choke;
-        public float _speed;
+        [SerializeField] private float _distance;
         private Vector2 _screenBound;
 
         private void Start()
@@ -29,8 +28,8 @@ namespace Comma.Gameplay.Environment
                 GameObject first = bg[1].gameObject;
                 GameObject last = bg[bg.Length - 1].gameObject;
 
-                float lastExtent = last.GetComponent<SpriteRenderer>().bounds.extents.x - _choke;
-                float firsExtent = first.GetComponent<SpriteRenderer>().bounds.extents.x - _choke;
+                float lastExtent = last.GetComponent<SpriteRenderer>().bounds.extents.x - _distance;
+                float firsExtent = first.GetComponent<SpriteRenderer>().bounds.extents.x - _distance;
 
                 if (_mainCamera.transform.position.x + _screenBound.x > last.transform.position.x - lastExtent)
                 {
