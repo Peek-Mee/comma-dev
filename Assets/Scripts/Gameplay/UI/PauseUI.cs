@@ -23,10 +23,6 @@ namespace Comma.Gameplay.UI
                 {
                     _optionsPopUp.SetActive(false);
                 }
-                else if(_warningMenuPopUp.activeSelf)
-                {
-                    _warningMenuPopUp.SetActive(false);
-                }
                 else
                 {
                     gameObject.SetActive(!gameObject.activeSelf);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 namespace Comma.Gameplay.UI
@@ -11,7 +12,8 @@ namespace Comma.Gameplay.UI
         {
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                _pausePanel.SetActive(!_pausePanel.activeSelf);
+                if(_pausePanel.activeSelf)return; 
+                _pausePanel.SetActive(true);
             }
         }
     }
