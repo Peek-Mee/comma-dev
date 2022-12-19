@@ -10,16 +10,16 @@ namespace Comma.Global.SaveLoad
         [SerializeField] private Resolution _displayResolution;
         [SerializeField] private bool _fullScreen;
 
-        // public VideoSaveData()
-        // {
-        //     Display mainDisplay = Display.main;
-        //     _displayResolution = new()
-        //     {
-        //         height = mainDisplay.systemHeight,
-        //         width = mainDisplay.systemWidth,
-        //         refreshRate = 60
-        //     };
-        // }
+        public VideoSaveData()
+        {
+            Display mainDisplay = Display.main;
+            _displayResolution = new()
+            {
+                height = mainDisplay.systemHeight,
+                width = mainDisplay.systemWidth,
+                refreshRate = 60
+            };
+        }
 
         /// <summary>
         /// Get saved display resolution
