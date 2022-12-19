@@ -2,11 +2,11 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Comma.Home.UI
+namespace Comma.Gameplay.UI
 {
-    public class WarningNewGameUI : MonoBehaviour
+    public class WarningMenuUI : MonoBehaviour
     {
-        [Header("Warning New Game Buttons")]
+        [Header("Warning Menu Buttons")]
         [SerializeField] private Button _yesButton;
         [SerializeField] private Button _noButton;
         
