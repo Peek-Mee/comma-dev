@@ -1,5 +1,6 @@
 ﻿using System;
 using Comma.Global.SaveLoad;
+using Comma.Global.Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,8 @@ namespace Gameplay.UI
 {
     public class VideoSettingUI : MonoBehaviour
     {
+        private VideoSetting _videoSetting;
+        
         [Header("Resolution")]
         [SerializeField] private Button _nextResolutionButton;
         [SerializeField] private Button _previousResolutionButton;
@@ -34,29 +37,42 @@ namespace Gameplay.UI
         }
         private void InitVideoSettings()
         {
-            // get data from video setting global
-            _resolutionText.text = "x";
+            _videoSetting = VideoSetting.VideoSettingInstance;
+            _windowedToggle.isOn = !_videoSetting.IsFullScreen();
+            ChangeResolutionText();
         }
         
         private void OnNextResolutionButton()
         {
-            // enum++ from video setting global
-            // enum get value = (VideoResolutionType)Enum.GetValues(typeof(VideoResolutionType)).Length - 1;
-            // Change Resolution
-            _resolutionText.text = " x ";
+            var videoResolutionType = _videoSetting.GetVideoResolutionType();
+            videoResolutionType++;
+            if (videoResolutionType > (VideoResolutionType)Enum.GetValues(typeof(VideoResolutionType)).Length - 1)
+            {
+                videoResolutionType = (VideoResolutionType)0;
+            }
+            _videoSetting.ChangeDisplayResolution(videoResolutionType);
+            ChangeResolutionText();
         }
         private void OnPreviousResolutionButton()
         {
-            // enum-- from video setting global
-            // enum get value = (VideoResolutionType)Enum.GetValues(typeof(VideoResolutionType)).Length - 1;
-            // Change Resolution
-            _resolutionText.text = " x ";
+            var videoResolutionType = _videoSetting.GetVideoResolutionType();
+            videoResolutionType--;
+            if (videoResolutionType < 0)
+            {
+                videoResolutionType = (VideoResolutionType)Enum.GetValues(typeof(VideoResolutionType)).Length - 1;
+            }
+            _videoSetting.ChangeDisplayResolution(videoResolutionType);
+            ChangeResolutionText();
+        }
+        private void ChangeResolutionText()
+        {
+            _resolutionText.text = _videoSetting.GetDisplayResolution().width + " x " + _videoSetting.GetDisplayResolution().height;
         }
         private void OnWindowedToggle()
         {
             _windowedToggle.onValueChanged.AddListener(isOn =>
             {
-                // set full screen from video setting global
+                _videoSetting.ChangeFullScreen(!isOn);
             });
         }
         private void RemoveAllListeners()
