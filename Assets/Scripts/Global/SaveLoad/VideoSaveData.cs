@@ -12,7 +12,6 @@ namespace Comma.Global.SaveLoad
 
         public VideoSaveData()
         {
-            
             Display mainDisplay = Display.main;
             _displayResolution = new()
             {
