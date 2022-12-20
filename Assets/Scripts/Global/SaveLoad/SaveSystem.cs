@@ -111,9 +111,17 @@ namespace Comma.Global.SaveLoad
         /// <summary>
         /// Save all dirty data into disk
         /// </summary>
-        public static void SaveDataToDisk()
+        public static bool SaveDataToDisk()
         {
-            Instance.SaveAllDataToDisk();
+            try
+            {
+                Instance.SaveAllDataToDisk();
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
         }
     }
 }

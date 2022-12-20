@@ -12,14 +12,13 @@ namespace Comma.Global.SaveLoad
 
         public VideoSaveData()
         {
-            
-            Display mainDisplay = Display.main;
             _displayResolution = new()
             {
-                height = mainDisplay.systemHeight,
-                width = mainDisplay.systemWidth,
+                height = 1080,
+                width = 1920,
                 refreshRate = 60
             };
+            _fullScreen = true;
         }
 
         /// <summary>
