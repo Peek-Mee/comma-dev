@@ -90,14 +90,20 @@ namespace Comma.Global.Settings
             }
             _videoResolutionType = type;
             ChangeScreenResolution();
-            SaveSystem.SaveDataToDisk();
             // need set video resolution type data
         }
         public void ChangeFullScreen(bool isFullScreen)
         {
             _videoSaveData.SetFullScreen(isFullScreen);
             Screen.fullScreen = isFullScreen;
+        }
+        public void AcceptVideoSetting()
+        {
             SaveSystem.SaveDataToDisk();
+        }
+        public void CancelVideoSetting()
+        {
+            InitVideoSetting();
         }
         public Resolution GetDisplayResolution()
         {
