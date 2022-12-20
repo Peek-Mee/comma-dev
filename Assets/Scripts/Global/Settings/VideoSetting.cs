@@ -97,5 +97,9 @@ namespace Comma.Global.Settings
         {
             return _videoSaveData;
         }
+        public Resolution GetDisplayResolution()
+        {
+            return _videoSaveData.GetDisplayResolution();
+        }
     }
 }
