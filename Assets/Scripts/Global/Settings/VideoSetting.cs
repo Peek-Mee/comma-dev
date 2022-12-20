@@ -1,4 +1,5 @@
-﻿using Comma.Global.SaveLoad;
+﻿using System;
+using Comma.Global.SaveLoad;
 using UnityEngine;
 
 namespace Comma.Global.Settings
@@ -26,8 +27,19 @@ namespace Comma.Global.Settings
             
             // Make this object persistent once it's instantiated
             DontDestroyOnLoad(gameObject);
-            
+        }
+
+        private void Start()
+        {
+            InitVideoSetting();
+        }
+
+        private void InitVideoSetting()
+        {
             _videoSaveData = SaveSystem.GetVideoSetting();
+            // need set video resolution type data
+            ChangeScreenResolution();
+            
         }
         private void ChangeScreenResolution()
         {
@@ -79,6 +91,7 @@ namespace Comma.Global.Settings
                     break;
             }
             ChangeScreenResolution();
+            // need set video resolution type data
         }
         public VideoSaveData GetVideoSaveData()
         {
