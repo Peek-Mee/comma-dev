@@ -8,7 +8,32 @@ namespace Comma.Global.Settings
         [SerializeField] private VideoSaveData _videoSaveData;
         [SerializeField] private VideoResolutionType _videoResolutionType;
         
-        private void ChangeResolution(VideoResolutionType type)
+        public static VideoSetting VideoSettingInstance;
+        private static VideoSetting _videoSetting;
+        private static VideoSetting Instance
+        {
+            get
+            {
+                _ = !_videoSetting ? _videoSetting = FindObjectOfType<VideoSetting>() : null;
+                return _videoSetting;
+            }
+        }
+
+        private void Awake()
+        {
+            if (VideoSettingInstance != null && VideoSettingInstance != this) Destroy(gameObject);
+            else VideoSettingInstance = this;
+            
+            // Make this object persistent once it's instantiated
+            DontDestroyOnLoad(gameObject);
+            
+            _videoSaveData = SaveSystem.GetVideoSetting();
+        }
+        private void ChangeScreenResolution()
+        {
+            Screen.SetResolution(_videoSaveData.GetDisplayResolution().width, _videoSaveData.GetDisplayResolution().height, !_videoSaveData.IsFullScreen());
+        }
+        public void ChangeDisplayResolution(VideoResolutionType type)
         {
             switch (type)
             {
@@ -53,6 +78,11 @@ namespace Comma.Global.Settings
                     });
                     break;
             }
+            ChangeScreenResolution();
+        }
+        public VideoSaveData GetVideoSaveData()
+        {
+            return _videoSaveData;
         }
     }
 }
