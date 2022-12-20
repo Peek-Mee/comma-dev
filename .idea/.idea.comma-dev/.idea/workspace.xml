@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dc6a1a80-d1c8-481c-8658-39168e42a914" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.comma-dev/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.comma-dev/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Dummy-Paralaxx.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Dummy-Paralaxx.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/CameraMove.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/CameraMove.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/Parallaxer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/ScrollParallaxer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/Parallaxer.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/ScrollParallaxer.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/RepositionParallaxer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/RepositionParallaxer.cs" afterDir="false" />
-    </list>
+    <list default="true" id="9568c28a-7486-43dd-9851-33f62a03039e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Global/PubSub/EventMessages.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -36,6 +31,14 @@
   }
 }</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
+    <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Builds\Comma.exe" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="D:\DATA DIO\6. UNITY\GameJam\comma-dev\Builds" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2" />
+    </configuration>
     <configuration name="UnitTests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\Unity 2021.3.7f1\Editor\Unity.exe" />
       <option name="PROGRAM_PARAMETERS" value="-runTests -batchmode -projectPath &quot;D:\DATA DIO\6. UNITY\GameJam\comma-dev&quot; -testResults Logs/results.xml -testPlatform EditMode -debugCodeOptimization" />
@@ -68,7 +71,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="dc6a1a80-d1c8-481c-8658-39168e42a914" name="Changes" comment="" />
+      <changelist id="9568c28a-7486-43dd-9851-33f62a03039e" name="Changes" comment="" />
       <created>1671101009796</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -76,6 +79,9 @@
       <workItem from="1671101015626" duration="6070000" />
       <workItem from="1671170800506" duration="6540000" />
       <workItem from="1671286398076" duration="1799000" />
+      <workItem from="1671462715316" duration="1987000" />
+      <workItem from="1671513458710" duration="746000" />
+      <workItem from="1671523061327" duration="1040000" />
     </task>
     <servers />
   </component>
