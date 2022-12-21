@@ -32,8 +32,17 @@ namespace Comma.Global.SaveLoad
 
         private void Awake()
         {
-            if (saveInstance != null && saveInstance != this) Destroy(gameObject);
-            else saveInstance = this;
+            if (saveInstance != null && saveInstance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                saveInstance = this;
+                Init();
+            }
+            
 
             // Make this object persistent once it's instantiated
             DontDestroyOnLoad(gameObject);
@@ -52,7 +61,7 @@ namespace Comma.Global.SaveLoad
             InitiateData<InputSaveData>(ref _inputSetting, "InputData");
         }
 
-        private void InitiateData<T>(ref T data, string prefsName)
+        private void InitiateData<T>(ref T data, string prefsName) 
         {
             if(!PlayerPrefs.HasKey(prefsName))
             {
@@ -60,8 +69,8 @@ namespace Comma.Global.SaveLoad
                 SaveData<T>(ref data, prefsName);
                 return;
             }
-            data = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
             print(PlayerPrefs.GetString(prefsName));
+            data = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
         }
 
         private void SaveData<T>(ref T data, string prefsName)

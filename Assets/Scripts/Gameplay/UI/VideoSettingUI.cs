@@ -66,7 +66,7 @@ namespace Gameplay.UI
         }
         private void ChangeResolutionText()
         {
-            _resolutionText.text = _videoSetting.GetCurrentResolution().width + " x " + _videoSetting.GetCurrentResolution().height;
+            _resolutionText.text = _videoSetting.GetCurrentResolution().Width + " x " + _videoSetting.GetCurrentResolution().Height;
         }
         private void OnWindowedToggle()
         {
