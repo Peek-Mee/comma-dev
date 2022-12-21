@@ -8,24 +8,21 @@ namespace Comma.Global.Settings
     {
         [SerializeField] private VideoSaveData _videoSaveData;
         [SerializeField] private VideoResolutionType _videoResolutionType;
-        
-        public static VideoSetting VideoSettingInstance;
-        private static VideoSetting _videoSetting;
-        private static VideoSetting Instance
-        {
-            get
-            {
-                _ = !_videoSetting ? _videoSetting = FindObjectOfType<VideoSetting>() : null;
-                return _videoSetting;
-            }
-        }
-
+        private Resolution _resolution;
+        private bool _isFullScreen;
+        public static VideoSetting Instance { get; private set; }
         private void Awake()
         {
-            if (VideoSettingInstance != null && VideoSettingInstance != this) Destroy(gameObject);
-            else VideoSettingInstance = this;
-            
-            // Make this object persistent once it's instantiated
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                Instance = this;
+            }
+
             DontDestroyOnLoad(gameObject);
         }
 
@@ -37,73 +34,59 @@ namespace Comma.Global.Settings
         private void InitVideoSetting()
         {
             _videoSaveData = SaveSystem.GetVideoSetting();
-            ChangeScreenResolution();
-        }
-        private void ChangeScreenResolution()
-        {
-            Screen.SetResolution(_videoSaveData.GetDisplayResolution().width, _videoSaveData.GetDisplayResolution().height, _videoSaveData.IsFullScreen());
+            _resolution = _videoSaveData.GetDisplayResolution();
+            ChangeScreenResolution(_resolution, _videoSaveData.IsFullScreen());
         }
         public void ChangeDisplayResolution(VideoResolutionType type)
         {
             switch (type)
             {
                 case VideoResolutionType.P480:
-                    _videoSaveData.SetDisplayResolution(new Resolution()
-                    {
-                        width = 480,
-                        height = 272,
-                        refreshRate = 60
-                    });
+                    _resolution = new Resolution { width = 480, height = 272, refreshRate = 60 };
                     break;
+                
                 case VideoResolutionType.P720:
-                    _videoSaveData.SetDisplayResolution(new Resolution()
-                    {
-                        width = 720,
-                        height = 480,
-                        refreshRate = 60
-                    });
+                    _resolution = new Resolution { width = 720, height = 480, refreshRate = 60 };
                     break;
+                
                 case VideoResolutionType.P1080:
-                    _videoSaveData.SetDisplayResolution(new Resolution()
-                    {
-                        width = 1080,
-                        height = 720,
-                        refreshRate = 60
-                    });
+                    _resolution = new Resolution { width = 1080, height = 720, refreshRate = 60 };
                     break;
+                
                 case VideoResolutionType.P1920:
-                    _videoSaveData.SetDisplayResolution(new Resolution()
-                    {
-                        width = 1920,
-                        height = 1080,
-                        refreshRate = 60
-                    });
+                    _resolution = new Resolution { width = 1920, height = 1080, refreshRate = 60 };
                     break;
+                
                 case VideoResolutionType.P2080:
-                    _videoSaveData.SetDisplayResolution(new Resolution()
-                    {
-                        width = 2560,
-                        height = 1440,
-                        refreshRate = 60
-                    });
+                    _resolution = new Resolution { width = 2080, height = 1080, refreshRate = 60 };
                     break;
             }
             _videoResolutionType = type;
-            ChangeScreenResolution();
+            ChangeScreenResolution(_resolution, _videoSaveData.IsFullScreen());
             // need set video resolution type data
+        }
+        private void ChangeScreenResolution(Resolution resolution, bool isFullScreen)
+        {
+            Screen.SetResolution(resolution.width, resolution.height, isFullScreen,60);
         }
         public void ChangeFullScreen(bool isFullScreen)
         {
-            _videoSaveData.SetFullScreen(isFullScreen);
+            _isFullScreen = isFullScreen;
             Screen.fullScreen = isFullScreen;
         }
         public void AcceptVideoSetting()
         {
+            _videoSaveData.SetDisplayResolution(_resolution);
+            _videoSaveData.SetFullScreen(_isFullScreen);
             SaveSystem.SaveDataToDisk();
         }
         public void CancelVideoSetting()
         {
             InitVideoSetting();
+        }
+        public Resolution GetCurrentResolution()
+        {
+            return _resolution;
         }
         public Resolution GetDisplayResolution()
         {
