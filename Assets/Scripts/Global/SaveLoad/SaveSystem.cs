@@ -56,10 +56,12 @@ namespace Comma.Global.SaveLoad
         {
             if(!PlayerPrefs.HasKey(prefsName))
             {
+                print($"{prefsName} hasn't been saved");
                 SaveData<T>(ref data, prefsName);
                 return;
             }
             data = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
+            print(PlayerPrefs.GetString(prefsName));
         }
 
         private void SaveData<T>(ref T data, string prefsName)
