@@ -37,13 +37,11 @@ namespace Comma.Global.Settings
         private void InitVideoSetting()
         {
             _videoSaveData = SaveSystem.GetVideoSetting();
-            // need set video resolution type data
             ChangeScreenResolution();
-            
         }
         private void ChangeScreenResolution()
         {
-            Screen.SetResolution(_videoSaveData.GetDisplayResolution().width, _videoSaveData.GetDisplayResolution().height, !_videoSaveData.IsFullScreen());
+            Screen.SetResolution(_videoSaveData.GetDisplayResolution().width, _videoSaveData.GetDisplayResolution().height, _videoSaveData.IsFullScreen());
         }
         public void ChangeDisplayResolution(VideoResolutionType type)
         {
@@ -90,16 +88,35 @@ namespace Comma.Global.Settings
                     });
                     break;
             }
+            _videoResolutionType = type;
             ChangeScreenResolution();
             // need set video resolution type data
         }
-        public VideoSaveData GetVideoSaveData()
+        public void ChangeFullScreen(bool isFullScreen)
         {
-            return _videoSaveData;
+            _videoSaveData.SetFullScreen(isFullScreen);
+            Screen.fullScreen = isFullScreen;
+        }
+        public void AcceptVideoSetting()
+        {
+            SaveSystem.SaveDataToDisk();
+        }
+        public void CancelVideoSetting()
+        {
+            InitVideoSetting();
         }
         public Resolution GetDisplayResolution()
         {
             return _videoSaveData.GetDisplayResolution();
+        }
+        public bool IsFullScreen()
+        {
+            return _videoSaveData.IsFullScreen();
+        }
+        public VideoResolutionType GetVideoResolutionType()
+        {
+            // will get enum from save data
+            return _videoResolutionType;
         }
     }
 }
