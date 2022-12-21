@@ -8176,6 +8176,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Global-Video-Setting
       objectReference: {fileID: 0}
+    - target: {fileID: 7297331662854283414, guid: fb54722435ac4ce4998a82ee4fb7a84b, type: 3}
+      propertyPath: _videoResolutionType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7297331662854283415, guid: fb54722435ac4ce4998a82ee4fb7a84b, type: 3}
       propertyPath: m_RootOrder
       value: 5

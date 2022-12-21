@@ -50,7 +50,7 @@ namespace Comma.Global.Settings
                 _ => new VideoResolution(1920, 1080)
             };
             _videoResolutionType = type;
-            ChangeScreenResolution(_resolution, _videoSaveData.IsFullScreen());
+            ChangeScreenResolution(_resolution, _isFullScreen);
             // need set video resolution type data
         }
         private void ChangeScreenResolution(VideoResolution resolution, bool isFullScreen)
