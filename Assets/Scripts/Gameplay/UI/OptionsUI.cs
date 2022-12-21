@@ -26,8 +26,7 @@ namespace Comma.Gameplay.UI
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if(gameObject.activeSelf)
-                    CheckConfirmSetting();
+                CheckConfirmSetting();
             }
         }
 
@@ -42,11 +41,9 @@ namespace Comma.Gameplay.UI
         private void CheckConfirmSetting()
         {
             var isConfirm = SaveSystem.SaveDataToDisk();
-            Debug.Log(isConfirm);
             if (isConfirm)
             {
                 _confirmSettingPopUp.SetActive(true);
-                gameObject.SetActive(false);
             }
             else
             {

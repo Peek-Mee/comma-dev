@@ -2,11 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9568c28a-7486-43dd-9851-33f62a03039e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/ConfirmSettingUI.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/ConfirmSettingUI.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.comma-dev/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.comma-dev/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/Warning-PopUp-Template.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/Warning-PopUp-Template.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Dummy-Home.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Dummy-Home.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Dummy-UI-Gameplay.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Dummy-UI-Gameplay.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/ConfirmSettingUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/ConfirmSettingUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/OptionsUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/OptionsUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/PauseUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/PauseUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/VideoSettingUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/VideoSettingUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Global/Settings/VideoSetting.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Global/Settings/VideoSetting.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -15,6 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6afd1274f120405096bc1ad9e2010ba6157a00/6f/5a2e8d1f/Screen.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/VideoSettingUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Global/PubSub/EventMessages.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -90,6 +94,7 @@
       <workItem from="1671462715316" duration="1987000" />
       <workItem from="1671513458710" duration="746000" />
       <workItem from="1671523061327" duration="1040000" />
+      <workItem from="1671592705717" duration="8645000" />
     </task>
     <servers />
   </component>

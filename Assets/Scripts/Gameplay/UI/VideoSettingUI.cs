@@ -37,7 +37,7 @@ namespace Gameplay.UI
         }
         private void InitVideoSettings()
         {
-            _videoSetting = VideoSetting.VideoSettingInstance;
+            _videoSetting = VideoSetting.Instance;
             _windowedToggle.isOn = !_videoSetting.IsFullScreen();
             ChangeResolutionText();
         }
@@ -66,7 +66,7 @@ namespace Gameplay.UI
         }
         private void ChangeResolutionText()
         {
-            _resolutionText.text = _videoSetting.GetDisplayResolution().width + " x " + _videoSetting.GetDisplayResolution().height;
+            _resolutionText.text = _videoSetting.GetCurrentResolution().width + " x " + _videoSetting.GetCurrentResolution().height;
         }
         private void OnWindowedToggle()
         {

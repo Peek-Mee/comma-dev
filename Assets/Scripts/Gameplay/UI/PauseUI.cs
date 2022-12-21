@@ -19,14 +19,8 @@ namespace Comma.Gameplay.UI
         {
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                if(_optionsPopUp.activeSelf)
-                {
-                    _optionsPopUp.SetActive(false);
-                }
-                else
-                {
-                    gameObject.SetActive(!gameObject.activeSelf);
-                }
+                if(_optionsPopUp.activeSelf) return;
+                gameObject.SetActive(!gameObject.activeSelf);
             }
         }
 
