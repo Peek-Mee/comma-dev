@@ -52,16 +52,30 @@ namespace Comma.Global.AudioManager
             else
             {
                 audioControllerInstance = this;
-                Init();
+                //Init();
             }
 
 
             DontDestroyOnLoad(gameObject);
         }
+        private void Start()
+        {
+            Init();
+        }
 
         private void Init()
         {
             AudioSaveData _setting = SaveSystem.GetAudioSetting();
+            foreach (var item in _mixerPairs)
+            {
+                var type = item.Type;
+                UpdateMixerVolume(type, _setting.GetVolumeSetting(type));
+
+                if (_setting.GetMuteSetting(type))
+                    MuteMixer(type);
+                else
+                    UnmuteMixer(type);
+            }
             
         }
         
@@ -73,18 +87,49 @@ namespace Comma.Global.AudioManager
 
         private void UpdateMixerVolume(AudioDataType type, float volume)
         {
-            if (volume > 1 || volume < 0) volume = NormalizeAudioValue(volume);
-
             MixerPair controller = Array.Find<MixerPair>(_mixerPairs, t => t.Type == type);
             controller.Mixer.audioMixer.SetFloat(controller.Variable, volume);
+        }
 
+        private void MuteMixer(AudioDataType type)
+        {
+            UpdateMixerVolume(type, NormalizeAudioValue(0f));
+        }
+
+        private void UnmuteMixer(AudioDataType type)
+        {
+            AudioSaveData data = SaveSystem.GetAudioSetting();
+            float volume = data.GetVolumeSetting(type);
+            UpdateMixerVolume(type, NormalizeAudioValue(volume));
         }
 
         #endregion
 
+        /// <summary>
+        /// Update volume of a certain audio type in real time. This function doesn't handle save data
+        /// </summary>
+        /// <param name="type">AudioDataType</param>
+        /// <param name="volume">float</param>
         public static void UpdateAudioVolume(AudioDataType type, float volume)
         {
             float normalizedValue = Instance.NormalizeAudioValue(volume);
+            Instance.UpdateMixerVolume(type, normalizedValue);
+        }
+        /// <summary>
+        /// Mute a certain audio type in real time. This function doesn't handle save data
+        /// </summary>
+        /// <param name="type">AudioDataType</param>
+        public static void MuteAudio(AudioDataType type)
+        {
+            Instance.MuteMixer(type);
+        }
+        /// <summary>
+        /// Unmute a certain audio type in real time. This function doesn't handle save data
+        /// </summary>
+        /// <param name="type">AudioDataType</param>
+        public static void UnmuteAudio(AudioDataType type)
+        {
+            Instance.UnmuteMixer(type);
         }
     }
 }

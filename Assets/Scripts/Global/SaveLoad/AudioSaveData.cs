@@ -24,10 +24,10 @@ namespace Comma.Global.SaveLoad
             _ambianceMute = false;
             _sfxMute = false;
 
-            _masterVolume = 0f;
-            _bgmVolume = 0f;
-            _ambianceVolume = 0f;
-            _sfxVolume = 0f;
+            _masterVolume = 1f;
+            _bgmVolume = 1f;
+            _ambianceVolume = 1f;
+            _sfxVolume = 1f;
         }
         /// <summary>
         /// Change audio volume setting and set as dirty
