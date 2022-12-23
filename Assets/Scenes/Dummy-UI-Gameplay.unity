@@ -7297,6 +7297,7 @@ GameObject:
   - component: {fileID: 1925373258}
   - component: {fileID: 1925373260}
   - component: {fileID: 1925373259}
+  - component: {fileID: 1925373261}
   m_Layer: 5
   m_Name: Audio-Content
   m_TagString: Untagged
@@ -7366,6 +7367,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &1925373261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925373257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de77c806e88b4ce3b6a4e46580d51a4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _musicToggle: {fileID: 19455902}
+  _musicSlider: {fileID: 362194391}
+  sfxToggle: {fileID: 1436177040}
+  _sfxSlider: {fileID: 683852955}
 --- !u!1 &1992154066
 GameObject:
   m_ObjectHideFlags: 0
