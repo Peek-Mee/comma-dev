@@ -7,16 +7,8 @@ namespace Comma.Global.Settings
 {
     public class AudioSetting : MonoBehaviour
     {
-        private float _masterVolume;
-        private float _bgmVolume;
-        private float _ambianceVolume;
-        private float _sfxVolume;
-        private bool _masterMute;
-        private bool _bgmMute;
-        private bool _ambianceMute;
-        private bool _sfxMute;
-        
-        private AudioSaveData _audioSaveData;
+        private AudioSaveData _currentAudioSaveData;
+        private AudioSaveData _newAudioSaveData;
         public static AudioSetting Instance { get; private set; }
         private void Awake()
         {
@@ -39,100 +31,51 @@ namespace Comma.Global.Settings
         
         private void InitAudioSetting()
         {
-            _audioSaveData = SaveSystem.GetAudioSetting();
-
-            _masterVolume = _audioSaveData.GetVolumeSetting(AudioDataType.MASTER);
-            _bgmVolume = _audioSaveData.GetVolumeSetting(AudioDataType.BGM);
-            _ambianceVolume = _audioSaveData.GetVolumeSetting(AudioDataType.AMBIANCE);
-            _sfxVolume = _audioSaveData.GetVolumeSetting(AudioDataType.SFX);
+            _currentAudioSaveData = SaveSystem.GetAudioSetting();
             
-            _masterMute = _audioSaveData.GetMuteSetting(AudioDataType.MASTER);
-            _bgmMute = _audioSaveData.GetMuteSetting(AudioDataType.BGM);
-            _ambianceMute = _audioSaveData.GetMuteSetting(AudioDataType.AMBIANCE);
-            _sfxMute = _audioSaveData.GetMuteSetting(AudioDataType.SFX);
-            
-            foreach (AudioDataType type in AudioDataType.GetValues(typeof(AudioDataType)))
-            {
-                AudioController.UpdateAudioVolume(type,_audioSaveData.GetVolumeSetting(type));
-                
-                if (_audioSaveData.GetMuteSetting(type))
-                    AudioController.MuteAudio(type);
-                else
-                    AudioController.UnmuteAudio(type);
-            }
-            
+            _newAudioSaveData = new AudioSaveData();
         }
         public void ChangeAudioVolume(AudioDataType type, float volume)
         {
-            volume = type switch
-            {
-                AudioDataType.MASTER => _masterVolume = volume,
-                AudioDataType.BGM => _bgmVolume = volume,
-                AudioDataType.AMBIANCE => _ambianceVolume = volume,
-                AudioDataType.SFX => _sfxVolume = volume,
-                _ => 0f
-            };
+            _newAudioSaveData.ChangeAudioSetting(type,volume);
             AudioController.UpdateAudioVolume(type,volume);
         }
         public void ChangeMuteAudio(AudioDataType type, bool mute)
         {
-            mute = type switch
-            {
-                AudioDataType.MASTER => _masterMute = mute,
-                AudioDataType.BGM => _bgmMute = mute,
-                AudioDataType.AMBIANCE => _ambianceMute = mute,
-                AudioDataType.SFX => _sfxMute = mute,
-                _ => false
-            };
+            _newAudioSaveData.ChangeAudioSetting(type,mute);
             AudioController.MuteAudio(type);
         }
         public void ChangeUnmuteAudio(AudioDataType type, bool unmute)
         {
-            unmute = type switch
-            {
-                AudioDataType.MASTER => _masterMute = unmute,
-                AudioDataType.BGM => _bgmMute = unmute,
-                AudioDataType.AMBIANCE => _ambianceMute =!unmute,
-                AudioDataType.SFX => _sfxMute = unmute,
-                _ => false
-            };
+            _newAudioSaveData.ChangeAudioSetting(type,unmute);
             AudioController.UnmuteAudio(type);
         }
         public void AcceptAudioSetting()
         {
-            foreach (AudioDataType type in AudioDataType.GetValues(typeof(AudioDataType)))
-            {
-                _audioSaveData.ChangeAudioSetting(type,GetCurrentVolume(type)); //float
-                _audioSaveData.ChangeAudioSetting(type,GetCurrentMute(type)); //bool
-            }
+            _currentAudioSaveData = _newAudioSaveData;
+            SaveSystem.SaveDataToDisk();
         }
         public void CancelAudioSetting()
         {
             InitAudioSetting();
+            
+            foreach (AudioDataType type in AudioDataType.GetValues(typeof(AudioDataType)))
+            {
+                AudioController.UpdateAudioVolume(type,_currentAudioSaveData.GetVolumeSetting(type));
+                
+                if (_currentAudioSaveData.GetMuteSetting(type))
+                    AudioController.MuteAudio(type);
+                else
+                    AudioController.UnmuteAudio(type);
+            }
         }
         public float GetCurrentVolume(AudioDataType type)
         {
-            float volume = type switch
-            {
-                AudioDataType.MASTER => _masterVolume,
-                AudioDataType.BGM => _bgmVolume,
-                AudioDataType.AMBIANCE => _ambianceVolume,
-                AudioDataType.SFX => _sfxVolume,
-                _ => 0f
-            };
-            return volume;
+            return _currentAudioSaveData.GetVolumeSetting(type);
         }
         public bool GetCurrentMute(AudioDataType type)
         {
-            bool mute = type switch
-            {
-                AudioDataType.MASTER => _masterMute,
-                AudioDataType.BGM => _bgmMute,
-                AudioDataType.AMBIANCE => _ambianceMute,
-                AudioDataType.SFX => _sfxMute,
-                _ => false
-            };
-            return mute;
+            return _currentAudioSaveData.GetMuteSetting(type);
         }
     }
 }
