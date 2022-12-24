@@ -31,12 +31,14 @@ namespace Gameplay.UI
         private void OnYesButton()
         {
             VideoSetting.Instance.AcceptVideoSetting();
+            AudioSetting.Instance.AcceptAudioSetting();
             gameObject.SetActive(false);
             _optionsPopUp.SetActive(false);
         }
         private void OnNoButton()
         {
             VideoSetting.Instance.CancelVideoSetting();
+            AudioSetting.Instance.CancelAudioSetting();
             gameObject.SetActive(false);
             _optionsPopUp.SetActive(false);
         }

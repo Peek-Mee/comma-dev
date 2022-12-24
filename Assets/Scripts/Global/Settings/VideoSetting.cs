@@ -6,10 +6,8 @@ namespace Comma.Global.Settings
 {
     public class VideoSetting : MonoBehaviour
     {
-        [SerializeField] private VideoSaveData _videoSaveData;
-        [SerializeField] private VideoResolutionType _videoResolutionType;
-        private VideoResolution _resolution;
-        private bool _isFullScreen;
+        private VideoSaveData _currentVideoSaveData;
+        private VideoSaveData _newVideoSaveData;
         public static VideoSetting Instance { get; private set; }
         private void Awake()
         {
@@ -33,63 +31,62 @@ namespace Comma.Global.Settings
 
         private void InitVideoSetting()
         {
-            _videoSaveData = SaveSystem.GetVideoSetting();
-            _resolution = _videoSaveData.GetDisplayResolution();
-            _isFullScreen= _videoSaveData.IsFullScreen();
-            ChangeScreenResolution(_resolution, _videoSaveData.IsFullScreen());
-        }
-        public void ChangeDisplayResolution(VideoResolutionType type)
-        {
-            _resolution = type switch
-            {
-                VideoResolutionType.P480 => new VideoResolution(854, 480),
-                VideoResolutionType.P720 => new VideoResolution(1280, 720),
-                VideoResolutionType.P1080 => new VideoResolution(1920, 1080),
-                VideoResolutionType.P1440 => new VideoResolution(2560, 1440),
-                VideoResolutionType.P2160 => new VideoResolution(3840, 2160),
-                _ => new VideoResolution(1920, 1080)
-            };
-            _videoResolutionType = type;
-            ChangeScreenResolution(_resolution, _isFullScreen);
-            // need set video resolution type data
+            _currentVideoSaveData = SaveSystem.GetVideoSetting();
+            _newVideoSaveData = (VideoSaveData) _currentVideoSaveData.Clone();
+            
+            var resolution = _currentVideoSaveData.GetDisplayResolution();
+            var isFullScreen= _currentVideoSaveData.IsFullScreen();
+            ChangeScreenResolution(resolution, isFullScreen);
         }
         private void ChangeScreenResolution(VideoResolution resolution, bool isFullScreen)
         {
             Screen.SetResolution(resolution.Width, resolution.Height, isFullScreen,60);
         }
+        public void ChangeDisplayResolution(VideoResolutionType type)
+        {
+            VideoResolution newResolution;
+            newResolution = type switch
+            {
+                VideoResolutionType.P720 => new VideoResolution(1280, 720),
+                VideoResolutionType.P768 => new VideoResolution(1366, 768),
+                VideoResolutionType.P900 => new VideoResolution(1600, 900),
+                VideoResolutionType.P1080 => new VideoResolution(1920, 1080),
+                VideoResolutionType.P1440 => new VideoResolution(2560, 1440),
+                _ => new VideoResolution(1920, 1080)
+            };
+            _newVideoSaveData.SetDisplayResolution(newResolution);
+            _newVideoSaveData.SetResolutionType(type);
+            
+            var resolution = _newVideoSaveData.GetDisplayResolution();
+            var isFullScreen = _newVideoSaveData.IsFullScreen();
+            ChangeScreenResolution(resolution, isFullScreen);
+        }
         public void ChangeFullScreen(bool isFullScreen)
         {
-            _isFullScreen = isFullScreen;
+            _newVideoSaveData.SetFullScreen(isFullScreen);
             Screen.fullScreen = isFullScreen;
         }
         public void AcceptVideoSetting()
         {
-            _videoSaveData.SetDisplayResolution(_resolution);
-            _videoSaveData.SetFullScreen(_isFullScreen);
+            _currentVideoSaveData = (VideoSaveData) _newVideoSaveData.Clone();
+            SaveSystem.ChangeDataReference(_currentVideoSaveData);
             SaveSystem.SaveDataToDisk();
-            print(SaveSystem.GetVideoSetting().GetDisplayResolution());
         }
         public void CancelVideoSetting()
         {
             InitVideoSetting();
         }
-        public VideoResolution GetCurrentResolution()
+        public VideoResolution GetNewResolution()
         {
-            return _resolution;
-        }
-        public VideoResolution GetDisplayResolution()
-        {
-            return _videoSaveData.GetDisplayResolution();
+            return _newVideoSaveData.GetDisplayResolution();
         }
         public bool IsFullScreen()
         {
-            return _videoSaveData.IsFullScreen();
+            return _currentVideoSaveData.IsFullScreen();
         }
-       
         public VideoResolutionType GetVideoResolutionType()
         {
-            // will get enum from save data
-            return _videoResolutionType;
+            return _newVideoSaveData.GetResolutionType();
         }
     }
 }
