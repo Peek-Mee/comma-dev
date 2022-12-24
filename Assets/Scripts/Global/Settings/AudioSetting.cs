@@ -46,7 +46,7 @@ namespace Comma.Global.Settings
         public void ChangeUnmuteAudio(AudioDataType type, bool unmute)
         {
             _newAudioSaveData.ChangeAudioSetting(type, unmute);
-            AudioController.UnmuteAudio(type);
+            AudioController.UnmuteAudio(type, false, _newAudioSaveData.GetVolumeSetting(type));
         }
         public void AcceptAudioSetting()
         {
@@ -65,7 +65,7 @@ namespace Comma.Global.Settings
                 if (_currentAudioSaveData.GetMuteSetting(type))
                     AudioController.MuteAudio(type);
                 else
-                    AudioController.UnmuteAudio(type);
+                    AudioController.UnmuteAudio(type, true);
             }
         }
         public float GetCurrentVolume(AudioDataType type)
