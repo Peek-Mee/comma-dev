@@ -1,7 +1,6 @@
 ﻿using Comma.Global.PubSub;
 using Comma.Global.SaveLoad;
 using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.DetectableObject
@@ -9,13 +8,17 @@ namespace Comma.Gameplay.DetectableObject
     [Serializable]
     public struct PortalDestination
     {
-        [SerializeField] public int OrbNeeded { get; private set; }
-        [SerializeField] public Portal SecondaryPortal { get; private set; }
+        
+	[SerializeField] private int _orbNeeded;
+    [SerializeField] private Portal _secondaryPortal;
+	
+	public int OrbNeeded => _orbNeeded;
+	public Portal SecondaryPortal => _secondaryPortal;
 
         public PortalDestination(int orbNum, Portal portal)
         {
-            OrbNeeded = orbNum;
-            SecondaryPortal = portal;
+            _orbNeeded = orbNum;
+            _secondaryPortal = portal;
         }
 
     }

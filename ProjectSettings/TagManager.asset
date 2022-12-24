@@ -3,15 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Orb
+  - Portal
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Main_A
   - Water
   - UI
-  - 
+  - Main_B
   - 
   - 
   - 
