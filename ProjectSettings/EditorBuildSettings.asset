@@ -6,12 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/SampleScenery.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Dummy-Home.unity
     guid: 1d50e1d925caceb48996047aee5aeaff
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Dummy-UI-Gameplay.unity
     guid: 05a1b525937fa244ba995a5c5d719a07
+  - enabled: 1
+    path: Assets/Scenes/Main - Menu Mockup.unity
+    guid: 51080b52821433d4380ae3ebd8192fcf
+  - enabled: 1
+    path: Assets/Scenes/In Game Mockup.unity
+    guid: 733488d3d4a847645aa6fb5f1aff0e35
   m_configObjects: {}
