@@ -1,5 +1,4 @@
-﻿using System;
-using Comma.Global.SaveLoad;
+﻿using Comma.Global.SaveLoad;
 using Comma.Global.Settings;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +8,7 @@ namespace Comma.Gameplay.UI
     public class AudioSettingUI : MonoBehaviour
     {
         private AudioSetting _audioSetting;
-        
+
         [Header("Music Setting")]
         [SerializeField] private Toggle _musicToggle;
         [SerializeField] private Slider _musicSlider;
@@ -18,6 +17,10 @@ namespace Comma.Gameplay.UI
         [SerializeField] private Toggle sfxToggle;
         [SerializeField] private Slider _sfxSlider;
 
+        private void Awake()
+        {
+            _audioSetting = AudioSetting.Instance;
+        }
         private void OnEnable()
         {
             RemoveAllListener();

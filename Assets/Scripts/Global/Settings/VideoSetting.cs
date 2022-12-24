@@ -42,11 +42,11 @@ namespace Comma.Global.Settings
         {
             _resolution = type switch
             {
-                VideoResolutionType.P480 => new VideoResolution(854, 480),
                 VideoResolutionType.P720 => new VideoResolution(1280, 720),
+                VideoResolutionType.P768 => new VideoResolution(1366, 768),
+                VideoResolutionType.P900 => new VideoResolution(1600, 900),
                 VideoResolutionType.P1080 => new VideoResolution(1920, 1080),
                 VideoResolutionType.P1440 => new VideoResolution(2560, 1440),
-                VideoResolutionType.P2160 => new VideoResolution(3840, 2160),
                 _ => new VideoResolution(1920, 1080)
             };
             _videoResolutionType = type;
@@ -66,8 +66,9 @@ namespace Comma.Global.Settings
         {
             _videoSaveData.SetDisplayResolution(_resolution);
             _videoSaveData.SetFullScreen(_isFullScreen);
+            _videoSaveData.SetResolutionType(_videoResolutionType);
             SaveSystem.SaveDataToDisk();
-            print(SaveSystem.GetVideoSetting().GetDisplayResolution());
+            //print(SaveSystem.GetVideoSetting().GetDisplayResolution());
         }
         public void CancelVideoSetting()
         {
