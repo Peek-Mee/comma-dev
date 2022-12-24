@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Comma.Global.SaveLoad
 {
     [Serializable]
-    public class PlayerSaveData
+    public class PlayerSaveData : ICloneable
     {
         [SerializeField] private Vector3 _lastPosition;
         [SerializeField] private List<string> _orbsCollection;
@@ -71,5 +71,10 @@ namespace Comma.Global.SaveLoad
         /// <param name="id">Portal ID</param>
         /// <returns>bool</returns>
         public bool IsPortalInCollection(string id) { return _portalsCollection.Contains(id); }
+
+        public object Clone()
+        {
+            return (PlayerSaveData)this.MemberwiseClone();
+        }
     }
 }
