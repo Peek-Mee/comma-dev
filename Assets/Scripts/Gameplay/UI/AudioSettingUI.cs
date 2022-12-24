@@ -48,11 +48,10 @@ namespace Comma.Gameplay.UI
             toggle.onValueChanged.AddListener((isOn) =>
             {
                 if(isOn)
-                    _audioSetting.ChangeMuteAudio(type, isOn);
+                    _audioSetting.ChangeUnmuteAudio(type, !isOn);
                 else
-                    _audioSetting.ChangeUnmuteAudio(type, isOn);
-                
-                slider.interactable = !isOn;
+                    _audioSetting.ChangeMuteAudio(type, !isOn);
+                slider.interactable = isOn;
             });
             
             slider.onValueChanged.AddListener((value) =>

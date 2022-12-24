@@ -50,7 +50,6 @@ namespace Comma.Global.Settings
         }
         public void AcceptAudioSetting()
         {
-
             _currentAudioSaveData = (AudioSaveData)_newAudioSaveData.Clone();
             SaveSystem.ChangeDataReference(_currentAudioSaveData);
             SaveSystem.SaveDataToDisk();
