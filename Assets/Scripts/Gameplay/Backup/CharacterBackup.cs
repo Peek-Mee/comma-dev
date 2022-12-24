@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Backup
@@ -8,8 +9,6 @@ namespace Comma.Gameplay.Backup
         private Rigidbody2D _rigidbody2D;
 
         [Header("Movement")]
-        [SerializeField] private Transform _topdownCheck;
-        [SerializeField] private float _topdownDistance;
         [SerializeField] private float _speed;
         private float horizontalInput;
         private float verticalInput;
@@ -19,10 +18,18 @@ namespace Comma.Gameplay.Backup
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private float _groundDistance;
         [SerializeField] private float _jumpForce;
-
+        [SerializeField] private float _fallMultiplier;
+        
+        [Header("Animation")]
+        private Animator _animator;
+        private const string On_Idle= "OnIdle";
+        private const string On_Walk = "OnWalk";
+        private const string On_Jump = "OnJump";
+        private const string On_Fall = "OnFall";
         private void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            _animator = GetComponent<Animator>();
         }
 
         private void Update()
@@ -31,6 +38,7 @@ namespace Comma.Gameplay.Backup
             verticalInput = Input.GetAxis("Vertical");
             
             OnJump();
+            OnFall();
             if(_isFacingRight && horizontalInput < 0)
             {
                 OnFlip();
@@ -44,26 +52,32 @@ namespace Comma.Gameplay.Backup
         private void FixedUpdate()
         {
             OnMove();
-            OnMoveTopDown();
         }
 
         private void OnMove()
         {
             _rigidbody2D.velocity = new Vector2(horizontalInput * _speed, _rigidbody2D.velocity.y);
         }
-        private void OnMoveTopDown()
-        {
-            if(IsTopDown()) 
-                _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, verticalInput * _speed);
-        }
         private void OnJump()
         {
             if(Input.GetKeyDown(KeyCode.Space) && IsGrounded())
             {
                 _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpForce);
+                _animator.SetBool(On_Jump, true);
             }
         }
-        
+
+        private void OnFall()
+        {
+            
+            Vector2 gravity = new Vector2(0, -Physics2D.gravity.y);
+            if(_rigidbody2D.velocity.y < 0)
+            {
+                _animator.SetBool(On_Jump, false);
+                _rigidbody2D.velocity -= gravity * _fallMultiplier * Time.deltaTime;
+            }
+        }
+
         private void OnFlip()
         {
             _isFacingRight = !_isFacingRight;
@@ -76,11 +90,6 @@ namespace Comma.Gameplay.Backup
             return Physics2D.Raycast(_groundCheck.position, Vector2.down, _groundDistance, LayerMask.GetMask("Ground"));
         }
         
-        private bool IsTopDown()
-        {
-            
-            return Physics2D.Raycast(_topdownCheck.position, Vector2.zero, _topdownDistance, LayerMask.GetMask("Ground"));
-        }
     }
 }
 
