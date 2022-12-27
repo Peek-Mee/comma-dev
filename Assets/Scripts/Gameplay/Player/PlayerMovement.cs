@@ -58,34 +58,10 @@ namespace Comma.Gameplay.Player
             _isGrounded = IsGrounded();
             
             ChangePlayerState();
-
+            OnWalk();
             OnFlip();
             OnJump();
             OnFall();
-
-
-            if (_isWalking)
-            {
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    _currentSpeed = _runSpeed;
-                    IdleAnimation(false);
-                    MoveAnimation(2,_isGrounded);
-                }
-                else
-                {
-                    _currentSpeed = _normalSpeed;
-                    IdleAnimation(false);
-                    MoveAnimation(1,_isGrounded);
-                }
-            }
-            else
-            {
-                _currentSpeed = _normalSpeed;
-                IdleAnimation(_isGrounded && !_isWalking);
-                MoveAnimation(0);
-            }
-
         }
 
         private void FixedUpdate()
@@ -119,9 +95,34 @@ namespace Comma.Gameplay.Player
         }
         private void OnMove()
         {
+            if(!_isWalking)return;
             _rigidbody2D.velocity = new Vector2(horizontalInput * _currentSpeed, _rigidbody2D.velocity.y);
         }
-        
+
+        private void OnWalk()
+        {
+            if (_isWalking)
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    _currentSpeed = _runSpeed;
+                    IdleAnimation(false);
+                    MoveAnimation(2,_isGrounded);
+                }
+                else
+                {
+                    _currentSpeed = _normalSpeed;
+                    IdleAnimation(false);
+                    MoveAnimation(1,_isGrounded);
+                }
+            }
+            else
+            {
+                _currentSpeed = _normalSpeed;
+                IdleAnimation(_isGrounded && !_isWalking);
+                MoveAnimation(0);
+            }
+        }
         private void OnJump()
         {
             //JumpAnimation(false);
