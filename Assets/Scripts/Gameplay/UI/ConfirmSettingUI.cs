@@ -1,17 +1,16 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using Comma.Global.SaveLoad;
+using Comma.Global.Settings;
+using UnityEngine;
 using UnityEngine.UI;
 
-namespace Comma.Home.UI
+namespace Gameplay.UI
 {
-    public class WarningNewGameUI : MonoBehaviour
+    public class ConfirmSettingUI : MonoBehaviour
     {
-        [Header("Warning New Game Buttons")]
+        [SerializeField] private GameObject _optionsPopUp;
+        [Header("Confirm Setting Buttons")]
         [SerializeField] private Button _yesButton;
         [SerializeField] private Button _noButton;
-        
-        [Header("Scene Management")]
-        [SerializeField] private string _gameplaySceneName = "Gameplay";
         
         private void OnEnable()
         {
@@ -31,11 +30,17 @@ namespace Comma.Home.UI
         }
         private void OnYesButton()
         {
-            SceneManager.LoadScene(_gameplaySceneName);
+            VideoSetting.Instance.AcceptVideoSetting();
+            AudioSetting.Instance.AcceptAudioSetting();
+            gameObject.SetActive(false);
+            _optionsPopUp.SetActive(false);
         }
         private void OnNoButton()
         {
+            VideoSetting.Instance.CancelVideoSetting();
+            AudioSetting.Instance.CancelAudioSetting();
             gameObject.SetActive(false);
+            _optionsPopUp.SetActive(false);
         }
     }
 }
