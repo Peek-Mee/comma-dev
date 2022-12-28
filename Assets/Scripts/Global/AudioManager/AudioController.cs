@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering;
 
 namespace Comma.Global.AudioManager
 {
@@ -74,7 +75,8 @@ namespace Comma.Global.AudioManager
                 if (_setting.GetMuteSetting(type))
                     MuteMixer(type);
                 else
-                    UnmuteMixer(type);
+                    //UnmuteMixer(type);
+                    UnmuteMixer(type, true);
             }
             
         }
@@ -96,10 +98,27 @@ namespace Comma.Global.AudioManager
             UpdateMixerVolume(type, NormalizeAudioValue(0f));
         }
 
-        private void UnmuteMixer(AudioDataType type)
+        //private void UnmuteMixer(AudioDataType type)
+        //{
+        //    AudioSaveData data = SaveSystem.GetAudioSetting();
+        //    float volume = data.GetVolumeSetting(type);
+        //    UpdateMixerVolume(type, NormalizeAudioValue(volume));
+        //}
+
+        private void UnmuteMixer(AudioDataType type, bool usingSaveData, float currentVolume = 0f)
         {
-            AudioSaveData data = SaveSystem.GetAudioSetting();
-            float volume = data.GetVolumeSetting(type);
+            float volume;
+            switch (usingSaveData)
+            {
+                case true:
+                    AudioSaveData data = SaveSystem.GetAudioSetting();
+                    volume = data.GetVolumeSetting(type);
+                    break;
+                case false:
+                    volume = currentVolume;
+                    break;
+            }
+
             UpdateMixerVolume(type, NormalizeAudioValue(volume));
         }
 
@@ -127,9 +146,19 @@ namespace Comma.Global.AudioManager
         /// Unmute a certain audio type in real time. This function doesn't handle save data
         /// </summary>
         /// <param name="type">AudioDataType</param>
-        public static void UnmuteAudio(AudioDataType type)
+        /// <param name="useDefault">bool</param>
+        /// <param name="volume">float</param>
+        public static void UnmuteAudio(AudioDataType type, bool useDefault, float volume = 0f)
         {
-            Instance.UnmuteMixer(type);
+            switch (useDefault)
+            {
+                case true:
+                    Instance.UnmuteMixer(type, true);
+                    break;
+                case false:
+                    Instance.UnmuteMixer(type, false, volume);
+                    break;
+            }
         }
     }
 }

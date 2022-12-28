@@ -26,9 +26,6 @@ namespace Gameplay.UI
         {
             RemoveAllListeners();
             InitVideoSettings();
-            OnWindowedToggle();
-            _nextResolutionButton.onClick.AddListener(OnNextResolutionButton);
-            _previousResolutionButton.onClick.AddListener(OnPreviousResolutionButton);
         }
 
         private void OnDisable()
@@ -40,6 +37,10 @@ namespace Gameplay.UI
             _videoSetting = VideoSetting.Instance;
             _windowedToggle.isOn = !_videoSetting.IsFullScreen();
             ChangeResolutionText();
+            OnWindowedToggle();
+            OnBrightnessSlider();
+            _nextResolutionButton.onClick.AddListener(OnNextResolutionButton);
+            _previousResolutionButton.onClick.AddListener(OnPreviousResolutionButton);
         }
         
         private void OnNextResolutionButton()
@@ -66,13 +67,20 @@ namespace Gameplay.UI
         }
         private void ChangeResolutionText()
         {
-            _resolutionText.text = _videoSetting.GetCurrentResolution().Width + " x " + _videoSetting.GetCurrentResolution().Height;
+            _resolutionText.text = _videoSetting.GetNewResolution().Width + " x " + _videoSetting.GetNewResolution().Height;
         }
         private void OnWindowedToggle()
         {
             _windowedToggle.onValueChanged.AddListener(isOn =>
             {
                 _videoSetting.ChangeFullScreen(!isOn);
+            });
+        }
+        private void OnBrightnessSlider()
+        {
+            _brightnessSlider.onValueChanged.AddListener(value =>
+            {
+                // video setting change brightness
             });
         }
         private void RemoveAllListeners()
