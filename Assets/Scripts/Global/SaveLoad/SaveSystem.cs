@@ -65,11 +65,11 @@ namespace Comma.Global.SaveLoad
         {
             if(!PlayerPrefs.HasKey(prefsName))
             {
-                print($"{prefsName} hasn't been saved");
+                //print($"{prefsName} hasn't been saved");
                 SaveData<T>(ref data, prefsName);
                 return;
             }
-            print(PlayerPrefs.GetString(prefsName));
+            //print(PlayerPrefs.GetString(prefsName));
             data = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
         }
 
@@ -77,6 +77,11 @@ namespace Comma.Global.SaveLoad
         {
             PlayerPrefs.SetString(prefsName, JsonUtility.ToJson(data));
             PlayerPrefs.Save();
+        }
+
+        private void ChangeDataAsObject<T>(ref T target, T newObject)
+        {
+            target = newObject;
         }
 
         private void SaveAllDataToDisk()
@@ -87,6 +92,41 @@ namespace Comma.Global.SaveLoad
             SaveData<InputSaveData>(ref _inputSetting, "InputData");
         }
 
+        /// <summary>
+        /// Change save data value as a whole object by re-assign its reference
+        /// </summary>
+        /// <param name="newObject">PlayerSaveData</param>
+        public static void ChangeDataReference(PlayerSaveData newObject)
+        {
+            Instance.ChangeDataAsObject<PlayerSaveData>(ref Instance._playerData, newObject);
+        }
+        /// <summary>
+        /// Change save data value as a whole object by re-assign its reference
+        /// </summary>
+        /// <param name="newObject">AudioSaveData</param>
+        public static void ChangeDataReference(AudioSaveData newObject)
+        {
+
+            Instance.ChangeDataAsObject<AudioSaveData>(ref Instance._audioSetting, newObject);
+        }
+        /// <summary>
+        /// Change save data value as a whole object by re-assign its reference
+        /// </summary>
+        /// <param name="newObject">VideoSaveData</param>
+        public static void ChangeDataReference(VideoSaveData newObject)
+        {
+
+            Instance.ChangeDataAsObject<VideoSaveData>(ref Instance._videoSetting, newObject);
+        }
+        /// <summary>
+        /// Change save data value as a whole object by re-assign its reference
+        /// </summary>
+        /// <param name="newObject">InputSaveData</param>
+        public static void ChangeDataReference(InputSaveData newObject)
+        {
+
+            Instance.ChangeDataAsObject<InputSaveData>(ref Instance._inputSetting, newObject);
+        }
         /// <summary>
         /// Get saved player data as reference
         /// </summary>

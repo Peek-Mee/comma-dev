@@ -22,16 +22,18 @@ namespace Comma.Global.SaveLoad
         }
         
     }
-    public enum VideoResolutionType {P480, P720, P1080, P1440, P2160}
+    public enum VideoResolutionType {P720, P768, P900, P1080, P1440}
     [Serializable]
-    public class VideoSaveData
+    public class VideoSaveData : ICloneable
     {
         [SerializeField] private VideoResolution _displayResolution;
         [SerializeField] private bool _fullScreen;
+        [SerializeField] private VideoResolutionType _resolutionType;
 
         public VideoSaveData()
         {
             _displayResolution = new(1920, 1080, 60);
+            _resolutionType = VideoResolutionType.P1080;
             _fullScreen = true;
         }
 
@@ -55,5 +57,20 @@ namespace Comma.Global.SaveLoad
         /// </summary>
         /// <param name="value">bool</param>
         public void SetFullScreen(bool isFullScreen) { _fullScreen = isFullScreen; }
+        /// <summary>
+        /// Set new Resolution type value
+        /// </summary>
+        /// <param name="type"></param>
+        public void SetResolutionType(VideoResolutionType type) { _resolutionType = type; }
+        /// <summary>
+        /// Get resolution type value
+        /// </summary>
+        /// <returns></returns>
+        public VideoResolutionType GetResolutionType() { return _resolutionType; }
+
+        public object Clone()
+        {
+            return (VideoSaveData)this.MemberwiseClone();
+        }
     }
 }
