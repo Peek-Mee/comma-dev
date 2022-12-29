@@ -1,5 +1,6 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
+using Comma.Global.PubSub;
 
 namespace Comma.Gameplay.UserInput
 {
@@ -26,12 +27,12 @@ namespace Comma.Gameplay.UserInput
             Debug.Log("Input move " + context.ReadValueAsObject());
             if (context.performed)
             {
-                // Move object
+                EventConnector.Publish("OnPlayerMove", context.ReadValueAsObject());
             }
 
             if (context.canceled)
             {
-                // Stop object
+                EventConnector.Publish("OnPlayerMove", Vector2.zero);
             }
         }
 
@@ -40,12 +41,12 @@ namespace Comma.Gameplay.UserInput
             Debug.Log("Input jump " + context.ReadValueAsObject());
             if (context.performed)
             {
-                // Vertical acceleration
+                EventConnector.Publish("OnPlayerJump", true);
             }
 
             if (context.canceled)
             {
-                // Stop accelerate
+                EventConnector.Publish("OnPlayerJump", false);
             }
         }
 
@@ -54,7 +55,7 @@ namespace Comma.Gameplay.UserInput
             Debug.Log("Input interact " + context.ReadValueAsObject());
             if (context.performed)
             {
-                // Interact with object
+                EventConnector.Publish("OnPlayerInteract", true);
             }
         }
 
@@ -63,12 +64,13 @@ namespace Comma.Gameplay.UserInput
             Debug.Log("Input sprint " + context.ReadValueAsObject());
             if (context.performed)
             {
-                // Boost speed
+                EventConnector.Publish("OnPlayerSprint", true);
             }
 
             if (context.canceled)
             {
-                // Stop extra speed
+                EventConnector.Publish("OnPlayerSprint", false);
+
             }
         }
     }
