@@ -9,15 +9,12 @@ namespace Comma.Gameplay.DetectableObject
     [Serializable]
     public struct PortalDestination
     {
-        [SerializeField] public int OrbNeeded { get; private set; }
-        [SerializeField] public Portal SecondaryPortal { get; private set; }
+        [SerializeField] private int orbNeeded;
+        [SerializeField] private Portal secondaryPortal;
 
-        public PortalDestination(int orbNum, Portal portal)
-        {
-            OrbNeeded = orbNum;
-            SecondaryPortal = portal;
-        }
-
+        public int OrbNeeded => orbNeeded;
+        public Portal SecondaryPortal=> secondaryPortal;
+        
     }
     [RequireComponent(typeof(Collider2D))]
     public class Portal : MonoBehaviour, IDetectable
@@ -55,12 +52,14 @@ namespace Comma.Gameplay.DetectableObject
 
             PlayerSaveData player = SaveSystem.GetPlayerData();
 
-            if (player.GetOrbsInHand() == _destinations[0].OrbNeeded)
+            if (player.GetOrbsInHand() >= _destinations[0].OrbNeeded)
             {
                 player.SubmitOrb();
                 player.AddPortalToCollections(_portalId);
                 player.AddPortalToCollections(_destinations[0].SecondaryPortal.GetObjectId());
                 SaveSystem.SaveDataToDisk();
+                isActivated = true;
+                _portalSprite.SetActive(true);
             }
         }
 

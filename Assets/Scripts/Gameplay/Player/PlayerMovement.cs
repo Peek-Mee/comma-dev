@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Comma.Gameplay.Player
+namespace Comma.Gameplay.CharacterMovement
 {
     public enum PlayerState
     {
@@ -76,17 +76,25 @@ namespace Comma.Gameplay.Player
 
         private void Update()
         {
-            //print($"Layer 1: {_groundLayers[0].value}");
+            //print($"Layer 1: {!Physics2D.GetIgnoreLayerCollision(3, 7)}");
             //print($"Layer 2: {_groundLayers[1].value}");
-            if (!Physics2D.GetIgnoreLayerCollision(3, 7))
+            if (!Physics2D.GetIgnoreLayerCollision(3, 7) || !Physics2D.GetIgnoreLayerCollision(7, 3))
             {
                 Physics2D.IgnoreLayerCollision(3, 7, true);
+                Physics2D.IgnoreLayerCollision(7, 3, true);
+               
             }
             horizontalInput = Input.GetAxis("Horizontal");
             verticalInput = Input.GetAxis("Vertical");
             _isWalking = Mathf.Abs(horizontalInput) > 0.1f;
             _isGrounded = IsGrounded();
             
+            //if (!_isGrounded)
+            //{
+            //    //print("Hello");
+                
+            //}
+
             ChangePlayerState();
             OnWalk();
             OnFlip();
@@ -115,9 +123,8 @@ namespace Comma.Gameplay.Player
             {
                 if (_rigidbody2D.velocity.y > 0)
                 {
-                    _playerState = PlayerState.Jump;
-                    print("Hello");
-                    if (EligibleToSwapLayer())
+                    _playerState = PlayerState.Jump; 
+                    if (EligibleToSwapLayer() && wasEligible)
                     {
                         SwapLayer();
                     }
@@ -126,6 +133,8 @@ namespace Comma.Gameplay.Player
                 {
                     _playerState = PlayerState.Fall;
                 }
+
+                wasEligible = !EligibleToSwapLayer();
             }
         }
         private void OnMove()
@@ -191,33 +200,32 @@ namespace Comma.Gameplay.Player
 
         private void OnFlip()
         {
-            //if(_isFacingRight && horizontalInput < 0)
-            //{
-            //    _isFacingRight = !_isFacingRight;
-            //    Vector3 scale = transform.localScale;
-            //    scale.x *= -1;
-            //    transform.localScale = scale;
-            //}
-            //else if(!_isFacingRight && horizontalInput > 0)
-            //{
-            //    _isFacingRight = !_isFacingRight;
-            //    Vector3 scale = transform.localScale;
-            //    scale.x *= -1;
-            //    transform.localScale = scale;
-            //}
+            if (_isFacingRight && horizontalInput < 0)
+            {
+                _isFacingRight = !_isFacingRight;
+            }
+            else if (!_isFacingRight && horizontalInput > 0)
+            {
+                _isFacingRight = !_isFacingRight;
+            }
             if (_isFlipProhibited) return;
             _playerSprite.flipX = !_isFacingRight;
         }
         #region SwapLayerMask
+        private bool wasEligible = false;
+
         private bool EligibleToSwapLayer()
         {
             int layerToCheck;
             _ = _currentLayer == 0 ? layerToCheck = 1 :
                 layerToCheck = 0;
             Physics2D.IgnoreLayerCollision(3, 7, false);
+            Physics2D.IgnoreLayerCollision(7, 3, false);
             RaycastHit2D hit = Physics2D.Raycast(_ground.position,
                 Vector2.down, _checkRadius, _groundLayers[layerToCheck]);
-            print(!hit.collider);
+            Physics2D.IgnoreLayerCollision(3, 7, true);
+            Physics2D.IgnoreLayerCollision(7, 3, true);
+
             if (hit.collider == null) return true;
             else return false;
         }
@@ -245,6 +253,13 @@ namespace Comma.Gameplay.Player
             }
             return res;
         }
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Edge"))
+            {
+                OnLayerEdge();
+            }
+        }
         #endregion
 
         #region Animation
@@ -270,6 +285,7 @@ namespace Comma.Gameplay.Player
         private bool IsGrounded()
         {
             return Physics2D.Raycast(_ground.position, Vector2.down, _checkRadius, _groundLayers[_currentLayer]);
+
         }
         
     }
