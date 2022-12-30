@@ -6,14 +6,12 @@ namespace Comma.Gameplay.Environment
     [System.Serializable]
     public struct ZoomTrigger
     {
-        [SerializeField] private float _minPosition;
-        [SerializeField] private float _maxPosition;
+        [SerializeField] private Vector2 _minPosition;
+        [SerializeField] private Vector2 _maxPosition;
         [SerializeField] private float _targetZoom;
-        [SerializeField] private bool _isGrounded;
 
-        public float MinPosition => _minPosition;
-        public float MaxPosition => _maxPosition;
-        public bool IsGround => _isGrounded;
+        public Vector2 MinPosition => _minPosition;
+        public Vector2 MaxPosition => _maxPosition;
         public float Zoom => _targetZoom;
     }
     public class CameraZoom : MonoBehaviour
@@ -22,9 +20,7 @@ namespace Comma.Gameplay.Environment
         [SerializeField] private GameObject _player;
         
         [SerializeField] private float _normalZoom;
-        [SerializeField] private float _minZoom;
-        [SerializeField] private float _maxZoom;
-        
+
         [SerializeField] private ZoomTrigger[] _zoomTriggers;
         [SerializeField] private float _zoomSpeed;
 
@@ -35,32 +31,26 @@ namespace Comma.Gameplay.Environment
 
         private void CheckZoom()
         {
-            var playerPosition = _player.transform.position;
+            var xPlayerPosition = _player.transform.position.x;
+            var yPlayerPosition = _player.transform.position.y;
+            
             foreach (var zoomTrigger in _zoomTriggers)
             {
-                var isGrounded = zoomTrigger.IsGround;
-                var minPosition = zoomTrigger.MinPosition;
-                var maxPosition = zoomTrigger.MaxPosition;
+                var xMin = zoomTrigger.MinPosition.x;
+                var xMax = zoomTrigger.MaxPosition.x;
+                var yMin = zoomTrigger.MinPosition.y;
+                var yMax = zoomTrigger.MaxPosition.y;
                 
-                if (playerPosition.x >= minPosition && playerPosition.x < maxPosition && isGrounded)
+                
+                if (xPlayerPosition >= xMin && xPlayerPosition <= xMax && yPlayerPosition >= yMin && yPlayerPosition <= yMax)
                 {
                     if(_camera.orthographicSize == zoomTrigger.Zoom)return;
                     _camera.orthographicSize = Mathf.MoveTowards(_camera.orthographicSize, zoomTrigger.Zoom, _zoomSpeed * Time.deltaTime);
-                    Debug.Log("Zoom in Ground");
-                }
-                else if (playerPosition.x >= minPosition && playerPosition.x < maxPosition && !isGrounded)
-                {
-                    if(_camera.orthographicSize == zoomTrigger.Zoom)return;
-                   _camera.orthographicSize = Mathf.MoveTowards(_camera.orthographicSize, zoomTrigger.Zoom, _zoomSpeed * Time.deltaTime);
-                    Debug.Log("Zoom in Under Ground");
-                }
-                else
-                {
-                    if(_camera.orthographicSize == _normalZoom)return;
-                   _camera.orthographicSize = Mathf.MoveTowards(_camera.orthographicSize, _normalZoom, _zoomSpeed * Time.deltaTime);
-                   Debug.Log("Zoom Normal");
+                    return;
                 }
             }
+            if(_camera.orthographicSize == _normalZoom)return;
+            _camera.orthographicSize = Mathf.MoveTowards(_camera.orthographicSize, _normalZoom, _zoomSpeed * Time.deltaTime);
         }
     }
 }

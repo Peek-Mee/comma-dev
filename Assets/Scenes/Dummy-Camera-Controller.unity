@@ -200,7 +200,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 386795102}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -8.7, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 40, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -239,21 +239,19 @@ MonoBehaviour:
   _camera: {fileID: 1613930145}
   _player: {fileID: 2048198224}
   _normalZoom: 12
-  _minZoom: 0
-  _maxZoom: 0
   _zoomTriggers:
-  - _minPosition: 4
-    _maxPosition: 8
+  - _minPosition: {x: 4, y: 0}
+    _maxPosition: {x: 8, y: 4}
     _targetZoom: 24
-    _isGrounded: 1
-  - _minPosition: -4
-    _maxPosition: -1
+  - _minPosition: {x: 9, y: 0}
+    _maxPosition: {x: 13, y: 4}
     _targetZoom: 6
-    _isGrounded: 0
-  - _minPosition: -8
-    _maxPosition: -4
+  - _minPosition: {x: -4, y: 0}
+    _maxPosition: {x: -1, y: 4}
+    _targetZoom: 6
+  - _minPosition: {x: -4, y: -10}
+    _maxPosition: {x: -1, y: -5}
     _targetZoom: 24
-    _isGrounded: 0
   _zoomSpeed: 2
 --- !u!4 &830855973
 Transform:
@@ -465,7 +463,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2048198224}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -7, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
