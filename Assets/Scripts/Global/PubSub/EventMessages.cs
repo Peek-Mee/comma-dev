@@ -12,7 +12,6 @@ namespace Comma.Global.PubSub
             Destination = destination;
         }
     }
-
     public struct OnPlayerMove
     {
         public Vector2 Direction { get; private set; }
@@ -47,4 +46,5 @@ namespace Comma.Global.PubSub
             Sprinting = sprinting;
         }
     }
+    public struct OnPlayerSwapDown { }
 }

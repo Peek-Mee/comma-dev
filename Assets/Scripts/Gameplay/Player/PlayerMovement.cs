@@ -1,5 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using Comma.Global.PubSub;
+using Comma.Utility.Collections;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Comma.Gameplay.CharacterMovement
@@ -30,6 +32,7 @@ namespace Comma.Gameplay.CharacterMovement
         private Transform _leftHand;
         [SerializeField]
         private LayerMask[] _groundLayers;
+        private List<int> _layerValue;
         private int _currentLayer = 0;
 
         // Private
@@ -50,8 +53,6 @@ namespace Comma.Gameplay.CharacterMovement
         private bool _isFacingRight = true;
         
         [Header("Jump")]
-        //[SerializeField] private Transform _groundCheck;
-        //[SerializeField] private float _groundDistance;
         [SerializeField] private float _jumpForce;
         [SerializeField] private float _fallMultiplier;
         
@@ -66,22 +67,42 @@ namespace Comma.Gameplay.CharacterMovement
         [Header("State")]
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private bool _isGrounded;
+        private bool _wasGrounded;
         [SerializeField] private bool _isWalking;
+
+        private void Awake()
+        {
+            _layerValue = new();
+        }
         private void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _animator = GetComponent<Animator>();
             _playerSprite = GetComponent<SpriteRenderer>();
+
+            //init layer value
+            foreach(var layer in _groundLayers)
+            {
+                _layerValue.Add(Converter.BitToLayer(layer));
+            }
+
+            // PubSub Area
+            EventConnector.Subscribe("OnPlayerSwapDown", new(OnPlayerSwapDown));
         }
+
+        #region PubSub
+        private void OnPlayerSwapDown(object msg)
+        {
+            SwapLayer();
+        }
+        #endregion
 
         private void Update()
         {
-            //print($"Layer 1: {!Physics2D.GetIgnoreLayerCollision(3, 7)}");
-            //print($"Layer 2: {_groundLayers[1].value}");
-            if (!Physics2D.GetIgnoreLayerCollision(3, 7) || !Physics2D.GetIgnoreLayerCollision(7, 3))
+            if (!Physics2D.GetIgnoreLayerCollision(_layerValue[0], _layerValue[1]) || !Physics2D.GetIgnoreLayerCollision(_layerValue[1], _layerValue[0]))
             {
-                Physics2D.IgnoreLayerCollision(3, 7, true);
-                Physics2D.IgnoreLayerCollision(7, 3, true);
+                Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], true);
+                Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], true);
                
             }
             horizontalInput = Input.GetAxis("Horizontal");
@@ -89,17 +110,13 @@ namespace Comma.Gameplay.CharacterMovement
             _isWalking = Mathf.Abs(horizontalInput) > 0.1f;
             _isGrounded = IsGrounded();
             
-            //if (!_isGrounded)
-            //{
-            //    //print("Hello");
-                
-            //}
 
             ChangePlayerState();
             OnWalk();
             OnFlip();
             OnJump();
             OnFall();
+            _wasGrounded = _isGrounded;
         }
 
         private void FixedUpdate()
@@ -124,7 +141,7 @@ namespace Comma.Gameplay.CharacterMovement
                 if (_rigidbody2D.velocity.y > 0)
                 {
                     _playerState = PlayerState.Jump; 
-                    if (EligibleToSwapLayer() && wasEligible)
+                    if (EligibleToSwapLayer() && _wasEligible)
                     {
                         SwapLayer();
                     }
@@ -134,13 +151,36 @@ namespace Comma.Gameplay.CharacterMovement
                     _playerState = PlayerState.Fall;
                 }
 
-                wasEligible = !EligibleToSwapLayer();
+                _wasEligible = !EligibleToSwapLayer();
             }
         }
         private void OnMove()
         {
-            if(!_isWalking)return;
-            _rigidbody2D.velocity = new Vector2(horizontalInput * _currentSpeed, _rigidbody2D.velocity.y);
+            if (!_isWalking) return;
+            var vel = _rigidbody2D.velocity;
+            print(vel);
+            vel.x = _currentSpeed * horizontalInput;
+            _ = _isGrounded ? vel.x *= .5f : vel.x *= 1f;
+
+            //float mag = vel.x;
+            //float slopeAngle = Vector2.Angle(_currentPlatformDegree, Vector2.up);
+            //vel.y = _playerState == PlayerState.Jump ? vel.y : Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * mag;
+            //vel.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * mag;
+            float lastDirection = _isFacingRight ? 1 : -1;
+            float xDirection = vel.x == 0 ? lastDirection : Mathf.Sign(vel.x);
+            float slopeAngle = Vector2.Angle(_currentPlatformDegree, Vector2.up);
+            //print(slopeAngle);
+            float magnitude = Mathf.Abs(vel.x);
+            float yDirection = xDirection == Mathf.Sign(_currentPlatformDegree.x) ? -1 : 1;
+            vel.y = _playerState == PlayerState.Jump ? 
+                vel.y : Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * magnitude * yDirection;
+            vel.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * magnitude * xDirection;
+
+
+            _rigidbody2D.velocity = vel;
+            //if (!_isWalking && !_isGrounded) return;
+            //else if (!_isWalking && _isGrounded) _rigidbody2D.
+            //_rigidbody2D.velocity = new Vector2(horizontalInput * _currentSpeed, _rigidbody2D.velocity.y);
         }
 
         private void OnWalk()
@@ -169,11 +209,12 @@ namespace Comma.Gameplay.CharacterMovement
         }
         private void OnJump()
         {
-            //JumpAnimation(false);
+            JumpAnimation(false);
             if(Input.GetKeyDown(KeyCode.Space) && IsGrounded())
             {
-                _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpForce);
-                
+                //_rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpForce);
+                _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 10f));
+
                 JumpAnimation(true);
                 IdleAnimation(false);
                 MoveAnimation();
@@ -184,8 +225,9 @@ namespace Comma.Gameplay.CharacterMovement
         private void OnFall()
         {
             FallAnimation(false);
+            if (_wasGrounded) return;
             Vector2 gravity = new Vector2(0, -Physics2D.gravity.y);
-            if(_rigidbody2D.velocity.y < 0)
+            if(_rigidbody2D.velocity.y > 0)
             {
                 _rigidbody2D.velocity -= gravity * _fallMultiplier * Time.deltaTime;
             }
@@ -212,19 +254,19 @@ namespace Comma.Gameplay.CharacterMovement
             _playerSprite.flipX = !_isFacingRight;
         }
         #region SwapLayerMask
-        private bool wasEligible = false;
+        private bool _wasEligible = false;
 
         private bool EligibleToSwapLayer()
         {
             int layerToCheck;
             _ = _currentLayer == 0 ? layerToCheck = 1 :
                 layerToCheck = 0;
-            Physics2D.IgnoreLayerCollision(3, 7, false);
-            Physics2D.IgnoreLayerCollision(7, 3, false);
+            Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], false);
+            Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], false);
             RaycastHit2D hit = Physics2D.Raycast(_ground.position,
                 Vector2.down, _checkRadius, _groundLayers[layerToCheck]);
-            Physics2D.IgnoreLayerCollision(3, 7, true);
-            Physics2D.IgnoreLayerCollision(7, 3, true);
+            Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], true);
+            Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], true);
 
             if (hit.collider == null) return true;
             else return false;
@@ -235,7 +277,7 @@ namespace Comma.Gameplay.CharacterMovement
             _ = _currentLayer == 0 ? _currentLayer = 1 :
                 _currentLayer = 0;
 
-            gameObject.layer = BitToLayer(_groundLayers[_currentLayer]);
+            gameObject.layer = Converter.BitToLayer(_groundLayers[_currentLayer]);
         }
 
         private void OnLayerEdge()
@@ -243,16 +285,6 @@ namespace Comma.Gameplay.CharacterMovement
             SwapLayer();
         }
 
-        private int BitToLayer(int bitmask)
-        {
-            int res = bitmask > 0 ? 0 : 31;
-            while(bitmask > 1)
-            {
-                bitmask >>= 1;
-                res++;
-            }
-            return res;
-        }
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.CompareTag("Edge"))
@@ -284,10 +316,19 @@ namespace Comma.Gameplay.CharacterMovement
 
         private bool IsGrounded()
         {
-            return Physics2D.Raycast(_ground.position, Vector2.down, _checkRadius, _groundLayers[_currentLayer]);
-
+            RaycastHit2D hit = Physics2D.Raycast(_ground.position, Vector2.down, _checkRadius, _groundLayers[_currentLayer]);
+            if (hit)
+            {
+                _currentPlatformDegree = hit.normal;
+            }
+            return hit;
         }
-        
+
+        #region SlopeDetection
+        private Vector2 _currentPlatformDegree;
+       
+        #endregion
+
     }
 }
 
