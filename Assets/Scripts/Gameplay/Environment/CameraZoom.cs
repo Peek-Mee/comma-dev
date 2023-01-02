@@ -24,6 +24,11 @@ namespace Comma.Gameplay.Environment
         [SerializeField] private ZoomTrigger[] _zoomTriggers;
         [SerializeField] private float _zoomSpeed;
 
+        private void Start()
+        {
+            //var body = vCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+        }
+        
         private void Update()
         {
             CheckZoom();
