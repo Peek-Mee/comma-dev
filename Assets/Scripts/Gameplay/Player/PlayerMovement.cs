@@ -156,7 +156,7 @@ namespace Comma.Gameplay.CharacterMovement
         }
         private void OnMove()
         {
-            if (!_isWalking) return;
+            if (!_isWalking || !_isGrounded) return;
             var vel = _rigidbody2D.velocity;
             print(vel);
             vel.x = _currentSpeed * horizontalInput;
@@ -189,13 +189,17 @@ namespace Comma.Gameplay.CharacterMovement
             {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    _currentSpeed = _runSpeed;
+                    _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
+                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
+                    //_currentSpeed = _runSpeed;
                     IdleAnimation(false);
                     MoveAnimation(2,_isGrounded);
                 }
                 else
                 {
-                    _currentSpeed = _normalSpeed;
+                    _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
+                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
+                    //_currentSpeed = _normalSpeed;
                     IdleAnimation(false);
                     MoveAnimation(1,_isGrounded);
                 }
@@ -213,7 +217,7 @@ namespace Comma.Gameplay.CharacterMovement
             if(Input.GetKeyDown(KeyCode.Space) && IsGrounded())
             {
                 //_rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpForce);
-                _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 10f));
+                _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
 
                 JumpAnimation(true);
                 IdleAnimation(false);
@@ -226,11 +230,12 @@ namespace Comma.Gameplay.CharacterMovement
         {
             FallAnimation(false);
             if (_wasGrounded) return;
-            Vector2 gravity = new Vector2(0, -Physics2D.gravity.y);
-            if(_rigidbody2D.velocity.y > 0)
-            {
-                _rigidbody2D.velocity -= gravity * _fallMultiplier * Time.deltaTime;
-            }
+            //Vector2 gravity = new(0, -Physics2D.gravity.y);
+            Vector2 gravity = -Physics2D.gravity;
+            //if(_rigidbody2D.velocity.y > 0)
+            //{
+            _rigidbody2D.velocity -= _fallMultiplier * Time.deltaTime * gravity;
+            //}
             if(_rigidbody2D.velocity.y < (-_jumpForce/2))
             {
                 IdleAnimation(false);

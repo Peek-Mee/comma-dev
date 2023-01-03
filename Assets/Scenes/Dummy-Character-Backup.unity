@@ -1627,10 +1627,10 @@ MonoBehaviour:
     m_Bits: 8
   - serializedVersion: 2
     m_Bits: 128
-  _normalSpeed: 10
-  _runSpeed: 20
-  _jumpForce: 45
-  _fallMultiplier: 3
+  _normalSpeed: 15
+  _runSpeed: 25
+  _jumpForce: 20
+  _fallMultiplier: 4
   _playerState: 0
   _isGrounded: 0
   _isWalking: 0
