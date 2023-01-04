@@ -46,9 +46,8 @@ namespace Comma.Gameplay.CharacterMovement
         [SerializeField] private float _normalSpeed;
         [SerializeField] private float _runSpeed;
         private float _currentSpeed;
-        
-        private float horizontalInput;
-        private float verticalInput;
+        private Vector2 _currentPlatformDegree;
+
         private bool isDashing = false;
         private bool _isFacingRight = true;
         
@@ -88,6 +87,9 @@ namespace Comma.Gameplay.CharacterMovement
 
             // PubSub Area
             EventConnector.Subscribe("OnPlayerSwapDown", new(OnPlayerSwapDown));
+            EventConnector.Subscribe("OnPlayerMove", new(OnMoveInput));
+            EventConnector.Subscribe("OnPlayerJump", new(OnJumpInput));
+            EventConnector.Subscribe("OnPlayerSprint", new(OnSprintInput));
         }
 
         #region PubSub
@@ -95,6 +97,32 @@ namespace Comma.Gameplay.CharacterMovement
         {
             SwapLayer();
         }
+
+        // User Input
+        private void OnMoveInput(object message)
+        {
+            OnPlayerMove msg = (OnPlayerMove)message;
+            print(msg.Direction);
+            _horizontalUserInput = msg.Direction.x;
+        }
+        private void OnJumpInput(object message)
+        {
+            _isPressJump = true;
+        }
+        private void OnSprintInput(object message)
+        {
+            OnPlayerSprint msg = (OnPlayerSprint)message;
+            _isHoldSprint = msg.Sprint;
+
+        }
+        /////////////////////////////
+        #endregion
+
+        #region Movement From User Input
+        private float _horizontalUserInput = 0f;
+        private bool _isHoldSprint = false;
+        private bool _isPressJump = false;
+
         #endregion
 
         private void Update()
@@ -105,9 +133,7 @@ namespace Comma.Gameplay.CharacterMovement
                 Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], true);
                
             }
-            horizontalInput = Input.GetAxis("Horizontal");
-            verticalInput = Input.GetAxis("Vertical");
-            _isWalking = Mathf.Abs(horizontalInput) > 0.1f;
+            _isWalking = Mathf.Abs(_horizontalUserInput) > 0.1f;
             _isGrounded = IsGrounded();
             
 
@@ -158,18 +184,12 @@ namespace Comma.Gameplay.CharacterMovement
         {
             if (!_isWalking || !_isGrounded) return;
             var vel = _rigidbody2D.velocity;
-            print(vel);
-            vel.x = _currentSpeed * horizontalInput;
+            vel.x = _currentSpeed * _horizontalUserInput;
             _ = _isGrounded ? vel.x *= .5f : vel.x *= 1f;
 
-            //float mag = vel.x;
-            //float slopeAngle = Vector2.Angle(_currentPlatformDegree, Vector2.up);
-            //vel.y = _playerState == PlayerState.Jump ? vel.y : Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * mag;
-            //vel.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * mag;
             float lastDirection = _isFacingRight ? 1 : -1;
             float xDirection = vel.x == 0 ? lastDirection : Mathf.Sign(vel.x);
             float slopeAngle = Vector2.Angle(_currentPlatformDegree, Vector2.up);
-            //print(slopeAngle);
             float magnitude = Mathf.Abs(vel.x);
             float yDirection = xDirection == Mathf.Sign(_currentPlatformDegree.x) ? -1 : 1;
             vel.y = _playerState == PlayerState.Jump ? 
@@ -178,30 +198,25 @@ namespace Comma.Gameplay.CharacterMovement
 
 
             _rigidbody2D.velocity = vel;
-            //if (!_isWalking && !_isGrounded) return;
-            //else if (!_isWalking && _isGrounded) _rigidbody2D.
-            //_rigidbody2D.velocity = new Vector2(horizontalInput * _currentSpeed, _rigidbody2D.velocity.y);
         }
 
         private void OnWalk()
         {
             if (_isWalking)
             {
-                if (Input.GetKey(KeyCode.LeftShift))
+                if (_isHoldSprint)
                 {
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
-                    //_currentSpeed = _runSpeed;
                     IdleAnimation(false);
-                    MoveAnimation(2,_isGrounded);
+                    MoveAnimation(2, _isGrounded);
                 }
                 else
                 {
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
-                    //_currentSpeed = _normalSpeed;
                     IdleAnimation(false);
-                    MoveAnimation(1,_isGrounded);
+                    MoveAnimation(1, _isGrounded);
                 }
             }
             else
@@ -214,15 +229,18 @@ namespace Comma.Gameplay.CharacterMovement
         private void OnJump()
         {
             JumpAnimation(false);
-            if(Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+            if (_isPressJump)
             {
-                //_rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpForce);
-                _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
+                _isPressJump = false;
+                if (_isGrounded)
+                {
+                    _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
 
-                JumpAnimation(true);
-                IdleAnimation(false);
-                MoveAnimation();
-                FallAnimation(false);
+                    JumpAnimation(true);
+                    IdleAnimation(false);
+                    MoveAnimation();
+                    FallAnimation(false);
+                }
             }
         }
 
@@ -230,12 +248,8 @@ namespace Comma.Gameplay.CharacterMovement
         {
             FallAnimation(false);
             if (_wasGrounded) return;
-            //Vector2 gravity = new(0, -Physics2D.gravity.y);
             Vector2 gravity = -Physics2D.gravity;
-            //if(_rigidbody2D.velocity.y > 0)
-            //{
             _rigidbody2D.velocity -= _fallMultiplier * Time.deltaTime * gravity;
-            //}
             if(_rigidbody2D.velocity.y < (-_jumpForce/2))
             {
                 IdleAnimation(false);
@@ -247,11 +261,11 @@ namespace Comma.Gameplay.CharacterMovement
 
         private void OnFlip()
         {
-            if (_isFacingRight && horizontalInput < 0)
+            if (_isFacingRight && _horizontalUserInput < 0)
             {
                 _isFacingRight = !_isFacingRight;
             }
-            else if (!_isFacingRight && horizontalInput > 0)
+            else if (!_isFacingRight && _horizontalUserInput > 0)
             {
                 _isFacingRight = !_isFacingRight;
             }
@@ -329,10 +343,6 @@ namespace Comma.Gameplay.CharacterMovement
             return hit;
         }
 
-        #region SlopeDetection
-        private Vector2 _currentPlatformDegree;
-       
-        #endregion
 
     }
 }

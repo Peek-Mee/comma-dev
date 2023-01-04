@@ -1,6 +1,5 @@
 ﻿using Comma.Gameplay.DetectableObject;
 using Comma.Global.PubSub;
-using System.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -13,7 +12,8 @@ namespace Comma.Gameplay.Player
 
         private void Start()
         {
-            EventConnector.Subscribe("OnPlayerUsePortal", new(OnPlyerUsePortal));
+            EventConnector.Subscribe("OnPlayerUsePortal", new(OnPlayerUsePortal));
+            EventConnector.Subscribe("OnPlayerInteract", new(OnInteractInput));
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -33,19 +33,15 @@ namespace Comma.Gameplay.Player
             }
         }
 
-        private void Update()
-        {
-            if (!_isInPortalArea) return;
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                if (_portal == null) return;
-                _portal.Interact();
-            }
-        }
-        private void OnPlyerUsePortal(object msg)
+        private void OnPlayerUsePortal(object msg)
         {
             var message = (OnPlayerUsePortal)msg;
             transform.position = message.Destination;
+        }
+        private void OnInteractInput(object msg)
+        {
+            if (!_isInPortalArea || _portal == null) return;
+            _portal.Interact();
         }
     }
 }
