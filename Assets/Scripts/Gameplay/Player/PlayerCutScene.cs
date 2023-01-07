@@ -29,8 +29,10 @@ namespace Comma.Gameplay.Player
         [SerializeField] private int _gravity;
 
         [Header("Condition")]
-        [SerializeField] private float _delayCutScene;
+        [SerializeField] private float _delayNewPosition;
+        [SerializeField] private float _delayRemove;
         [SerializeField] private bool _isRemove;
+        private bool _isChangePosition;
         private bool _isNewPosition;
         
         [Header("Animation")]
@@ -53,17 +55,24 @@ namespace Comma.Gameplay.Player
         public Vector2 TargetPosition => _targetPosition;
         public float Speed => _speed;
         public int Gravity => _gravity;
-        public float Delay => _delayCutScene;
+        public float DelayNewPosition => _delayNewPosition;
+        public float DelayRemove => _delayRemove;
         public bool IsRemove => _isRemove;
         public bool IsNewPosition
         {
             get => _isNewPosition;
             set => _isNewPosition = value;
         }
+        public bool IsChangePosition
+        {
+            get => _isChangePosition;
+            set => _isChangePosition = value;
+        }
         public Animator Animator => _animator;
         public AnimationState AnimationState => _animationState;
         public TriggerCutscene()
         {
+            _isChangePosition = false;
             _isNewPosition = true;
         }
     }
@@ -98,11 +107,18 @@ namespace Comma.Gameplay.Player
                 var targetPos = cut.TargetPosition;
                 if (transform.position.x >= xMin && transform.position.x < xMax && transform.position.y >= yMin && transform.position.y < yMax)
                 {
-                    StartCoroutine(WaitCutScene(cut.Delay,cutScene));
+                    _isCutscene = true;
+                    
+                    StartCoroutine(WaitNewPosition(cut.DelayNewPosition,cutScene));
+                    StartCoroutine(WaitRemoveCutScene(cut.DelayRemove,cutScene));
+                    
                     PlayAnimations(cut.AnimationState,cut.Animator);
+                    
                     NewPosition(cutScene,newPos);
                     TargetPosition(cutScene,targetPos);
+                    
                     GetComponent<Rigidbody2D>().gravityScale = cut.Gravity;
+                    
                     Debug.Log("Cutscene " + cut.Name);
                     return;
                 }
@@ -116,7 +132,7 @@ namespace Comma.Gameplay.Player
             if(position == Vector2.zero)return;
             if(cut.IsNewPosition)
             {
-                if(!_isCutscene)return;
+                if(!cut.IsChangePosition)return;
                 transform.position = position;
                 cut.IsNewPosition = false;
                 Debug.Log("New Position");
@@ -125,26 +141,25 @@ namespace Comma.Gameplay.Player
         private void TargetPosition(TriggerCutscene cut,Vector2 target)
         {
             if(target == Vector2.zero)return;
+            if(!cut.IsChangePosition)return;
             transform.position = Vector2.MoveTowards(transform.position, target, cut.Speed * Time.deltaTime);
             Debug.Log("Target");
         }
-
-        private void RemoveCutScene(TriggerCutscene cut)
+        private IEnumerator WaitNewPosition(float delay, TriggerCutscene cut)
         {
+            yield return new WaitForSeconds(delay);
+            cut.IsChangePosition = true;
+        }
+        private IEnumerator WaitRemoveCutScene(float delay, TriggerCutscene cut)
+        {
+            yield return new WaitForSeconds(delay);
             if (cut.IsRemove)
             {
-                cut.Animator.SetBool("GetUp", false);
+                RemoveAnimation(cut.AnimationState,cut.Animator);
                 _cutscenes.Remove(cut);
                 Debug.Log("Remove Cutscene");
             }
         }
-        private IEnumerator WaitCutScene(float delay, TriggerCutscene cut)
-        {
-            yield return new WaitForSeconds(delay);
-            RemoveCutScene(cut);
-            _isCutscene = true;
-        }
-
         private void PlayAnimations(AnimationState state,Animator anim)
         {
             switch (state)
@@ -162,6 +177,27 @@ namespace Comma.Gameplay.Player
                     break;
                 case AnimationState.Transition:
                     _transitionPanel.SetActive(true);
+                    anim.SetBool("GetUp",false);
+                    break;
+            }
+        }
+        private void RemoveAnimation(AnimationState state,Animator anim)
+        {
+            switch (state)
+            {
+                case AnimationState.Idle:
+                    break;
+                case AnimationState.Walk:
+                    break;
+                case AnimationState.Run:
+                    break;
+                case AnimationState.Fall:
+                    break;
+                case AnimationState.GetUp:
+                    anim.SetBool("GetUp",false);
+                    break;
+                case AnimationState.Transition:
+                    _transitionPanel.SetActive(false);
                     anim.SetBool("GetUp",false);
                     break;
             }
