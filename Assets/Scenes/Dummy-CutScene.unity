@@ -218,7 +218,9 @@ MonoBehaviour:
     _targetPosition: {x: 0, y: 4}
     _speed: 3
     _gravity: 0
-    _delayCutScene: 0
+    _delayNewPosition: 0
+    _delayTargetPosition: 0
+    _delayRemove: 0
     _isRemove: 0
     _animator: {fileID: 102656639}
     _animationState: 3
@@ -229,7 +231,9 @@ MonoBehaviour:
     _targetPosition: {x: 0, y: 0}
     _speed: 0
     _gravity: 0
-    _delayCutScene: 1
+    _delayNewPosition: 0
+    _delayTargetPosition: 0
+    _delayRemove: 0
     _isRemove: 0
     _animator: {fileID: 807371720}
     _animationState: 5
@@ -240,7 +244,9 @@ MonoBehaviour:
     _targetPosition: {x: 0, y: 0}
     _speed: 0
     _gravity: 1
-    _delayCutScene: 6.5
+    _delayNewPosition: 0
+    _delayTargetPosition: 0
+    _delayRemove: 0
     _isRemove: 1
     _animator: {fileID: 102656639}
     _animationState: 4
@@ -868,7 +874,7 @@ Camera:
   far clip plane: 5000
   field of view: 60
   orthographic: 1
-  orthographic size: 12
+  orthographic size: 37
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
