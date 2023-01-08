@@ -12,7 +12,6 @@ namespace Comma.Global.PubSub
             Destination = destination;
         }
     }
-
     public struct OnPlayerMove
     {
         public Vector2 Direction { get; private set; }
@@ -25,26 +24,28 @@ namespace Comma.Global.PubSub
 
     public struct OnPlayerJump
     {
-        public bool Jumping { get; private set; }
-
-        public OnPlayerJump(bool jumping)
-        {
-            Jumping = jumping;
-        }
     }
 
     public struct OnPlayerInteract
+    { 
+    }
+    public struct OnPlayerNearPortal
     {
-        
+        public string Portal { get; private set; }
+        public OnPlayerNearPortal(string portals)
+        {
+            Portal= portals;
+        }
     }
 
     public struct OnPlayerSprint
     {
-        public bool Sprinting { get; private set; }
+        public bool Sprint { get; private set; }
 
         public OnPlayerSprint(bool sprinting)
         {
-            Sprinting = sprinting;
+            Sprint = sprinting;
         }
     }
+    public struct OnPlayerSwapDown { }
 }
