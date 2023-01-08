@@ -1,61 +1,46 @@
-﻿using System;
+﻿using Cinemachine;
+using Comma.Global.PubSub;
+using System;
 using UnityEngine;
 
 namespace Comma.Gameplay.Environment
 {
-    [System.Serializable]
-    public struct ZoomTrigger
-    {
-        [SerializeField] private Vector2 _minPosition;
-        [SerializeField] private Vector2 _maxPosition;
-        [SerializeField] private float _targetZoom;
-
-        public Vector2 MinPosition => _minPosition;
-        public Vector2 MaxPosition => _maxPosition;
-        public float Zoom => _targetZoom;
-    }
+    
     public class CameraZoom : MonoBehaviour
     {
-        [SerializeField] private Camera _camera;
-        [SerializeField] private GameObject _player;
-        
-        [SerializeField] private float _normalZoom;
-
-        [SerializeField] private ZoomTrigger[] _zoomTriggers;
-        [SerializeField] private float _zoomSpeed;
-
         private void Start()
         {
-            //var body = vCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+            EventConnector.Subscribe("OnCameraChangeTrigger", new(OnCameraChangeTrigger));
+            
         }
-        
-        private void Update()
+        private void Awake()
         {
-            CheckZoom();
+            _defaultScale = _cineCamera.m_Lens.OrthographicSize;
+            _composer = _cineCamera.GetCinemachineComponent<CinemachineComposer>();
         }
 
-        private void CheckZoom()
+        #region
+        [SerializeField] private CinemachineVirtualCamera _cineCamera;
+        private float _defaultScale;
+        private CinemachineComposer _composer;
+        private void OnCameraChangeTrigger(object msg)
         {
-            var xPlayerPosition = _player.transform.position.x;
-            var yPlayerPosition = _player.transform.position.y;
-            
-            foreach (var zoomTrigger in _zoomTriggers)
+            OnCameraChangeTrigger m = (OnCameraChangeTrigger)msg;
+            CameraChangeData message = m.Data;
+            if (message.IsNull) return;
+            var newOrtoSize = _defaultScale * message.ScaleFactor;
+            var lastOrtoSize = _cineCamera.m_Lens.OrthographicSize;
+
+            LeanTween.value(lastOrtoSize, newOrtoSize, message.TransitionTime).setOnUpdate((float val) =>
             {
-                var xMin = zoomTrigger.MinPosition.x;
-                var xMax = zoomTrigger.MaxPosition.x;
-                var yMin = zoomTrigger.MinPosition.y;
-                var yMax = zoomTrigger.MaxPosition.y;
-                
-                
-                if (xPlayerPosition >= xMin && xPlayerPosition <= xMax && yPlayerPosition >= yMin && yPlayerPosition <= yMax)
-                {
-                    if(_camera.orthographicSize == zoomTrigger.Zoom)return;
-                    _camera.orthographicSize = Mathf.MoveTowards(_camera.orthographicSize, zoomTrigger.Zoom, _zoomSpeed * Time.deltaTime);
-                    return;
-                }
-            }
-            if(_camera.orthographicSize == _normalZoom)return;
-            _camera.orthographicSize = Mathf.MoveTowards(_camera.orthographicSize, _normalZoom, _zoomSpeed * Time.deltaTime);
+                _cineCamera.m_Lens.OrthographicSize =  val;
+            });
+
+            //_cineCamera.Ge
+            //_composer.m_TrackedObjectOffset = message.Offset;
+
         }
+        #endregion
+       
     }
 }

@@ -83,6 +83,7 @@ namespace Comma.Gameplay.DetectableObject
 
         public void Interact()
         {
+            
             if (!isActivated) return;
 
             TeleportPlayer();
