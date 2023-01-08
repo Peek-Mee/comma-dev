@@ -9,6 +9,7 @@ namespace Comma.Gameplay.Player
     {
         private bool _isInPortalArea = false;
         private IDetectable _portal;
+        private int _currentInstanceId;
 
         private void Start()
         {
@@ -22,12 +23,19 @@ namespace Comma.Gameplay.Player
             {
                 _isInPortalArea = true;
                 _portal = collision.GetComponent<IDetectable>();
+                _currentInstanceId = collision.GetInstanceID();
             }
         }
+        //private void OnTriggerStay2D(Collider2D collision)
+        //{
+        //    if (_portal != null) return;
+        //    _portal = collision.GetComponentInParent<IDetectable>();
+        //}
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (collision.CompareTag("Portal"))
             {
+                if (collision.GetInstanceID() != _currentInstanceId) return;
                 _isInPortalArea = false;
                 _portal = null;
             }

@@ -29,6 +29,14 @@ namespace Comma.Global.PubSub
     public struct OnPlayerInteract
     { 
     }
+    public struct OnPlayerNearPortal
+    {
+        public string Portal { get; private set; }
+        public OnPlayerNearPortal(string portals)
+        {
+            Portal= portals;
+        }
+    }
 
     public struct OnPlayerSprint
     {

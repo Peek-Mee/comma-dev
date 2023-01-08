@@ -1,7 +1,7 @@
 ﻿using Comma.Global.PubSub;
 using Comma.Global.SaveLoad;
+using JetBrains.Annotations;
 using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.DetectableObject
@@ -10,57 +10,65 @@ namespace Comma.Gameplay.DetectableObject
     public struct PortalDestination
     {
         [SerializeField] private int orbNeeded;
-        [SerializeField] private Portal secondaryPortal;
+        [SerializeField] private Portal connectedPortal;
 
         public int OrbNeeded => orbNeeded;
-        public Portal SecondaryPortal=> secondaryPortal;
+        public Portal ConnectedPortal=> connectedPortal;
         
     }
     [RequireComponent(typeof(Collider2D))]
     public class Portal : MonoBehaviour, IDetectable
     {
         [SerializeField] private string _portalId;
-        //[SerializeField] private bool _isMainPortal;
+        [SerializeField] private bool _isMainPortal;
         [SerializeField] private PortalDestination[] _destinations;
-        [SerializeField] private GameObject _portalSprite;
+        [SerializeField] private SpriteRenderer _portalSprite;
+        //[SerializeField] private GameObject _portalSprite;
         private bool isActivated;
+        private Collider2D _coll;
 
         private void Awake()
         {
             isActivated = SaveSystem.GetPlayerData().IsPortalInCollection(_portalId);
-
-            if (isActivated)
+            if (!_isMainPortal) return;
+            _coll = gameObject.GetComponent<Collider2D>();
+            if (!isActivated)
             {
-                _portalSprite.SetActive(true);
+                //gameObject.SetActive(false);
+                _portalSprite.enabled = false;
+                _coll.enabled = false;
             }
-            else
-            {
-                _portalSprite.SetActive(false);
-            }
+            EventConnector.Subscribe("OnNearPortal", new(OnPortalTrigger));
         }
 
+        #region PubSub
+        private void OnPortalTrigger(object msg)
+        {
+            OnPlayerNearPortal message = (OnPlayerNearPortal)msg;
+            if (message.Portal == _portalId)
+            {
+
+                PlayerSaveData player = SaveSystem.GetPlayerData();
+
+                if (player.GetOrbsInHand() >= _destinations[0].OrbNeeded)
+                {
+                    player.SubmitOrb();
+                    player.AddPortalToCollections(_portalId);
+                    player.AddPortalToCollections(_destinations[0].ConnectedPortal.GetObjectId());
+                    SaveSystem.SaveDataToDisk();
+                    isActivated = true;
+                    _portalSprite.enabled = true;
+                    _coll.enabled = true;
+                }
+            }
+            
+        }
+        #endregion
         private void TeleportPlayer()
         {
             EventConnector.Publish("OnPlayerUsePortal", 
-                new OnPlayerUsePortal(_destinations[0].SecondaryPortal.GetPosition()));
+                new OnPlayerUsePortal(_destinations[0].ConnectedPortal.GetPosition()));
 
-        }
-
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (!collision.CompareTag("Player") || isActivated) return;
-
-            PlayerSaveData player = SaveSystem.GetPlayerData();
-
-            if (player.GetOrbsInHand() >= _destinations[0].OrbNeeded)
-            {
-                player.SubmitOrb();
-                player.AddPortalToCollections(_portalId);
-                player.AddPortalToCollections(_destinations[0].SecondaryPortal.GetObjectId());
-                SaveSystem.SaveDataToDisk();
-                isActivated = true;
-                _portalSprite.SetActive(true);
-            }
         }
 
         public string GetObjectId()

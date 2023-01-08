@@ -10,7 +10,7 @@ namespace Comma.Gameplay.Player
 
         private void Start()
         {
-            EventConnector.Subscribe("OnDownInput", new(OnDownInput));
+            EventConnector.Subscribe("OnPlayerMove", new(OnDownInput));
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -31,6 +31,8 @@ namespace Comma.Gameplay.Player
         private void OnDownInput(object msg)
         {
             if (!_isPlaceToSwap) return;
+            OnPlayerMove move = (OnPlayerMove)msg;
+            if (move.Direction.y != -1) return;
             _isPlaceToSwap = false;
             EventConnector.Publish("OnPlayerSwapDown", new OnPlayerSwapDown());
         }

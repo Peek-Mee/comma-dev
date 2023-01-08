@@ -8,6 +8,8 @@ TagManager:
   - Orb
   - Portal
   - Ground
+  - PortalTrigger
+  - SwapLayerDown
   layers:
   - Default
   - TransparentFX
