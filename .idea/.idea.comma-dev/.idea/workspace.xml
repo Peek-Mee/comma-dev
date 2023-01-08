@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="9568c28a-7486-43dd-9851-33f62a03039e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.comma-dev/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.comma-dev/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/CameraZoom.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Environment/CameraZoom.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Dummy-Character-Backup.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Dummy-Character-Backup.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Backup/CharacterBackup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/Backup/CharacterBackup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Dummy/player_idle_01.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Dummy/player_idle_01.png.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,6 +15,8 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6afd1274f120405096bc1ad9e2010ba6157a00/6f/5a2e8d1f/Screen.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ea01e77be99618395f448b16bd7cc2bd4248bd9e5d8474964b2d97f39c5d74/System.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Gameplay/Backup/CharacterBackup.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Gameplay/UI/VideoSettingUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Global/PubSub/EventMessages.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -88,7 +93,6 @@
       <workItem from="1671513458710" duration="746000" />
       <workItem from="1671523061327" duration="1040000" />
       <workItem from="1671592705717" duration="8645000" />
-      <workItem from="1672327337305" duration="6486000" />
     </task>
     <servers />
   </component>
