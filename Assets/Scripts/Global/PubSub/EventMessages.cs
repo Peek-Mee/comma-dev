@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Comma.Gameplay.Environment;
 using UnityEngine;
 
 namespace Comma.Global.PubSub
@@ -45,6 +46,14 @@ namespace Comma.Global.PubSub
         public OnPlayerSprint(bool sprinting)
         {
             Sprinting = sprinting;
+        }
+    }
+    public struct OnCutSceneTrigger
+    {
+        public CutSceneData Data { get; private set; }
+        public OnCutSceneTrigger(CutSceneData data)
+        {
+            Data = data;
         }
     }
 }
