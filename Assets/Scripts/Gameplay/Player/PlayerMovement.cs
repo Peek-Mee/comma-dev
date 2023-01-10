@@ -16,7 +16,7 @@ namespace Comma.Gameplay.CharacterMovement
     }
 
     [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : MonoBehaviour, IDebugger
     {
         [Header("Collider Checks")]
         [SerializeField]
@@ -343,7 +343,17 @@ namespace Comma.Gameplay.CharacterMovement
             return hit;
         }
 
+        public string ToDebug()
+        {
+            
+            string returner = "<b>Player Movement</b>\n";
+            returner += "Facing: <color=\"red\"><i>" + (_isFacingRight ? "Right" : "Left") +"</color></i>\n";
+            returner += $"In Ground: <color=\"red\"><i>{_isGrounded}</color></i>\n";
+            returner += $"Velocity: <color=\"red\"><i>{_rigidbody2D.velocity}</color></i>\n";
+            returner += $"State: <color=\"red\"><i>{_playerState}</color></i>\n";
 
+            return returner;
+        }
     }
 }
 
