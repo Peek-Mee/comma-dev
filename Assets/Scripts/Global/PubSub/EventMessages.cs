@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Comma.Gameplay.Environment;
+using System.Collections;
 using UnityEngine;
 
 namespace Comma.Global.PubSub
@@ -48,4 +49,12 @@ namespace Comma.Global.PubSub
         }
     }
     public struct OnPlayerSwapDown { }
+    public struct OnCameraChangeTrigger
+    {
+        public CameraChangeData Data { get; private set; }
+        public OnCameraChangeTrigger(CameraChangeData data)
+        {
+            Data = data;
+        }
+    }
 }
