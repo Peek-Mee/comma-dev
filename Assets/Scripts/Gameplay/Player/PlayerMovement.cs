@@ -1,4 +1,5 @@
 ﻿using Comma.Global.PubSub;
+using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections.Generic;
@@ -351,6 +352,7 @@ namespace Comma.Gameplay.CharacterMovement
             returner += $"In Ground: <color=\"red\"><i>{_isGrounded}</color></i>\n";
             returner += $"Velocity: <color=\"red\"><i>{_rigidbody2D.velocity}</color></i>\n";
             returner += $"State: <color=\"red\"><i>{_playerState}</color></i>\n";
+            returner += $"Orbs: <color=\"red\"><i>{SaveSystem.GetPlayerData().GetOrbsInHand()}</color></i>\n";
 
             return returner;
         }
