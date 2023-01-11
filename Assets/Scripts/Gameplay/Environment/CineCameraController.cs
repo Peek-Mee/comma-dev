@@ -36,9 +36,9 @@ namespace Comma.Gameplay.Environment
 
         public string ToDebug()
         {
-            string returner = "<b>CineCamera Controller</b>\n";
-            returner += $"Transition: <color=\"red\">{_isTransition}</color>\n";
-            returner += $"Scale: <color=\"red\">{_currentScale / _defaultScale}</color>\n";
+            string returner = "\n<b>CineCamera Controller</b>\n";
+            returner += $"Transition: <i>{_isTransition}</i>\n";
+            returner += $"Scale: <i>{_currentScale / _defaultScale}</i>\n";
 
             return returner;
         }

@@ -348,11 +348,13 @@ namespace Comma.Gameplay.CharacterMovement
         {
             
             string returner = "\n<b>Player Movement</b>\n";
-            returner += "Facing: <i>" + (_isFacingRight ? "Right" : "Left") +"</color></i>\n";
-            returner += $"In Ground: <i>{_isGrounded}</color></i>\n";
-            returner += $"Velocity: <i>{_rigidbody2D.velocity}</color></i>\n";
-            returner += $"State: <i>{_playerState}</color></i>\n";
-            returner += $"Orbs: <i>{SaveSystem.GetPlayerData().GetOrbsInHand()}</color></i>\n";
+            returner += "Facing: <i>" + (_isFacingRight ? "Right" : "Left") +"</i>\n";
+            returner += $"In Ground: <i>{_isGrounded}</i>\n";
+            returner += $"Velocity: <i>{_rigidbody2D.velocity}</i>\n";
+            returner += $"Position: <i>{transform.position}</i>\n";
+            returner += $"Current Layer: <i>{gameObject.layer}</i>\n";
+            returner += $"State: <i>{_playerState}</i>\n";
+            returner += $"Orbs: <i>{SaveSystem.GetPlayerData().GetOrbsInHand()}</i>\n";
 
             return returner;
         }
