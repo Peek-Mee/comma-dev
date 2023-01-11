@@ -1,11 +1,12 @@
 ﻿using Comma.Gameplay.DetectableObject;
 using Comma.Global.PubSub;
+using Comma.Utility.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
 {
     [RequireComponent(typeof(Collider2D))]
-    public class PortalDetection : MonoBehaviour
+    public class PortalDetection : MonoBehaviour, IDebugger
     {
         private bool _isInPortalArea = false;
         private IDetectable _portal;
@@ -50,6 +51,17 @@ namespace Comma.Gameplay.Player
         {
             if (!_isInPortalArea || _portal == null) return;
             _portal.Interact();
+        }
+
+        public string ToDebug()
+        {
+            string returner = "\n";
+            returner += $"In Portal: <i>{_isInPortalArea}</i>\n";
+            returner += $"Portal ID: <i>{_portal?.GetObjectId()}</i>\n" ;
+            //returner += $"Portal ID: <i>{_portal?.GetObjectId()}</i>\n";
+
+            return returner;
+            
         }
     }
 }
