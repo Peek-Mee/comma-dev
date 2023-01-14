@@ -1,4 +1,5 @@
 ﻿using Comma.Global.PubSub;
+using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Comma.Gameplay.CharacterMovement
     }
 
     [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : MonoBehaviour, IDebugger
     {
         [Header("Collider Checks")]
         [SerializeField]
@@ -343,7 +344,20 @@ namespace Comma.Gameplay.CharacterMovement
             return hit;
         }
 
+        public string ToDebug()
+        {
+            
+            string returner = "\n<b>Player Movement</b>\n";
+            returner += "Facing: <i>" + (_isFacingRight ? "Right" : "Left") +"</i>\n";
+            returner += $"In Ground: <i>{_isGrounded}</i>\n";
+            returner += $"Velocity: <i>{_rigidbody2D.velocity}</i>\n";
+            returner += $"Position: <i>{transform.position}</i>\n";
+            returner += $"Current Layer: <i>{gameObject.layer}</i>\n";
+            returner += $"State: <i>{_playerState}</i>\n";
+            returner += $"Orbs: <i>{SaveSystem.GetPlayerData().GetOrbsInHand()}</i>\n";
 
+            return returner;
+        }
     }
 }
 
