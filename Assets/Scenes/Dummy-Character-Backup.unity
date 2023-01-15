@@ -495,7 +495,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 303913227}
   m_LocalRotation: {x: -1e-45, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 49.53, y: 11.099999, z: -10}
+  m_LocalPosition: {x: 1.4300003, y: -9.4, z: -10}
   m_LocalScale: {x: 1.4126525, y: 1.3322172, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1007,14 +1007,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _onEnter:
     _scaleFactor: 1.5
-    _transitionTime: 0.35
+    _zoomSpeed: 5
     _cameraOffset: {x: -10, y: -10}
     _isNull: 0
   _onExit:
     _scaleFactor: 1
-    _transitionTime: 0.35
+    _zoomSpeed: 0
     _cameraOffset: {x: 0, y: 0}
     _isNull: 0
+  _fromLeft: 0
 --- !u!70 &423070140
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1881,6 +1882,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1294011937}
   - component: {fileID: 1294011936}
+  - component: {fileID: 1294011938}
   m_Layer: 0
   m_Name: CM vcam1
   m_TagString: Untagged
@@ -1934,7 +1936,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1294011935}
   m_LocalRotation: {x: -1e-45, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 49.53, y: 11.099999, z: -10}
+  m_LocalPosition: {x: 1.4300003, y: -9.4, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1942,6 +1944,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1294011938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294011935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bbad96ceff0c564b95d5357ccdbcd9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1343544584
 GameObject:
   m_ObjectHideFlags: 0
@@ -2249,7 +2263,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1523691410}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.5, y: -7.8, z: 0}
+  m_LocalPosition: {x: -33.6, y: -28.3, z: 0}
   m_LocalScale: {x: 1.4126525, y: 1.3322172, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2363,7 +2377,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4be30b0ac98a467a953695573b32d118, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cineCamera: {fileID: 1294011936}
 --- !u!4 &1555371998
 Transform:
   m_ObjectHideFlags: 0
@@ -3269,9 +3282,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1852437034}
     m_Modifications:
     - target: {fileID: 1281723838535745220, guid: 8c8674bf05d06384f8741a44aaedbb42, type: 3}
+      propertyPath: _toDebug.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1281723838535745220, guid: 8c8674bf05d06384f8741a44aaedbb42, type: 3}
       propertyPath: _toDebug.Array.data[0]
       value: 
       objectReference: {fileID: 1523691410}
+    - target: {fileID: 1281723838535745220, guid: 8c8674bf05d06384f8741a44aaedbb42, type: 3}
+      propertyPath: _toDebug.Array.data[1]
+      value: 
+      objectReference: {fileID: 1294011935}
     - target: {fileID: 1281723838535745226, guid: 8c8674bf05d06384f8741a44aaedbb42, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
