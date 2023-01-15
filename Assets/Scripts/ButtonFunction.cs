@@ -50,10 +50,10 @@ public class ButtonFunction : MonoBehaviour
 
     public void optionsOff()
     {
-        Panel.SetActive(false);
-        Options.SetActive(false);
-        control.SetActive(false);
-        video.SetActive(false);
+        //Panel.SetActive(false);
+
+        Options.GetComponent<Animator>().SetTrigger("exit");
+
         
     }
 
@@ -65,8 +65,22 @@ public class ButtonFunction : MonoBehaviour
 
     public void exitOff()
     {
-        Panel.SetActive(false);
+        exit.GetComponent<Animator>().SetTrigger("exit");
+    }
+
+    public void exitOffAnim()
+    {
+        //Panel.SetActive(false);
+        Panel.GetComponent<Animator>().SetTrigger("exit");
         exit.SetActive(false);
+    }
+
+    public void optionOffAnim()
+    {
+        Options.SetActive(false);
+        control.SetActive(false);
+        video.SetActive(false);
+        Panel.GetComponent<Animator>().SetTrigger("exit");
     }
 
     public void creditOn()
@@ -77,8 +91,14 @@ public class ButtonFunction : MonoBehaviour
     
     public void creditOff()
     {
-        Panel.SetActive(false);
+        //Panel.SetActive(false);
+        Panel.GetComponent<Animator>().SetTrigger("exit");
         credits.SetActive(false);
+    }
+
+    public void panelOff()
+    {
+        Panel.SetActive(false);
     }
 
     public void controlOn()

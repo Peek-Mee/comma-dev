@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Trigger : MonoBehaviour
 {
+    [SerializeField] private GameObject GC;
     public void TriggerChangeScene()
     {
         if (SceneManager.GetActiveScene().name == "In Game Mockup")
@@ -13,7 +14,21 @@ public class Trigger : MonoBehaviour
         } else
         {
             SceneManager.LoadScene("In Game Mockup");
-        }
-        
+        }        
+    }
+
+    public void TriggerCloseExit()
+    {
+        GC.GetComponent<ButtonFunction>().exitOffAnim();
+    }
+
+    public void panelOff()
+    {
+        GC.GetComponent<ButtonFunction>().panelOff();
+    }
+
+    public void optionOff()
+    {
+        GC.GetComponent<ButtonFunction>().optionOffAnim();
     }
 }
