@@ -8,10 +8,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Post-Processing
   - Water
   - UI
-  - 
+  - DistortionEffect
   - 
   - 
   - 
@@ -40,4 +40,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: HighestLayerForDistortionEffect
+    uniqueID: 217516601
     locked: 0
