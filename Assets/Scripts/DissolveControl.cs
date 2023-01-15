@@ -17,7 +17,6 @@ public class DissolveControl : MonoBehaviour
     void Start()
     {
         mat = GetComponent<MeshRenderer>().material;
-        print("Materials " + Resources.FindObjectsOfTypeAll(typeof(Material)).Length);
     }
 
     // Update is called once per frame

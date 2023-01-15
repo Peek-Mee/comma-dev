@@ -42,7 +42,7 @@ Material:
     m_Floats:
     - _BorderPower: 6.32
     - _BorderSize: -0.26
-    - _DissolveAmount: 1.0005084
+    - _DissolveAmount: 1
     - _DissolveScale: 200
     - _DistortionSpeed: 0.1
     - _NoiceScale: 0.4
