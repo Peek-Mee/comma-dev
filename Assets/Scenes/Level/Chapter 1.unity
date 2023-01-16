@@ -3015,7 +3015,11 @@ PrefabInstance:
     - target: {fileID: 7924709748300890066, guid: 635f1079b53d22e41ba3b7c288178e56, type: 3}
       propertyPath: m_LookAt
       value: 
-      objectReference: {fileID: 1602668172}
+      objectReference: {fileID: 0}
+    - target: {fileID: 7924709748300890066, guid: 635f1079b53d22e41ba3b7c288178e56, type: 3}
+      propertyPath: m_Lens.OrthographicSize
+      value: 19
+      objectReference: {fileID: 0}
     - target: {fileID: 7924709748300890067, guid: 635f1079b53d22e41ba3b7c288178e56, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -10987,7 +10991,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 30
+  orthographic size: 19
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
