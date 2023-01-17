@@ -103,7 +103,6 @@ namespace Comma.Gameplay.CharacterMovement
         private void OnMoveInput(object message)
         {
             OnPlayerMove msg = (OnPlayerMove)message;
-            print(msg.Direction);
             _horizontalUserInput = msg.Direction.x;
         }
         private void OnJumpInput(object message)
@@ -162,6 +161,7 @@ namespace Comma.Gameplay.CharacterMovement
                 {
                     _playerState = PlayerState.Idle;
                 }
+                _wasEligible = false;
             }
             else
             {
@@ -181,9 +181,20 @@ namespace Comma.Gameplay.CharacterMovement
                 _wasEligible = !EligibleToSwapLayer();
             }
         }
+
+        private bool _isAbleToMoveAfterJump = false;
         private void OnMove()
         {
-            if (!_isWalking || !_isGrounded) return;
+            if (!_isWalking && _isGrounded)
+            {
+                _rigidbody2D.velocity= Vector2.zero;
+                return;
+            }
+            else if (_isWalking && !_isGrounded && _isAbleToMoveAfterJump)
+            {
+                _isAbleToMoveAfterJump= false;
+            }
+            else if (!_isWalking || !_isGrounded ) return;
             var vel = _rigidbody2D.velocity;
             vel.x = _currentSpeed * _horizontalUserInput;
             _ = _isGrounded ? vel.x *= .5f : vel.x *= 1f;
@@ -235,6 +246,7 @@ namespace Comma.Gameplay.CharacterMovement
                 _isPressJump = false;
                 if (_isGrounded)
                 {
+                    _isAbleToMoveAfterJump = true;
                     _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
 
                     JumpAnimation(true);
