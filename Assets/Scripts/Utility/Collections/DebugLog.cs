@@ -39,19 +39,35 @@ namespace   Comma.Utility.Collections
             int count = 0;
             foreach(GameObject go in _toDebug)
             {
-                IDebugger data = go.GetComponent<IDebugger>();
-                if (data == null) continue;
-
-
-                switch (count%2 == 0)
+                //IDebugger data = go.GetComponent<IDebugger>();
+                IDebugger[] datas = go.GetComponents<IDebugger>();
+                if (datas == null || datas.Length == 0) continue;
+                foreach(IDebugger debug in datas)
                 {
-                    case true:
-                        _leftPanel.text += data.ToDebug();
-                        break;
-                    case false:
-                        _righthPanel.text += data.ToDebug();
-                        break;
+                    switch (count % 2 == 0)
+                    {
+                        case true:
+                            _leftPanel.text += debug.ToDebug();
+                            break;
+                        case false:
+                            _righthPanel.text += debug.ToDebug();
+                            break;
+                    }
                 }
+
+
+                //if (data == null) continue;
+
+
+                //switch (count%2 == 0)
+                //{
+                //    case true:
+                //        _leftPanel.text += data.ToDebug();
+                //        break;
+                //    case false:
+                //        _righthPanel.text += data.ToDebug();
+                //        break;
+                //}
 
                 count++;
             }

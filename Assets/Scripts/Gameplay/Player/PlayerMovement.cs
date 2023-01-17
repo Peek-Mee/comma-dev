@@ -1,4 +1,5 @@
 ﻿using Comma.Global.PubSub;
+using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections.Generic;
@@ -102,7 +103,6 @@ namespace Comma.Gameplay.CharacterMovement
         private void OnMoveInput(object message)
         {
             OnPlayerMove msg = (OnPlayerMove)message;
-            print(msg.Direction);
             _horizontalUserInput = msg.Direction.x;
         }
         private void OnJumpInput(object message)
@@ -161,6 +161,7 @@ namespace Comma.Gameplay.CharacterMovement
                 {
                     _playerState = PlayerState.Idle;
                 }
+                _wasEligible = false;
             }
             else
             {
@@ -180,9 +181,20 @@ namespace Comma.Gameplay.CharacterMovement
                 _wasEligible = !EligibleToSwapLayer();
             }
         }
+
+        private bool _isAbleToMoveAfterJump = false;
         private void OnMove()
         {
-            if (!_isWalking || !_isGrounded) return;
+            if (!_isWalking && _isGrounded)
+            {
+                _rigidbody2D.velocity= Vector2.zero;
+                return;
+            }
+            else if (_isWalking && !_isGrounded && _isAbleToMoveAfterJump)
+            {
+                _isAbleToMoveAfterJump= false;
+            }
+            else if (!_isWalking || !_isGrounded ) return;
             var vel = _rigidbody2D.velocity;
             vel.x = _currentSpeed * _horizontalUserInput;
             _ = _isGrounded ? vel.x *= .5f : vel.x *= 1f;
@@ -234,6 +246,7 @@ namespace Comma.Gameplay.CharacterMovement
                 _isPressJump = false;
                 if (_isGrounded)
                 {
+                    _isAbleToMoveAfterJump = true;
                     _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
 
                     JumpAnimation(true);
@@ -346,11 +359,14 @@ namespace Comma.Gameplay.CharacterMovement
         public string ToDebug()
         {
             
-            string returner = "<b>Player Movement</b>\n";
-            returner += "Facing: <color=\"red\"><i>" + (_isFacingRight ? "Right" : "Left") +"</color></i>\n";
-            returner += $"In Ground: <color=\"red\"><i>{_isGrounded}</color></i>\n";
-            returner += $"Velocity: <color=\"red\"><i>{_rigidbody2D.velocity}</color></i>\n";
-            returner += $"State: <color=\"red\"><i>{_playerState}</color></i>\n";
+            string returner = "\n<b>Player Movement</b>\n";
+            returner += "Facing: <i>" + (_isFacingRight ? "Right" : "Left") +"</i>\n";
+            returner += $"In Ground: <i>{_isGrounded}</i>\n";
+            returner += $"Velocity: <i>{_rigidbody2D.velocity}</i>\n";
+            returner += $"Position: <i>{transform.position}</i>\n";
+            returner += $"Current Layer: <i>{gameObject.layer}</i>\n";
+            returner += $"State: <i>{_playerState}</i>\n";
+            returner += $"Orbs: <i>{SaveSystem.GetPlayerData().GetOrbsInHand()}</i>\n";
 
             return returner;
         }
