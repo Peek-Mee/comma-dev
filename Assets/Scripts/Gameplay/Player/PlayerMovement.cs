@@ -41,6 +41,11 @@ namespace Comma.Gameplay.CharacterMovement
         private SpriteRenderer _playerSprite;
         private bool _isInCutScene = false;
         private bool _isFlipProhibited = false;
+        public bool IsFlipProhibited
+        {
+            get { return _isFlipProhibited; }
+            set { _isFlipProhibited = value; }
+        }
         // #######
 
         [Header("Movement")]
@@ -51,6 +56,7 @@ namespace Comma.Gameplay.CharacterMovement
 
         private bool isDashing = false;
         private bool _isFacingRight = true;
+     
         
         [Header("Jump")]
         [SerializeField] private float _jumpForce;
@@ -79,7 +85,6 @@ namespace Comma.Gameplay.CharacterMovement
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _animator = GetComponent<Animator>();
             _playerSprite = GetComponent<SpriteRenderer>();
-
             //init layer value
             foreach(var layer in _groundLayers)
             {
@@ -120,6 +125,11 @@ namespace Comma.Gameplay.CharacterMovement
 
         #region Movement From User Input
         private float _horizontalUserInput = 0f;
+        public float GetInput
+        {
+            get { return _horizontalUserInput; }
+            set { _horizontalUserInput = value; }
+        }
         private bool _isHoldSprint = false;
         private bool _isPressJump = false;
 
@@ -274,6 +284,7 @@ namespace Comma.Gameplay.CharacterMovement
 
         private void OnFlip()
         {
+            if (_isFlipProhibited) return;
             if (_isFacingRight && _horizontalUserInput < 0)
             {
                 _isFacingRight = !_isFacingRight;
@@ -282,7 +293,7 @@ namespace Comma.Gameplay.CharacterMovement
             {
                 _isFacingRight = !_isFacingRight;
             }
-            if (_isFlipProhibited) return;
+          
             _playerSprite.flipX = !_isFacingRight;
         }
         #region SwapLayerMask
