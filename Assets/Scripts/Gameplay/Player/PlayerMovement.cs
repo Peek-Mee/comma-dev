@@ -375,7 +375,7 @@ namespace Comma.Gameplay.CharacterMovement
             returner += $"In Ground: <i>{_isGrounded}</i>\n";
             returner += $"Velocity: <i>{_rigidbody2D.velocity}</i>\n";
             returner += $"Position: <i>{transform.position}</i>\n";
-            returner += $"Current Layer: <i>{gameObject.layer}</i>\n";
+            returner += $"Current Layer: <i>{LayerMask.LayerToName(Converter.BitToLayer(_groundLayers[_currentLayer]))}</i>\n";
             returner += $"State: <i>{_playerState}</i>\n";
             returner += $"Orbs: <i>{SaveSystem.GetPlayerData().GetOrbsInHand()}</i>\n";
 
