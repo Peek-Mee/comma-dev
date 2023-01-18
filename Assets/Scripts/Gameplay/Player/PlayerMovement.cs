@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Comma.Gameplay.CharacterMovement
+namespace Comma.Gameplay.Player
 {
     public enum PlayerState
     {
@@ -61,14 +61,15 @@ namespace Comma.Gameplay.CharacterMovement
         [Header("Jump")]
         [SerializeField] private float _jumpForce;
         [SerializeField] private float _fallMultiplier;
-        
+
         [Header("Animation")]
-        private Animator _animator;
-        private const string On_Idle= "OnIdle";
-        private const string On_Move = "OnMove";
-        private const string On_Jump = "OnJump";
-        private const string On_Fall = "OnFall";
-        private const string Speed = "Speed";
+        [SerializeField] private PlayerAnimationController _playerAnimator;
+        //private Animator _animator;
+        //private const string On_Idle= "OnIdle";
+        //private const string On_Move = "OnMove";
+        //private const string On_Jump = "OnJump";
+        //private const string On_Fall = "OnFall";
+        //private const string Speed = "Speed";
         
         [Header("State")]
         [SerializeField] private PlayerState _playerState;
@@ -83,7 +84,7 @@ namespace Comma.Gameplay.CharacterMovement
         private void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            _animator = GetComponent<Animator>();
+            //_animator = GetComponent<Animator>();
             _playerSprite = GetComponent<SpriteRenderer>();
             //init layer value
             foreach(var layer in _groundLayers)
@@ -109,6 +110,7 @@ namespace Comma.Gameplay.CharacterMovement
         {
             OnPlayerMove msg = (OnPlayerMove)message;
             _horizontalUserInput = msg.Direction.x;
+            
         }
         private void OnJumpInput(object message)
         {
@@ -144,7 +146,16 @@ namespace Comma.Gameplay.CharacterMovement
                
             }
             _isWalking = Mathf.Abs(_horizontalUserInput) > 0.1f;
+            //_playerAnimator.Move = _isWalking;
             _isGrounded = IsGrounded();
+            if (_isGrounded)
+            {
+                _playerAnimator.Move = _isWalking;
+            }
+            else
+            {
+                _playerAnimator.Move = false;
+            }
             
 
             ChangePlayerState();
@@ -220,6 +231,7 @@ namespace Comma.Gameplay.CharacterMovement
 
 
             _rigidbody2D.velocity = vel;
+           
         }
 
         private void OnWalk()
@@ -230,27 +242,53 @@ namespace Comma.Gameplay.CharacterMovement
                 {
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
-                    IdleAnimation(false);
-                    MoveAnimation(2, _isGrounded);
+                    //IdleAnimation(false);
+                    //MoveAnimation(2, _isGrounded);
+                    if (_playerAnimator.Idle)
+                    {
+                        _playerAnimator.StartRun = true;
+                    }
+                    _playerAnimator.Idle = false;
+                    _playerAnimator.XSpeed = 2f;
                 }
                 else
                 {
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
-                    IdleAnimation(false);
-                    MoveAnimation(1, _isGrounded);
+                    //IdleAnimation(false);
+                    //MoveAnimation(1, _isGrounded);
+                    if (_horizontalUserInput != 0 && _playerAnimator.Idle == true)
+                    {
+                        _playerAnimator.StartWalk = true;
+                    }
+                    _playerAnimator.Idle = false;
+                    _playerAnimator.XSpeed = 1f;
                 }
             }
             else
             {
                 _currentSpeed = _normalSpeed;
-                IdleAnimation(_isGrounded && !_isWalking);
-                MoveAnimation(0);
+                //IdleAnimation(_isGrounded && !_isWalking);
+                //MoveAnimation(0);
+                _playerAnimator.Idle = _isGrounded;
+                _playerAnimator.XSpeed = 0f;
             }
         }
+
+        private float _expectedMaxHeight;
         private void OnJump()
         {
-            JumpAnimation(false);
+            //print($"Exp: {_expectedMaxHeight} | Pos: {transform.position.y}");
+            //JumpAnimation(false);
+            if (transform.position.y >= _expectedMaxHeight * .75f && _playerAnimator.StartJump == true)
+            {
+                _playerAnimator.StartJump = false;
+            }
+            else if (transform.position.y < _expectedMaxHeight)
+            {
+                _playerAnimator.YSpeed = _rigidbody2D.velocity.y;
+            }
+
             if (_isPressJump)
             {
                 _isPressJump = false;
@@ -259,26 +297,37 @@ namespace Comma.Gameplay.CharacterMovement
                     _isAbleToMoveAfterJump = true;
                     _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
 
-                    JumpAnimation(true);
-                    IdleAnimation(false);
-                    MoveAnimation();
-                    FallAnimation(false);
+                    //var angle = Vector2.Angle(_rigidbody2D.velocity, Vector2.up);
+                    //print(angle);
+                    _expectedMaxHeight = transform.position.y + (_jumpForce /Mathf.Abs(Physics2D.gravity.y)); 
+                    //JumpAnimation(true);
+                    //IdleAnimation(false);
+                    //MoveAnimation();
+                    //FallAnimation(false);
+                    _playerAnimator.Idle = false;
+                    _playerAnimator.StartJump = true;
+                    _playerAnimator.EndFall= false;
                 }
             }
+
         }
 
         private void OnFall()
         {
-            FallAnimation(false);
+            //FallAnimation(false);
             if (_wasGrounded) return;
             Vector2 gravity = -Physics2D.gravity;
             _rigidbody2D.velocity -= _fallMultiplier * Time.deltaTime * gravity;
+
+            //if 
+            
+
             if(_rigidbody2D.velocity.y < (-_jumpForce/2))
             {
-                IdleAnimation(false);
-                MoveAnimation();
-                JumpAnimation(false);
-                FallAnimation(true);
+                //IdleAnimation(false);
+                //MoveAnimation();
+                //JumpAnimation(false);
+                //FallAnimation(true);
             }
         }
 
@@ -338,23 +387,23 @@ namespace Comma.Gameplay.CharacterMovement
         #endregion
 
         #region Animation
-        private void IdleAnimation(bool isIdle)
-        {
-            _animator.SetBool(On_Idle, isIdle);
-        }
-        private void MoveAnimation(float speed = 0, bool ismove = false)
-        {
-            _animator.SetFloat(Speed,speed);
-            _animator.SetBool(On_Move, ismove);
-        }
-        private void JumpAnimation(bool isJumping)
-        {
-            _animator.SetBool(On_Jump, isJumping);
-        }
-        private void FallAnimation(bool isFalling)
-        {
-            _animator.SetBool(On_Fall, isFalling);
-        }
+        //private void IdleAnimation(bool isIdle)
+        //{
+        //    _animator.SetBool(On_Idle, isIdle);
+        //}
+        //private void MoveAnimation(float speed = 0, bool ismove = false)
+        //{
+        //    _animator.SetFloat(Speed,speed);
+        //    _animator.SetBool(On_Move, ismove);
+        //}
+        //private void JumpAnimation(bool isJumping)
+        //{
+        //    _animator.SetBool(On_Jump, isJumping);
+        //}
+        //private void FallAnimation(bool isFalling)
+        //{
+        //    _animator.SetBool(On_Fall, isFalling);
+        //}
         #endregion
 
         private bool IsGrounded()

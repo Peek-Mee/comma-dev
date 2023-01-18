@@ -199,6 +199,7 @@ GameObject:
   - component: {fileID: 1874046906382160649}
   - component: {fileID: 1874046906382160650}
   - component: {fileID: 1874046906382160648}
+  - component: {fileID: 852962807448629436}
   m_Layer: 3
   m_Name: Gameplay-Character
   m_TagString: Player
@@ -326,6 +327,7 @@ MonoBehaviour:
   _runSpeed: 25
   _jumpForce: 20
   _fallMultiplier: 4
+  _playerAnimator: {fileID: 852962807448629436}
   _playerState: 0
   _isGrounded: 0
   _isWalking: 0
@@ -401,6 +403,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e68cfd2c706fa7a42a89fd119e33885e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &852962807448629436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874046906382160641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fc5d33795dcae142a4adf2a7c106128, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerAnimator: {fileID: 1874046906382160651}
+  _varOnIdle: OnIdle
+  _varOnStartWalk: OnStartWalk
+  _varOnStartRun: OnStartRun
+  _varXSpeed: XSpeed
+  _varOnStartJump: OnStartJump
+  _varOnEndFall: OnEndFall
+  _varYSpeed: YSpeed
 --- !u!1 &1874046906486841755
 GameObject:
   m_ObjectHideFlags: 0
