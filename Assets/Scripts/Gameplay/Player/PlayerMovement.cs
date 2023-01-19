@@ -3,6 +3,7 @@ using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections.Generic;
+using Comma.Global.AudioManager;
 using UnityEngine;
 
 namespace Comma.Gameplay.CharacterMovement
@@ -232,6 +233,7 @@ namespace Comma.Gameplay.CharacterMovement
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
                     IdleAnimation(false);
                     MoveAnimation(2, _isGrounded);
+                    SFXController.Instance.PlayRunSFX();
                 }
                 else
                 {
@@ -239,10 +241,12 @@ namespace Comma.Gameplay.CharacterMovement
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
                     IdleAnimation(false);
                     MoveAnimation(1, _isGrounded);
+                    SFXController.Instance.PlayWalkSFX();
                 }
             }
             else
             {
+                SFXController.Instance.RemoveSFX("Remove");
                 _currentSpeed = _normalSpeed;
                 IdleAnimation(_isGrounded && !_isWalking);
                 MoveAnimation(0);

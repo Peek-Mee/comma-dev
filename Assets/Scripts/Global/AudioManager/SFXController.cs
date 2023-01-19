@@ -2,7 +2,9 @@
 using System.Collections;
 using System;
 
-[Serializable]
+namespace Comma.Global.AudioManager
+{
+    [Serializable]
 public class SFXClip
 {
     [SerializeField] private string _SFXName;
@@ -15,6 +17,8 @@ public class SFXController : MonoBehaviour
 {
     [SerializeField] private SFXClip[] _sfxClips;
     private AudioSource _audioSource;
+    [SerializeField] private AudioSource _walkAudioSource;
+    [SerializeField] private AudioSource _runAudioSource;
 
     [Header("WALK SFX")]
     private bool _isWalk = true;
@@ -47,10 +51,13 @@ public class SFXController : MonoBehaviour
     private void Update()
     {
         //StartCoroutine(WalkSFX());
-        PlayWalkSFX();
+        //PlayWalkSFX();
         //PlayRunSFX();
     }
-
+    public void StopSFX()
+    {
+        _audioSource.Stop();
+    }
     public void PlaySFX(string audioName)
     {
         SFXClip audio = Array.Find(_sfxClips, sfx => sfx.Name == audioName);
@@ -63,19 +70,47 @@ public class SFXController : MonoBehaviour
     }
     public void PlayWalkSFX()
     {
-        if(Time.time - _lastPlayWalk > _walkPlayRate)
-        {
-            _lastPlayWalk = Time.time;
-            PlaySFX("Walk");
-        }
+        //_walkAudioSource.Play();
+        _runAudioSource.Stop();
+        _runAudioSource.volume = 0;
+        _runAudioSource.loop = false;
+        _walkAudioSource.loop = true;
+        _walkAudioSource.volume = 1;
+        // if(Time.time - _lastPlayWalk > _walkPlayRate)
+        // {
+        //     _lastPlayWalk = Time.time;
+        //     //PlaySFX("Walk");
+        // }
+    }
+    public void RemoveSFX(string audioName)
+    {
+        _walkAudioSource.loop = false;
+        _runAudioSource.loop = false;
+        _walkAudioSource.volume = 0;
+        _runAudioSource.volume = 0;
+        // SFXClip audio = Array.Find(_sfxClips, sfx => sfx.Name == audioName);
+        // if (audio == null)
+        // {
+        //     Debug.LogWarning($"SFX: <color=red> {name} </color> not found!");
+        //     return;
+        // }
     }
     public void PlayRunSFX()
     {
-        if (Time.time - _lastPlayRun > _runPlayRate)
-        {
-            _lastPlayRun = Time.time;
-            PlaySFX("Run");
-        }
+        //_runAudioSource.Play();
+        _walkAudioSource.Stop();
+        _walkAudioSource.volume = 0;
+        
+        _walkAudioSource.loop = false;
+        _runAudioSource.loop = true;
+        _runAudioSource.volume = 1;
+        // RemoveSFX("Walk");
+        // if (Time.time - _lastPlayRun > _runPlayRate)
+        // {
+        //     _lastPlayRun = Time.time;
+        //     PlaySFX("Run");
+        // }
+        //_lastPlayRun = 0;
     }
     IEnumerator WalkSFX()
     {
@@ -89,3 +124,5 @@ public class SFXController : MonoBehaviour
         
     }
 }
+}
+
