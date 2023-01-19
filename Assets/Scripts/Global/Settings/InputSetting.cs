@@ -19,7 +19,7 @@ namespace Comma.Global.Setting
             this.InputAction = UserInputController.UserInputManager.FindAction(Name);
             this.Text = Button.gameObject.GetComponentInChildren<TMP_Text>();
             this.Text.text = InputControlPath.ToHumanReadableString(
-                UserInputController.UserInputManager.FindAction(Name).bindings[0].effectivePath,
+                InputAction.bindings[0].effectivePath,
                 InputControlPath.HumanReadableStringOptions.OmitDevice);
         }
     }
@@ -27,6 +27,8 @@ namespace Comma.Global.Setting
     public class InputSetting : MonoBehaviour
     {
         [SerializeField] private KeyBind[] _keyBinds;
+
+        private bool _isRebinding = false;
 
         private InputActionRebindingExtensions.RebindingOperation _rebindingOperation;
 
@@ -43,33 +45,80 @@ namespace Comma.Global.Setting
                 keyBind.Button.onClick.RemoveAllListeners();
                 keyBind.Button.onClick.AddListener(delegate { StartRebind(keyBind); });
                 keyBind.Init();
+                _keyBinds[i] = keyBind;
             }
         }
 
         private void StartRebind(KeyBind keyBind)
         {
-            UserInputController.UserInputManager.Disable();
+            if (!_isRebinding)
+            {
+                UserInputController.UserInputManager.Disable();
+                Rebinding(keyBind);
+            }
+        }
+
+        private void Rebinding(KeyBind keyBind)
+        {
+            _isRebinding = true;
 
             keyBind.Text.text = "Press input..";
+            keyBind.Button.interactable = false;
 
             _rebindingOperation = keyBind.InputAction.PerformInteractiveRebinding()
                 .WithControlsExcluding("Mouse")
+                .WithCancelingThrough("/<Mouse>/leftButton/")
                 .OnMatchWaitForAnother(0.1f)
-                .OnComplete(operation => RebindComplete(keyBind))
+                .OnCancel(operation => RebindComplete(keyBind))
+                .OnComplete(operation => CheckForDuplicate(keyBind))
                 .Start();
+        }
+
+        private void CheckForDuplicate(KeyBind keyBind)
+        {
+            for (int i = 0; i < _keyBinds.Length; i++)
+            {
+                Debug.Log($"Comparing {keyBind.Name} ({keyBind.InputAction}) with {_keyBinds[i].Name} ({_keyBinds[i].InputAction})");
+                if (_keyBinds[i].Name == keyBind.Name)
+                {
+                    continue;
+                }
+                if (keyBind.InputAction.bindings[0].effectivePath == _keyBinds[i].InputAction.bindings[0].effectivePath)
+                {
+                    Debug.Log("found duplicate");
+                    CancelRebind(keyBind);
+                    return;
+                }
+            }
+
+            Debug.Log("Rebind succesful");
+            RebindComplete(keyBind);
+        }
+
+        private void CancelRebind(KeyBind keyBind)
+        {
+            _rebindingOperation.Dispose();
+
+            Debug.Log("Rebind canceled, retrying...");
+
+            Rebinding(keyBind);
         }
 
         private void RebindComplete(KeyBind keyBind)
         {
             _rebindingOperation.Dispose();
 
-            Debug.Log("Done rebind");
+            Debug.Log("Rebind complete");
 
             keyBind.Text.text = InputControlPath.ToHumanReadableString(
-                UserInputController.UserInputManager.FindAction(keyBind.Name).bindings[0].effectivePath,
+                keyBind.InputAction.bindings[0].effectivePath,
                 InputControlPath.HumanReadableStringOptions.OmitDevice);
 
             UserInputController.UserInputManager.Enable();
+
+            keyBind.Button.interactable = true;
+
+            _isRebinding = false;
         }
     }
 }
