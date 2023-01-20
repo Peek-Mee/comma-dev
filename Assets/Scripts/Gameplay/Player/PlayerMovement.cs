@@ -233,7 +233,7 @@ namespace Comma.Gameplay.CharacterMovement
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
                     IdleAnimation(false);
                     MoveAnimation(2, _isGrounded);
-                    SFXController.Instance.PlayRunSFX();
+                    SFXController.Instance.PlayRunSFX(_isGrounded);
                 }
                 else
                 {
@@ -241,12 +241,12 @@ namespace Comma.Gameplay.CharacterMovement
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
                     IdleAnimation(false);
                     MoveAnimation(1, _isGrounded);
-                    SFXController.Instance.PlayWalkSFX();
+                    SFXController.Instance.PlayWalkSFX(_isGrounded);
                 }
             }
             else
             {
-                SFXController.Instance.RemoveSFX("Remove");
+                SFXController.Instance.StopMovementSFX("Remove");
                 _currentSpeed = _normalSpeed;
                 IdleAnimation(_isGrounded && !_isWalking);
                 MoveAnimation(0);

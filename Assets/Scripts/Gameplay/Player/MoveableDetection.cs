@@ -1,6 +1,7 @@
 ﻿using System;
 using Comma.Gameplay.CharacterMovement;
 using Comma.Gameplay.DetectableObject;
+using Comma.Global.AudioManager;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -67,26 +68,38 @@ namespace Comma.Gameplay.Player
         }
         private void LeftTriggerAnimation(float input)
         {
-            if (input == 0 && !isHoldingObject) return;// Play Idle Animation
-            if(input > 0)
+            if (!isHoldingObject) return;// Play Idle Animation
+            if (input == 0)
             {
-                //Play Pull Animation
+                SFXController.Instance.StopCurrentSFX();
             }
-            else if(input < 0)
+            else if(input > 0)
             {
-                // Play Push Animation
+                //Play Pull ANim
+                SFXController.Instance.PlayPullSFX();
+            }
+            else if (input < 0)
+            {
+                //Play Push Animation
+                SFXController.Instance.PlayPushSFX();
             }
         }
         private void RightTriggerAnimation(float input)
         {
-            if (input == 0 && !isHoldingObject) return;// Play Idle Animation
-            if (input > 0)
+            if (!isHoldingObject) return;// Play Idle Animation
+            if (input == 0)
             {
-                //Play Push Animation
+                SFXController.Instance.StopCurrentSFX();
+            }
+            else if (input > 0)
+            {
+                //Play Push Anim
+                SFXController.Instance.PlayPushSFX();
             }
             else if (input < 0)
             {
-                // Play Pull Animation
+                //Play Pull Animation
+                SFXController.Instance.PlayPullSFX();
             }
         }
 

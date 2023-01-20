@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 698042742}
   - component: {fileID: 698042741}
   m_Layer: 0
-  m_Name: Walk
+  m_Name: Walk-Audio-Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,7 +42,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 3681308156623335978, guid: ee1592abf6500cb4aba30ce82bfa80a0, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 5801c8affe43f884bafca7fed5104db8, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 3760f16a59e8c2847ae296ffcbb835cc, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -404,7 +404,13 @@ MonoBehaviour:
     _audioClip: {fileID: 8300000, guid: 5801c8affe43f884bafca7fed5104db8, type: 3}
   - _SFXName: Run
     _audioClip: {fileID: 8300000, guid: 1d47ddffdae61d04da17d6fe393d92b6, type: 3}
+  - _SFXName: Pull
+    _audioClip: {fileID: 8300000, guid: 540541ff90672e1479b53f842ee500e1, type: 3}
+  - _SFXName: Push
+    _audioClip: {fileID: 8300000, guid: 9c820e10685a4c94388dac0234c7cdef, type: 3}
   _walkAudioSource: {fileID: 698042741}
   _runAudioSource: {fileID: 747096290}
-  _walkPlayRate: 0.832
-  _runPlayRate: 0.832
+  _walkPlayRate: 1.556
+  _runPlayRate: 2.334
+  _pullPlayRate: 0.862
+  _pushPlayRate: 0.862

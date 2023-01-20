@@ -1096,7 +1096,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 22
+  m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &531340535 stripped
 RectTransform:
@@ -2007,25 +2007,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 698042741, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
-      propertyPath: Loop
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 698042741, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 747096290, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3920732849314813301, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
       propertyPath: m_Name
       value: Dummy-Global-SFX
       objectReference: {fileID: 0}
     - target: {fileID: 3920732849314813304, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
       propertyPath: m_RootOrder
-      value: 24
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 3920732849314813304, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2758,7 +2746,7 @@ RectTransform:
   m_Children:
   - {fileID: 531340535}
   m_Father: {fileID: 0}
-  m_RootOrder: 23
+  m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
