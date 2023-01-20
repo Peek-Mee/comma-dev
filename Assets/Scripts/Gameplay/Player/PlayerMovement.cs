@@ -234,39 +234,58 @@ namespace Comma.Gameplay.Player
            
         }
 
+        private void ForceSpeedToZero()
+        {
+            _currentSpeed = 0f;
+        }
         private void OnWalk()
         {
             if (_isWalking)
             {
                 if (_isHoldSprint)
                 {
-                    _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
-                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
-                    //IdleAnimation(false);
-                    //MoveAnimation(2, _isGrounded);
                     if (_playerAnimator.Idle)
                     {
                         _playerAnimator.StartRun = true;
                     }
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 2f;
+                    if (_playerAnimator.StartRun)
+                    {
+                        ForceSpeedToZero();
+                        return;
+                    }
+                    _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
+                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
+                    //IdleAnimation(false);
+                    //MoveAnimation(2, _isGrounded);
                 }
                 else
                 {
-                    _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
-                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
-                    //IdleAnimation(false);
-                    //MoveAnimation(1, _isGrounded);
                     if (_horizontalUserInput != 0 && _playerAnimator.Idle == true)
                     {
                         _playerAnimator.StartWalk = true;
                     }
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 1f;
+                    if (_playerAnimator.StartWalk)
+                    {
+                        ForceSpeedToZero();
+                        return; 
+                    }
+                    _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
+                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
+                    //IdleAnimation(false);
+                    //MoveAnimation(1, _isGrounded);
                 }
             }
             else
             {
+                if (_playerAnimator.StartWalk || _playerAnimator.StartRun)
+                {
+                    ForceSpeedToZero();
+                    return;
+                }
                 _currentSpeed = _normalSpeed;
                 //IdleAnimation(_isGrounded && !_isWalking);
                 //MoveAnimation(0);
@@ -278,15 +297,21 @@ namespace Comma.Gameplay.Player
         private float _expectedMaxHeight;
         private void OnJump()
         {
-            //print($"Exp: {_expectedMaxHeight} | Pos: {transform.position.y}");
-            //JumpAnimation(false);
-            if (transform.position.y >= _expectedMaxHeight * .75f && _playerAnimator.StartJump == true)
+            ////print($"Exp: {_expectedMaxHeight} | Pos: {transform.position.y}");
+            ////JumpAnimation(false);
+            //if (transform.position.y >= _expectedMaxHeight * .75f && _playerAnimator.StartJump == true)
+            //{
+            //    _playerAnimator.StartJump = false;
+            //}
+            //else if (transform.position.y < _expectedMaxHeight)
+            //{
+            //    _playerAnimator.YSpeed = _rigidbody2D.velocity.y;
+            //}
+            if (_playerAnimator.EndFall == false)
             {
-                _playerAnimator.StartJump = false;
-            }
-            else if (transform.position.y < _expectedMaxHeight)
-            {
-                _playerAnimator.YSpeed = _rigidbody2D.velocity.y;
+                if (_playerAnimator.StartJump == true) _playerAnimator.YSpeed = 0f;
+                else _playerAnimator.YSpeed = .5f;
+
             }
 
             if (_isPressJump)
@@ -319,7 +344,18 @@ namespace Comma.Gameplay.Player
             Vector2 gravity = -Physics2D.gravity;
             _rigidbody2D.velocity -= _fallMultiplier * Time.deltaTime * gravity;
 
-            //if 
+            if (_playerAnimator.YSpeed == .5f)
+            {
+                float rangeDetection = 2.5f;
+                RaycastHit2D nearGround = IsCollide(_ground.position, Vector2.down, rangeDetection);
+                if (nearGround)
+                {
+                    _playerAnimator.YSpeed = 1f;
+                    _playerAnimator.EndFall = true;
+                }
+
+            }
+            else if (_playerAnimator.YSpeed == 1f && _isGrounded) _playerAnimator.EndFall = false;
             
 
             if(_rigidbody2D.velocity.y < (-_jumpForce/2))
@@ -408,11 +444,24 @@ namespace Comma.Gameplay.Player
 
         private bool IsGrounded()
         {
-            RaycastHit2D hit = Physics2D.Raycast(_ground.position, Vector2.down, _checkRadius, _groundLayers[_currentLayer]);
-            if (hit)
+            //RaycastHit2D hit = Physics2D.Raycast(_ground.position, Vector2.down, _checkRadius, _groundLayers[_currentLayer]);
+            //if (hit)
+            //{
+            //    _currentPlatformDegree = hit.normal;
+            //}
+            //return hit;
+
+            RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
+            if (tryToCheckGround)
             {
-                _currentPlatformDegree = hit.normal;
+                _currentPlatformDegree = tryToCheckGround.normal;
             }
+            return tryToCheckGround;
+        }
+
+        private RaycastHit2D IsCollide(Vector3 from, Vector2 direction, float distance)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(from, direction, distance, _groundLayers[_currentLayer]);
             return hit;
         }
 
