@@ -70,12 +70,9 @@ public class SFXController : MonoBehaviour
     }
     public void PlayWalkSFX()
     {
-        //_walkAudioSource.Play();
+            if (_walkAudioSource.isPlaying) return;
+        _walkAudioSource.Play();
         _runAudioSource.Stop();
-        _runAudioSource.volume = 0;
-        _runAudioSource.loop = false;
-        _walkAudioSource.loop = true;
-        _walkAudioSource.volume = 1;
         // if(Time.time - _lastPlayWalk > _walkPlayRate)
         // {
         //     _lastPlayWalk = Time.time;
@@ -86,8 +83,8 @@ public class SFXController : MonoBehaviour
     {
         _walkAudioSource.loop = false;
         _runAudioSource.loop = false;
-        _walkAudioSource.volume = 0;
-        _runAudioSource.volume = 0;
+            _walkAudioSource.Stop();
+            _runAudioSource.Stop();
         // SFXClip audio = Array.Find(_sfxClips, sfx => sfx.Name == audioName);
         // if (audio == null)
         // {
@@ -97,13 +94,11 @@ public class SFXController : MonoBehaviour
     }
     public void PlayRunSFX()
     {
-        //_runAudioSource.Play();
+            if (_runAudioSource.isPlaying) return;
+        _runAudioSource.Play();
         _walkAudioSource.Stop();
-        _walkAudioSource.volume = 0;
-        
-        _walkAudioSource.loop = false;
-        _runAudioSource.loop = true;
-        _runAudioSource.volume = 1;
+
+
         // RemoveSFX("Walk");
         // if (Time.time - _lastPlayRun > _runPlayRate)
         // {
