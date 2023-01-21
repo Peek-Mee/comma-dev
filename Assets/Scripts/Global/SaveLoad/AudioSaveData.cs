@@ -6,7 +6,7 @@ namespace Comma.Global.SaveLoad
     public enum AudioDataType { MASTER, BGM, AMBIANCE, SFX }
 
     [Serializable]
-    public class AudioSaveData 
+    public class AudioSaveData : ICloneable 
     {
         [SerializeField] private float _masterVolume;
         [SerializeField] private float _bgmVolume;
@@ -112,5 +112,9 @@ namespace Comma.Global.SaveLoad
             return temp;
         }
 
+        public object Clone()
+        {
+            return (AudioSaveData)this.MemberwiseClone();
+        }
     }
 }
