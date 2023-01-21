@@ -71,7 +71,7 @@ namespace Comma.Gameplay.Player
             if (!isHoldingObject) return;// Play Idle Animation
             if (input == 0)
             {
-                SFXController.Instance.StopCurrentSFX();
+                SFXController.Instance.StopObjectSFX();
             }
             else if(input > 0)
             {
@@ -89,7 +89,7 @@ namespace Comma.Gameplay.Player
             if (!isHoldingObject) return;// Play Idle Animation
             if (input == 0)
             {
-                SFXController.Instance.StopCurrentSFX();
+                SFXController.Instance.StopObjectSFX();
             }
             else if (input > 0)
             {

@@ -140,8 +140,10 @@ namespace Comma.Global.AudioManager
             //     return;
             // }
         }
-        public void StopCurrentSFX()
+        public void StopObjectSFX()
         {
+            _lastPlayPull = 0;
+            _lastPlayPush = 0;
             _audioSource.Stop();
         }
         IEnumerator WalkSFX()
