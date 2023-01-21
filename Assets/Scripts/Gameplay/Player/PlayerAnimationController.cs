@@ -48,6 +48,10 @@ namespace Comma.Gameplay.Player
         {
             StartRun= false;
         }
+        public void EndFallFinish()
+        {
+            EndFall = false;
+        }
     }
 
 }

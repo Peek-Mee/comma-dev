@@ -64,18 +64,12 @@ namespace Comma.Gameplay.Player
 
         [Header("Animation")]
         [SerializeField] private PlayerAnimationController _playerAnimator;
-        //private Animator _animator;
-        //private const string On_Idle= "OnIdle";
-        //private const string On_Move = "OnMove";
-        //private const string On_Jump = "OnJump";
-        //private const string On_Fall = "OnFall";
-        //private const string Speed = "Speed";
         
         [Header("State")]
-        [SerializeField] private PlayerState _playerState;
-        [SerializeField] private bool _isGrounded;
+        private PlayerState _playerState;
+        private bool _isGrounded;
         private bool _wasGrounded;
-        [SerializeField] private bool _isWalking;
+        private bool _isWalking;
 
         private void Awake()
         {
@@ -84,7 +78,6 @@ namespace Comma.Gameplay.Player
         private void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            //_animator = GetComponent<Animator>();
             _playerSprite = GetComponent<SpriteRenderer>();
             //init layer value
             foreach(var layer in _groundLayers)
@@ -146,7 +139,6 @@ namespace Comma.Gameplay.Player
                
             }
             _isWalking = Mathf.Abs(_horizontalUserInput) > 0.1f;
-            //_playerAnimator.Move = _isWalking;
             _isGrounded = IsGrounded();
             if (_isGrounded)
             {
@@ -206,7 +198,7 @@ namespace Comma.Gameplay.Player
         private bool _isAbleToMoveAfterJump = false;
         private void OnMove()
         {
-            if (!_isWalking && _isGrounded)
+            if ((!_isWalking && _isGrounded) || _playerAnimator.StartWalk || _playerAnimator.StartRun)
             {
                 _rigidbody2D.velocity= Vector2.zero;
                 return;
@@ -234,10 +226,6 @@ namespace Comma.Gameplay.Player
            
         }
 
-        private void ForceSpeedToZero()
-        {
-            _currentSpeed = 0f;
-        }
         private void OnWalk()
         {
             if (_isWalking)
@@ -250,15 +238,8 @@ namespace Comma.Gameplay.Player
                     }
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 2f;
-                    if (_playerAnimator.StartRun)
-                    {
-                        ForceSpeedToZero();
-                        return;
-                    }
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
-                    //IdleAnimation(false);
-                    //MoveAnimation(2, _isGrounded);
                 }
                 else
                 {
@@ -268,50 +249,24 @@ namespace Comma.Gameplay.Player
                     }
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 1f;
-                    if (_playerAnimator.StartWalk)
-                    {
-                        ForceSpeedToZero();
-                        return; 
-                    }
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
-                    //IdleAnimation(false);
-                    //MoveAnimation(1, _isGrounded);
                 }
             }
             else
             {
-                if (_playerAnimator.StartWalk || _playerAnimator.StartRun)
-                {
-                    ForceSpeedToZero();
-                    return;
-                }
                 _currentSpeed = _normalSpeed;
-                //IdleAnimation(_isGrounded && !_isWalking);
-                //MoveAnimation(0);
                 _playerAnimator.Idle = _isGrounded;
                 _playerAnimator.XSpeed = 0f;
             }
         }
 
-        private float _expectedMaxHeight;
         private void OnJump()
         {
-            ////print($"Exp: {_expectedMaxHeight} | Pos: {transform.position.y}");
-            ////JumpAnimation(false);
-            //if (transform.position.y >= _expectedMaxHeight * .75f && _playerAnimator.StartJump == true)
-            //{
-            //    _playerAnimator.StartJump = false;
-            //}
-            //else if (transform.position.y < _expectedMaxHeight)
-            //{
-            //    _playerAnimator.YSpeed = _rigidbody2D.velocity.y;
-            //}
             if (_playerAnimator.EndFall == false)
             {
                 if (_playerAnimator.StartJump == true) _playerAnimator.YSpeed = 0f;
                 else _playerAnimator.YSpeed = .5f;
-
             }
 
             if (_isPressJump)
@@ -321,14 +276,6 @@ namespace Comma.Gameplay.Player
                 {
                     _isAbleToMoveAfterJump = true;
                     _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
-
-                    //var angle = Vector2.Angle(_rigidbody2D.velocity, Vector2.up);
-                    //print(angle);
-                    _expectedMaxHeight = transform.position.y + (_jumpForce /Mathf.Abs(Physics2D.gravity.y)); 
-                    //JumpAnimation(true);
-                    //IdleAnimation(false);
-                    //MoveAnimation();
-                    //FallAnimation(false);
                     _playerAnimator.Idle = false;
                     _playerAnimator.StartJump = true;
                     _playerAnimator.EndFall= false;
@@ -337,18 +284,18 @@ namespace Comma.Gameplay.Player
 
         }
 
+        [SerializeField] private float _rangeNearGround = 3f;
         private void OnFall()
         {
-            //FallAnimation(false);
             if (_wasGrounded) return;
             Vector2 gravity = -Physics2D.gravity;
             _rigidbody2D.velocity -= _fallMultiplier * Time.deltaTime * gravity;
 
+
             if (_playerAnimator.YSpeed == .5f)
             {
-                float rangeDetection = 2.5f;
-                RaycastHit2D nearGround = IsCollide(_ground.position, Vector2.down, rangeDetection);
-                if (nearGround)
+                RaycastHit2D nearGround = IsCollide(_ground.position, Vector2.down, _rangeNearGround);
+                if (nearGround && !_wasGrounded)
                 {
                     _playerAnimator.YSpeed = 1f;
                     _playerAnimator.EndFall = true;
@@ -356,15 +303,7 @@ namespace Comma.Gameplay.Player
 
             }
             else if (_playerAnimator.YSpeed == 1f && _isGrounded) _playerAnimator.EndFall = false;
-            
 
-            if(_rigidbody2D.velocity.y < (-_jumpForce/2))
-            {
-                //IdleAnimation(false);
-                //MoveAnimation();
-                //JumpAnimation(false);
-                //FallAnimation(true);
-            }
         }
 
         private void OnFlip()
@@ -422,35 +361,8 @@ namespace Comma.Gameplay.Player
         }
         #endregion
 
-        #region Animation
-        //private void IdleAnimation(bool isIdle)
-        //{
-        //    _animator.SetBool(On_Idle, isIdle);
-        //}
-        //private void MoveAnimation(float speed = 0, bool ismove = false)
-        //{
-        //    _animator.SetFloat(Speed,speed);
-        //    _animator.SetBool(On_Move, ismove);
-        //}
-        //private void JumpAnimation(bool isJumping)
-        //{
-        //    _animator.SetBool(On_Jump, isJumping);
-        //}
-        //private void FallAnimation(bool isFalling)
-        //{
-        //    _animator.SetBool(On_Fall, isFalling);
-        //}
-        #endregion
-
         private bool IsGrounded()
         {
-            //RaycastHit2D hit = Physics2D.Raycast(_ground.position, Vector2.down, _checkRadius, _groundLayers[_currentLayer]);
-            //if (hit)
-            //{
-            //    _currentPlatformDegree = hit.normal;
-            //}
-            //return hit;
-
             RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
             if (tryToCheckGround)
             {
