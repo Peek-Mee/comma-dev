@@ -17,29 +17,35 @@ namespace Comma.Global.AudioManager
     {
         [SerializeField] private SFXClip[] _sfxClips;
         private AudioSource _audioSource;
-        [SerializeField] private AudioSource _walkAudioSource;
-        [SerializeField] private AudioSource _runAudioSource;
+        [SerializeField] private AudioSource _movementAudioSource;
 
         [Header("WALK SFX")]
+        [SerializeField] private float _walkPlayRate;
         private bool _isWalk = true;
         private float _lastPlayWalk;
-        [SerializeField] private float _walkPlayRate;
 
         [Header("RUN SFX")]
+        [SerializeField] private float _runPlayRate;
         private bool _isRun = true;
         private float _lastPlayRun;
-        [SerializeField] private float _runPlayRate;
+
+        [Header("JUMP SFX")]
+        [SerializeField] private float _jumpPlayRate;
+        private float _lastPlayJump;
+
+        [Header("INTERACT OBJECT SFX")]
+        private bool isInteractSFX;
 
         [Header("PULL SFX")]
-        private float _lastPlayPull;
         [SerializeField] private float _pullPlayRate;
+        private float _lastPlayPull;
 
         [Header("PUSH SFX")]
-        private float _lastPlayPush;
         [SerializeField] private float _pushPlayRate;
-
+        private float _lastPlayPush;
 
         public static SFXController Instance { get; private set; }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -53,21 +59,13 @@ namespace Comma.Global.AudioManager
             }
             DontDestroyOnLoad(gameObject);
         }
+
         private void Start()
         {
             _audioSource = GetComponent<AudioSource>();
         }
-        private void Update()
-        {
-            //StartCoroutine(WalkSFX());
-            //PlayWalkSFX();
-            //PlayRunSFX();
-        }
-        public void StopSFX()
-        {
-            _audioSource.Stop();
-        }
-        public void PlaySFX(string audioName)
+
+        private void PlaySFX(string audioName)
         {
             SFXClip audio = Array.Find(_sfxClips, sfx => sfx.Name == audioName);
             if (audio == null)
@@ -77,75 +75,88 @@ namespace Comma.Global.AudioManager
             }
             _audioSource.PlayOneShot(audio.Clip);
         }
-        public void PlayWalkSFX(bool canPlay)
-        {
-            if (canPlay)
-            {
-                _walkAudioSource.pitch = _walkPlayRate;
-                if (_walkAudioSource.isPlaying) return;
-                _walkAudioSource.Play();
-            }
-            else
-            {
-                StopMovementSFX("Walk");
-            }
 
-            // if(Time.time - _lastPlayWalk > _walkPlayRate)
-            // {
-            //     _lastPlayWalk = Time.time;
-            //     //PlaySFX("Walk");
-            // }
-        }
-        public void PlayRunSFX(bool canPlay)
+        public void PlayMovementSFX(bool isWalk, bool isRun)
         {
-            if (canPlay)
+            if(isWalk)
             {
-                _walkAudioSource.pitch = _runPlayRate;
-                if (_walkAudioSource.isPlaying) return;
-                _walkAudioSource.Play();
+                _movementAudioSource.pitch = _walkPlayRate;
+                if (_movementAudioSource.isPlaying) return;
+                _movementAudioSource.Play();
+            }
+            else if(isRun)
+            {
+                _movementAudioSource.pitch = _runPlayRate;
+                if (_movementAudioSource.isPlaying) return;
+                _movementAudioSource.Play();
             }
             else
             {
-                StopMovementSFX("Walk");
+                // Stop Movement Audio
+                _movementAudioSource.Stop();
             }
+          
         }
+
+        public void PlayJumpSFX(bool canJump)
+        {
+            if (!canJump) return;
+            if(Time.time - _lastPlayJump > _jumpPlayRate)
+            {
+                _lastPlayJump = Time.time;
+                PlaySFX("Jump");
+            }
+            
+        }
+
+        #region Object Interact SFX
+        public void PlayInteractObjectSFX()
+        {
+            PlaySFX("InteractObject");
+        }
+
         public void PlayPullSFX()
         {
             if(Time.time - _lastPlayPull > _pullPlayRate)
             {
                 _lastPlayPull = Time.time;
                 PlaySFX("Pull");
-                Debug.Log("PULL SFX");
+                isInteractSFX = true;
+                return;
             }
         }
+
         public void PlayPushSFX()
         {
             if (Time.time - _lastPlayPush > _pushPlayRate)
             {
                 _lastPlayPush = Time.time;
                 PlaySFX("Push");
-                Debug.Log("PUSH SFX");
+                isInteractSFX = true;
+                return;
             }
         }
-        public void StopMovementSFX(string audioName)
-        {
-            //_walkAudioSource.loop = false;
-            //_runAudioSource.loop = false;
-            _walkAudioSource.Stop();
-            //_runAudioSource.Stop();
-            // SFXClip audio = Array.Find(_sfxClips, sfx => sfx.Name == audioName);
-            // if (audio == null)
-            // {
-            //     Debug.LogWarning($"SFX: <color=red> {name} </color> not found!");
-            //     return;
-            // }
-        }
+
         public void StopObjectSFX()
         {
+            if (!isInteractSFX) return;
             _lastPlayPull = 0;
             _lastPlayPush = 0;
             _audioSource.Stop();
+            isInteractSFX = false;
         }
+        #endregion
+
+        public void PlayInteractPortalSFX()
+        {
+            PlaySFX("InteractPortal");
+        }
+
+        public void PlayObtainOrbSFX()
+        {
+            PlaySFX("ObtainOrb");
+        }
+
         IEnumerator WalkSFX()
         {
             while (_isWalk)

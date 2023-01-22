@@ -34,18 +34,16 @@ namespace Comma.Gameplay.Player
             
             if(rightHit.collider != null && rightHit.collider.CompareTag("Moveable"))
             {
-                GetInput(rightHit.collider);
+                GetInput(rightHit.collider,1);
                 RightTriggerAnimation(_player.GetInput);
-                Debug.Log("Right hand detection Moveable "+rightHit.collider.gameObject.name);
             }
             else if(leftHit.collider != null && leftHit.collider.CompareTag("Moveable"))
             {
-                GetInput(leftHit.collider);
+                GetInput(leftHit.collider,-1);
                 LeftTriggerAnimation(_player.GetInput);
-                Debug.Log("Left hand detection Moveable "+leftHit.collider.gameObject.name);
             }
         }
-        private void GetInput(Collider2D col)
+        private void GetInput(Collider2D col,float direction)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -56,13 +54,21 @@ namespace Comma.Gameplay.Player
                     isHoldingObject = false;
                     var moveable = col.GetComponent<MoveableObject>();
                     moveable.UnInteract();
+
+                    SFXController.Instance.StopObjectSFX();
                 }
                 else
                 {
+                    PlayerFlip(direction);
                     _player.IsFlipProhibited = true;
                     isHoldingObject = true;
                     IDetectable detectable = col.gameObject.GetComponent<IDetectable>();
                     detectable?.Interact();
+
+                    var moveable = col.GetComponent<MoveableObject>();
+                    moveable.GetDetection(this,direction);
+
+                    SFXController.Instance.PlayInteractObjectSFX();
                 }
             }
         }
@@ -71,7 +77,7 @@ namespace Comma.Gameplay.Player
             if (!isHoldingObject) return;// Play Idle Animation
             if (input == 0)
             {
-                SFXController.Instance.StopObjectSFX();
+               SFXController.Instance.StopObjectSFX();
             }
             else if(input > 0)
             {
@@ -100,6 +106,18 @@ namespace Comma.Gameplay.Player
             {
                 //Play Pull Animation
                 SFXController.Instance.PlayPullSFX();
+            }
+        }
+
+        private void PlayerFlip(float dir)
+        {
+            if (dir > 0)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else if(dir < 0)
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
             }
         }
 
