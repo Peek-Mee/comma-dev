@@ -1,5 +1,5 @@
 ﻿using System;
-using Comma.Gameplay.CharacterMovement;
+using Comma.Gameplay.Player;
 using Comma.Gameplay.DetectableObject;
 using UnityEngine;
 using UnityEngine.Serialization;
