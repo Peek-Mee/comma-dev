@@ -41,6 +41,11 @@ namespace Comma.Gameplay.CharacterMovement
         private SpriteRenderer _playerSprite;
         private bool _isInCutScene = false;
         private bool _isFlipProhibited = false;
+        public bool IsFlipProhibited
+        {
+            get { return _isFlipProhibited; }
+            set { _isFlipProhibited = value; }
+        }
         // #######
 
         [Header("Movement")]
@@ -51,6 +56,7 @@ namespace Comma.Gameplay.CharacterMovement
 
         private bool isDashing = false;
         private bool _isFacingRight = true;
+     
         
         [Header("Jump")]
         [SerializeField] private float _jumpForce;
@@ -79,7 +85,6 @@ namespace Comma.Gameplay.CharacterMovement
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _animator = GetComponent<Animator>();
             _playerSprite = GetComponent<SpriteRenderer>();
-
             //init layer value
             foreach(var layer in _groundLayers)
             {
@@ -103,7 +108,6 @@ namespace Comma.Gameplay.CharacterMovement
         private void OnMoveInput(object message)
         {
             OnPlayerMove msg = (OnPlayerMove)message;
-            print(msg.Direction);
             _horizontalUserInput = msg.Direction.x;
         }
         private void OnJumpInput(object message)
@@ -121,6 +125,11 @@ namespace Comma.Gameplay.CharacterMovement
 
         #region Movement From User Input
         private float _horizontalUserInput = 0f;
+        public float GetInput
+        {
+            get { return _horizontalUserInput; }
+            set { _horizontalUserInput = value; }
+        }
         private bool _isHoldSprint = false;
         private bool _isPressJump = false;
 
@@ -162,6 +171,7 @@ namespace Comma.Gameplay.CharacterMovement
                 {
                     _playerState = PlayerState.Idle;
                 }
+                _wasEligible = false;
             }
             else
             {
@@ -181,9 +191,20 @@ namespace Comma.Gameplay.CharacterMovement
                 _wasEligible = !EligibleToSwapLayer();
             }
         }
+
+        private bool _isAbleToMoveAfterJump = false;
         private void OnMove()
         {
-            if (!_isWalking || !_isGrounded) return;
+            if (!_isWalking && _isGrounded)
+            {
+                _rigidbody2D.velocity= Vector2.zero;
+                return;
+            }
+            else if (_isWalking && !_isGrounded && _isAbleToMoveAfterJump)
+            {
+                _isAbleToMoveAfterJump= false;
+            }
+            else if (!_isWalking || !_isGrounded ) return;
             var vel = _rigidbody2D.velocity;
             vel.x = _currentSpeed * _horizontalUserInput;
             _ = _isGrounded ? vel.x *= .5f : vel.x *= 1f;
@@ -235,6 +256,7 @@ namespace Comma.Gameplay.CharacterMovement
                 _isPressJump = false;
                 if (_isGrounded)
                 {
+                    _isAbleToMoveAfterJump = true;
                     _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
 
                     JumpAnimation(true);
@@ -262,6 +284,7 @@ namespace Comma.Gameplay.CharacterMovement
 
         private void OnFlip()
         {
+            if (_isFlipProhibited) return;
             if (_isFacingRight && _horizontalUserInput < 0)
             {
                 _isFacingRight = !_isFacingRight;
@@ -270,7 +293,7 @@ namespace Comma.Gameplay.CharacterMovement
             {
                 _isFacingRight = !_isFacingRight;
             }
-            if (_isFlipProhibited) return;
+          
             _playerSprite.flipX = !_isFacingRight;
         }
         #region SwapLayerMask

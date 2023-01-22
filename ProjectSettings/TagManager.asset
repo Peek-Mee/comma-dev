@@ -10,6 +10,7 @@ TagManager:
   - Ground
   - PortalTrigger
   - SwapLayerDown
+  - Moveable
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - UI
   - TopDown
   - Ground2
-  - 
+  - Moveable
   - 
   - 
   - 
