@@ -33,6 +33,10 @@ namespace Comma.Global.AudioManager
         [SerializeField] private float _jumpPlayRate;
         private float _lastPlayJump;
 
+        [Header("JUMP SFX")]
+        [SerializeField] private float _landingPlayRate;
+        private float _lastPlayLanding;
+
         [Header("INTERACT OBJECT SFX")]
         private bool isInteractSFX;
 
@@ -107,6 +111,16 @@ namespace Comma.Global.AudioManager
                 PlaySFX("Jump");
             }
             
+        }
+        public void PlayLandingSFX(bool canLanding)
+        {
+            if (!canLanding) return;
+            if (Time.time - _lastPlayLanding > _landingPlayRate)
+            {
+                _lastPlayLanding = Time.time;
+                PlaySFX("Landing");
+            }
+
         }
 
         #region Object Interact SFX

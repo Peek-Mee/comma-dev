@@ -22,12 +22,12 @@ namespace Comma.Gameplay.DetectableObject
 
         public void Interact()
         {
+            _rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.None;
             _isInteracted = true;
-            return;
         }
-
         public void UnInteract()
         {
+            _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
             _isInteracted = false;
             GetDetection(null,0);
         }
@@ -45,6 +45,7 @@ namespace Comma.Gameplay.DetectableObject
         private void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
             EventConnector.Subscribe("OnPlayerMove", new(OnMoveInput));
         }
 
@@ -52,6 +53,7 @@ namespace Comma.Gameplay.DetectableObject
         {
             if (_isInteracted && _playerDetected!= null)
             {
+                //_rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.None;
                 var objectPos = transform.position;
                 var detectionPos = _playerDetected.transform.position;
                 var newPos = new Vector2(detectionPos.x -(-_objectDirection), transform.position.y);
