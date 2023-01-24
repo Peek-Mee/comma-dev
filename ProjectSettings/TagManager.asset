@@ -41,6 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: HighestLayerForDistortionEffect
+  - name: Particles
     uniqueID: 217516601
     locked: 0
