@@ -1,3 +1,4 @@
+using Comma.Global.SaveLoad;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +15,10 @@ namespace Comma.Home.UI
         [SerializeField] private Button _newGameButton;
         [SerializeField] private Button _creditssButton;
         [SerializeField] private Button _quitButton;
-        
+
+        [Header("Transitions")]
+        [SerializeField] private GameObject _transition;
+
         [Header("Scene Management")]
         [SerializeField] private string _gameplaySceneName = "Gameplay";
         
@@ -25,7 +29,6 @@ namespace Comma.Home.UI
 
         private void Start()
         {
-            
         }
         
         private void OnEnable()
@@ -50,11 +53,14 @@ namespace Comma.Home.UI
 
         private void OnNewGameButton()
         {
-            SceneManager.LoadScene(_gameplaySceneName);
+            _transition.SetActive(true);
+            SceneManager.LoadSceneAsync(_gameplaySceneName);
+            //SceneManager.LoadScene(_gameplaySceneName);
         }
         private  void OnContinueButton()
         {
-            SceneManager.LoadScene(_gameplaySceneName);
+            _transition.SetActive(true);
+            SceneManager.LoadSceneAsync(_gameplaySceneName);
         }
         private void OnCreditsButton()
         {
