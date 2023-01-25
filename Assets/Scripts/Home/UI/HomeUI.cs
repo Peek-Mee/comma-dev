@@ -64,6 +64,7 @@ namespace Comma.Home.UI
         }
         private void OnCreditsButton()
         {
+
             _creditsPopUp.SetActive(true);
         }
         private void OnQuitButton()
