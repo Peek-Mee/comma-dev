@@ -21,7 +21,7 @@ namespace Comma.Home.UI
 
         [Header("Scene Management")]
         [SerializeField] private string _gameplaySceneName = "Gameplay";
-        
+
         [Header("Home Menu Pop Up")]
         [SerializeField] private GameObject _creditsPopUp;
         [SerializeField] private GameObject _warningNewGamePopUp;
