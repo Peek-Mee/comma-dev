@@ -3,17 +3,24 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Edge
+  - Orb
+  - Portal
+  - Ground
+  - PortalTrigger
+  - SwapLayerDown
+  - Moveable
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Ground
+  - Ground1
   - Water
   - UI
-  - 
-  - 
-  - 
+  - TopDown
+  - Ground2
+  - Moveable
   - 
   - 
   - 
