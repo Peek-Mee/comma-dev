@@ -37,21 +37,17 @@ namespace Comma.Home.UI
         }
         private void OnYesButton()
         {
-            //Application.Quit();
-            _animator.SetTrigger("exit");
+            Application.Quit();
         }
         private void OnNoButton()
         {
             //gameObject.SetActive(false);
             _animator.SetTrigger("exit");
         }
-        public void QuitApp()
-        {
-            Application.Quit();
-        }
         public void BackToMenu()
         {
             _panel.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 }

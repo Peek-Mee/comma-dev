@@ -23,6 +23,7 @@ namespace Comma.Home.UI
         [SerializeField] private string _gameplaySceneName = "Gameplay";
 
         [Header("Home Menu Pop Up")]
+        [SerializeField] private GameObject _panel;
         [SerializeField] private GameObject _creditsPopUp;
         [SerializeField] private GameObject _warningNewGamePopUp;
         [SerializeField] private GameObject _warningQuitPopUp;
@@ -64,11 +65,12 @@ namespace Comma.Home.UI
         }
         private void OnCreditsButton()
         {
-
+            _panel.SetActive(true);
             _creditsPopUp.SetActive(true);
         }
         private void OnQuitButton()
         {
+            _panel.SetActive(true);
             _warningQuitPopUp.SetActive(true);
         }
     }
