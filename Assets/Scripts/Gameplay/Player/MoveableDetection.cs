@@ -36,11 +36,13 @@ namespace Comma.Gameplay.Player
             {
                 GetInput(rightHit.collider,1);
                 RightTriggerAnimation(_player.GetInput);
+                Debug.Log("Hit Moveable");
             }
             else if(leftHit.collider != null && leftHit.collider.CompareTag("Moveable"))
             {
                 GetInput(leftHit.collider,-1);
                 LeftTriggerAnimation(_player.GetInput);
+                Debug.Log("Hit Moveable");
             }
         }
         private void GetInput(Collider2D col,float direction)
@@ -59,12 +61,11 @@ namespace Comma.Gameplay.Player
                 }
                 else
                 {
+                    isHoldingObject = true;
                     PlayerFlip(direction);
                     _player.IsFlipProhibited = true;
-                    isHoldingObject = true;
                     IDetectable detectable = col.gameObject.GetComponent<IDetectable>();
                     detectable?.Interact();
-
                     var moveable = col.GetComponent<MoveableObject>();
                     moveable.GetDetection(this,direction);
 
