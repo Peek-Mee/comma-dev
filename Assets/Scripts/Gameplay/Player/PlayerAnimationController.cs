@@ -19,6 +19,8 @@ namespace Comma.Gameplay.Player
         [SerializeField] private string _varOnMove = "OnMove";
         [SerializeField] private string _varOnPull = "OnPull";
         [SerializeField] private string _varOnPush = "OnPush";
+        [SerializeField] private string _varOnPortalInteract = "OnPortalInteract";
+        [SerializeField] private string _varOnWaitInteract = "OnWaitInteract";
 
         public bool Idle { get; set; } = true;
         public bool Move { get; set; } = false;
@@ -28,6 +30,8 @@ namespace Comma.Gameplay.Player
         public bool EndFall { get; set; } = false;
         public bool Push { get; set; } = false;
         public bool Pull { get; set; } = false;
+        public bool PortalInteract { get; set; } = false;
+        public bool WaitInteract { get; set; } = false;
         public float XSpeed { get; set; } = 0f;
         public float YSpeed { get; set; } = 0f;
 
@@ -41,13 +45,15 @@ namespace Comma.Gameplay.Player
             _playerAnimator.SetBool(_varOnEndFall, EndFall);
             _playerAnimator.SetBool(_varOnPush, Push);
             _playerAnimator.SetBool(_varOnPull, Pull);
+            _playerAnimator.SetBool(_varOnPortalInteract, PortalInteract);
+            _playerAnimator.SetBool(_varOnWaitInteract, WaitInteract);
             _playerAnimator.SetFloat(_varXSpeed, XSpeed);
             _playerAnimator.SetFloat(_varYSpeed, YSpeed);
 
             var SFXWalk = Move && XSpeed == 1 && StartWalk == false;
             var SFXRun = Move && XSpeed == 2 && StartRun == false;
-            SFXController.Instance.PlayMovementSFX(SFXWalk,SFXRun);
-            SFXController.Instance.PlayJumpSFX(StartJump);
+            //SFXController.Instance.PlayMovementSFX(SFXWalk,SFXRun);
+            //SFXController.Instance.PlayJumpSFX(StartJump);
            // SFXController.Instance.PlayWalkSFX(Move && XSpeed > 1.01);
         }
 
@@ -66,6 +72,11 @@ namespace Comma.Gameplay.Player
         public void EndFallFinish()
         {
             EndFall = false;
+        }
+        public void EndPortalInteract()
+        {
+            PortalInteract= false;
+            WaitInteract= false;
         }
 
         public string ToDebug()
