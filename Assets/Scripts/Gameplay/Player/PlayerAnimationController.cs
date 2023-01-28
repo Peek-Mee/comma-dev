@@ -1,9 +1,11 @@
 using Comma.Global.AudioManager;
+using Comma.Global.SaveLoad;
+using Comma.Utility.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
 {
-    public class PlayerAnimationController : MonoBehaviour
+    public class PlayerAnimationController : MonoBehaviour, IDebugger
     {
         [SerializeField] private Animator _playerAnimator;
 
@@ -15,6 +17,8 @@ namespace Comma.Gameplay.Player
         [SerializeField] private string _varOnEndFall = "OnEndFall";
         [SerializeField] private string _varYSpeed = "YSpeed";
         [SerializeField] private string _varOnMove = "OnMove";
+        [SerializeField] private string _varOnPull = "OnPull";
+        [SerializeField] private string _varOnPush = "OnPush";
 
         public bool Idle { get; set; } = true;
         public bool Move { get; set; } = false;
@@ -22,6 +26,8 @@ namespace Comma.Gameplay.Player
         public bool StartRun { get; set; } = false;
         public bool StartJump { get; set; } = false;
         public bool EndFall { get; set; } = false;
+        public bool Push { get; set; } = false;
+        public bool Pull { get; set; } = false;
         public float XSpeed { get; set; } = 0f;
         public float YSpeed { get; set; } = 0f;
 
@@ -33,11 +39,13 @@ namespace Comma.Gameplay.Player
             _playerAnimator.SetBool(_varOnStartRun, StartRun);
             _playerAnimator.SetBool(_varOnStartJump, StartJump);
             _playerAnimator.SetBool(_varOnEndFall, EndFall);
+            _playerAnimator.SetBool(_varOnPush, Push);
+            _playerAnimator.SetBool(_varOnPull, Pull);
             _playerAnimator.SetFloat(_varXSpeed, XSpeed);
             _playerAnimator.SetFloat(_varYSpeed, YSpeed);
 
-            var SFXWalk = Move && XSpeed > 0.01 && XSpeed < 1.01;
-            var SFXRun = Move && XSpeed > 1.01;
+            var SFXWalk = Move && XSpeed == 1 && StartWalk == false;
+            var SFXRun = Move && XSpeed == 2 && StartRun == false;
             SFXController.Instance.PlayMovementSFX(SFXWalk,SFXRun);
             SFXController.Instance.PlayJumpSFX(StartJump);
            // SFXController.Instance.PlayWalkSFX(Move && XSpeed > 1.01);
@@ -58,6 +66,22 @@ namespace Comma.Gameplay.Player
         public void EndFallFinish()
         {
             EndFall = false;
+        }
+
+        public string ToDebug()
+        {
+
+            string returner = "\n<b>Player Animation</b>\n";
+            returner += $"Idle: <i>{Idle}</i>\n";
+            returner += $"Move: <i>{Move}</i>\n";
+            returner += $"Start Walk: <i>{StartWalk}</i>\n";
+            returner += $"Start Run: <i>{StartRun}</i>\n";
+            returner += $"Start Jump: <i>{StartJump}</i>\n";
+            returner += $"End Fall: <i>{EndFall}</i>\n";
+            returner += $"X Speed: <i>{XSpeed}</i>\n";
+            returner += $"Y Speed: <i>{YSpeed}</i>\n";
+
+            return returner;
         }
     }
 
