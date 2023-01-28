@@ -201,56 +201,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 397862515324121569, guid: 289cc1c091ba7f648b6ef214ee3581bd, type: 3}
   m_PrefabInstance: {fileID: 102656636}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &102656638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 102656637}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cb669da1acc4bfe8cf3208c3ddb5ea9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _transitionPanel: {fileID: 807371718}
-  _cutscenes:
-  - _cutsceneName: Falling
-    _minCutscenePosition: {x: 0, y: 4}
-    _maxCutscenePosition: {x: 1, y: 21}
-    _newPosition: {x: 0, y: 20}
-    _targetPosition: {x: 0, y: 4}
-    _speed: 3
-    _gravity: 0
-    _delayNewPosition: 0
-    _delayRemove: 0
-    _isRemove: 0
-    _animator: {fileID: 102656639}
-    animationStates: 3
-  - _cutsceneName: Transition
-    _minCutscenePosition: {x: 0, y: 2}
-    _maxCutscenePosition: {x: 1, y: 3.9}
-    _newPosition: {x: 0, y: -0.1171824}
-    _targetPosition: {x: 0, y: 0}
-    _speed: 0
-    _gravity: 0
-    _delayNewPosition: 1.5
-    _delayRemove: 0
-    _isRemove: 0
-    _animator: {fileID: 807371720}
-    animationStates: 5
-  - _cutsceneName: Get Up
-    _minCutscenePosition: {x: 0, y: -2}
-    _maxCutscenePosition: {x: 1, y: 1.9}
-    _newPosition: {x: 0, y: 0}
-    _targetPosition: {x: 0, y: 0}
-    _speed: 0
-    _gravity: 1
-    _delayNewPosition: 0
-    _delayRemove: 6
-    _isRemove: 1
-    _animator: {fileID: 102656639}
-    animationStates: 4
 --- !u!95 &102656639 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6717889229233235207, guid: 289cc1c091ba7f648b6ef214ee3581bd, type: 3}

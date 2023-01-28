@@ -3,50 +3,41 @@ using System.Collections;
 using Comma.Gameplay.Player;
 using Comma.Global.PubSub;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Comma.Gameplay.Environment
 {
+    public enum AnimationStates
+    {
+        Idle,
+        Walk,
+        Run,
+        Falling,
+        GetUp,
+        Transition
+    }
     [Serializable]
     public class CutSceneData
     {
-        public string _cutSceneName;
-        [SerializeField] private Vector2 _newPosition;
-        [SerializeField] private Vector2 _targetPosition;
-        [SerializeField] private float _speed;
-        [SerializeField] private float _delayNewPosition;
-        private bool _isNewPosition;
+        public string CutSceneName;
+        public bool IsCutScene { get; private set; }
+        [Header("Transform")]
+        public Vector2 NewPosition;
+        public Vector2 TargetPosition;
+        public float Speed;
+        public bool IsNewPosition { get; private set; }
+        //public float DelayNewPosition;
         
         [Header("Animations")]
-        [SerializeField] private AnimationStates _animationStates;
-        [SerializeField] private float _delayPlayAnimation;
+        public AnimationStates AnimationStates;
+        public float DelayAnimation;
 
         [Header("Remove?")]
-        [SerializeField] private bool _canRemove;
-
-        [SerializeField] private float _timeRemove;
-        public Vector2 NewPosition => _newPosition;
-        public Vector2 TargetPosition => _targetPosition;
-        public float Speed => _speed;
-        public float DelayNewPosition => _delayNewPosition;
-        public AnimationStates AnimStates => _animationStates;
-        public float DelayAnimation => _delayPlayAnimation;
-        public bool IsNewPosition
-        {
-            get => _isNewPosition;
-            set => _isNewPosition = value;
-        }
-
-        public bool CanRemove
-        {
-            get => _canRemove;
-            set => _canRemove = value;
-        }
-        public float TimeRemove => _timeRemove;
-        
+        public bool CanRemove;
+        public float TimeRemove;
         public CutSceneData()
         {
-            _isNewPosition = true;
+            IsNewPosition = true;
+            IsCutScene = true;
         }
     }
     public class TriggerCutScene : MonoBehaviour

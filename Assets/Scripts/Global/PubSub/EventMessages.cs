@@ -57,4 +57,12 @@ namespace Comma.Global.PubSub
             Data = data;
         }
     }
+    public struct OnCutSceneTrigger
+    {
+        public CutSceneData Data { get; private set; }
+        public OnCutSceneTrigger (CutSceneData data)
+        {
+            Data = data;
+        }
+    }
 }

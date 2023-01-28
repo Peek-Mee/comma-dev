@@ -7,38 +7,55 @@ using UnityEngine;
 
 namespace Comma.Gameplay.Player
 {
-    public class PlayerTriggerCS : MonoBehaviour
+    public class CutSceneDetection : MonoBehaviour
     {
         [SerializeField] private Animator _playerAnimator;
-        [SerializeField] private Animator _transitionAnimator;
         [SerializeField] private GameObject _transitionPanel;
+
+        private bool _isCutScene;
+        [Header("Rigidbody")]
+        [SerializeField] private float _fallMultiplier = 4f;
+        private Rigidbody2D _rb;
         private void Start()
         {
+            _rb = GetComponent<Rigidbody2D>();
             EventConnector.Subscribe("OnCutSceneTrigger",new(OnCutScene));
         }
-
+        private void Update()
+        {
+            
+        }
         private void OnCutScene(object msg)
         {
             OnCutSceneTrigger m = (OnCutSceneTrigger)msg;
             CutSceneData data = m.Data;
-
-            StartCoroutine(PlayAnimations(data));
-            StartCoroutine(PlayerNewPosition(data));
-            PlayerTargetPosition(data);
             
-            Debug.Log("On Cut Scene " + data._cutSceneName);
+            _isCutScene = true;
+            
+            StartCoroutine(PlayAnimations(data));
+            PlayerFalling(data);
+            
+            //StartCoroutine(PlayerNewPosition(data));
+            //PlayerTargetPosition(data);
+            
+            Debug.Log("On Cut Scene " + data.CutSceneName);
         }
-
-        private IEnumerator PlayerNewPosition(CutSceneData data)
+        private void PlayerFalling(CutSceneData data)
         {
-            if (data.NewPosition == Vector2.zero) yield break;
-            if (data.IsNewPosition)
-            {
-                yield return new WaitForSeconds(data.DelayNewPosition);
-                transform.position = data.NewPosition;
-                data.IsNewPosition = false;
-            }
+            if (data.AnimationStates != AnimationStates.Falling) return;
+            Vector2 gravity = -Physics2D.gravity;
+            _rb.velocity -= _fallMultiplier * Time.deltaTime * gravity;
         }
+        //private IEnumerator PlayerNewPosition(CutSceneData data)
+        //{
+        //    if (data.NewPosition == Vector2.zero) yield break;
+        //    if (data.IsNewPosition)
+        //    {
+        //        yield return new WaitForSeconds(data.DelayNewPosition);
+        //        transform.position = data.NewPosition;
+        //        data.IsNewPosition = false;
+        //    }
+        //}
 
         private void PlayerTargetPosition(CutSceneData data)
         {
@@ -50,32 +67,29 @@ namespace Comma.Gameplay.Player
         }
         private IEnumerator RemoveCutScene(CutSceneData data)
         {
-            yield return new WaitForSeconds(data.DelayNewPosition);
+            yield return new WaitForSeconds(0);
         }
 
         private IEnumerator PlayAnimations(CutSceneData data)
         {
             yield return new WaitForSeconds(data.DelayAnimation);
-            var state = data.AnimStates;
+            var state = data.AnimationStates;
             switch (state)
             {
                 case AnimationStates.Idle:
-                    _playerAnimator.SetBool("Idle",true);
-                    _playerAnimator.SetBool("GetUp",false);
-                    _transitionPanel.SetActive(false);
                     break;
                 case AnimationStates.Walk:
                     break;
                 case AnimationStates.Run:
                     break;
-                case AnimationStates.Fall:
+                case AnimationStates.Falling: 
+                    _playerAnimator.SetBool("Fall_Rotation", true);
+                    _playerAnimator.SetBool("Fall_Idle", false);
                     break;
                 case AnimationStates.GetUp:
-                    _playerAnimator.SetBool("GetUp",true);
                     break;
                 case AnimationStates.Transition:
-                    _transitionPanel.SetActive(true);
-                    _playerAnimator.SetBool("GetUp",false);
+                    if (_transitionPanel != null) { _transitionPanel.SetActive(true);}
                     break;
             }
         }
