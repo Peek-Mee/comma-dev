@@ -375,6 +375,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3920732849314813306, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
+      propertyPath: _timeToMove
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3920732849314813306, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
+      propertyPath: _timeToWalk
+      value: 0.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
 --- !u!1 &303913227
@@ -1514,7 +1522,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1726865201
 Transform:
   m_ObjectHideFlags: 0

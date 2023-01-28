@@ -20,9 +20,11 @@ namespace Comma.Global.AudioManager
         [SerializeField] private AudioSource _movementAudioSource;
 
         [Header("WALK SFX")]
+        [SerializeField] private float _timeToMove;
         [SerializeField] private float _walkPlayRate;
         private bool _isWalk = true;
         private float _lastPlayWalk;
+        private float _timeMove;
 
         [Header("RUN SFX")]
         [SerializeField] private float _runPlayRate;
@@ -33,7 +35,7 @@ namespace Comma.Global.AudioManager
         [SerializeField] private float _jumpPlayRate;
         private float _lastPlayJump;
 
-        [Header("JUMP SFX")]
+        [Header("LANDING SFX")]
         [SerializeField] private float _landingPlayRate;
         private float _lastPlayLanding;
 
@@ -84,18 +86,31 @@ namespace Comma.Global.AudioManager
         {
             if(isWalk)
             {
-                _movementAudioSource.pitch = _walkPlayRate;
-                if (_movementAudioSource.isPlaying) return;
-                _movementAudioSource.Play();
+                _timeMove += Time.deltaTime;
+                if(_timeMove > _timeToMove)
+                {
+                    _movementAudioSource.pitch = _walkPlayRate;
+                    if (_movementAudioSource.isPlaying) return;
+                    _movementAudioSource.Play();
+
+                }
+                
             }
             else if(isRun)
             {
-                _movementAudioSource.pitch = _runPlayRate;
-                if (_movementAudioSource.isPlaying) return;
-                _movementAudioSource.Play();
+                _timeMove += Time.deltaTime;
+                if (_timeMove > _timeToMove)
+                {
+                    _movementAudioSource.pitch = _runPlayRate;
+                    if (_movementAudioSource.isPlaying) return;
+                    _movementAudioSource.Play();
+                
+                }
+                
             }
             else
             {
+                _timeMove = 0;
                 // Stop Movement Audio
                 _movementAudioSource.Stop();
             }
