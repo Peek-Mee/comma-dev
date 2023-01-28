@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Comma.Global.PubSub;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,7 @@ namespace Comma.Gameplay.UI
 {
     public class PauseUI : MonoBehaviour
     {
+        [SerializeField] private GameObject _pausePanel;
         [Header("Pause Buttons")]
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _optionsButton;
@@ -15,15 +17,27 @@ namespace Comma.Gameplay.UI
         [SerializeField] private GameObject _optionsPopUp;
         [SerializeField] private GameObject _warningMenuPopUp;
 
-        private void Update()
+        //private void Update()
+        //{
+        //    if(Input.GetKeyDown(KeyCode.Escape))
+        //    {
+        //        if(_optionsPopUp.activeSelf) return;
+        //        gameObject.SetActive(!gameObject.activeSelf);
+        //    }
+        //}
+
+        private void Start()
         {
-            if(Input.GetKeyDown(KeyCode.Escape))
-            {
-                if(_optionsPopUp.activeSelf) return;
-                gameObject.SetActive(!gameObject.activeSelf);
-            }
+            EventConnector.Subscribe("OnPauseInput", new(OnPause));
         }
 
+        #region PubSub
+        private void OnPause(object msg)
+        {
+            if (_optionsPopUp.activeSelf) return;
+            _pausePanel.SetActive(!_pausePanel.activeSelf);
+        }
+        #endregion
         private void OnEnable()
         {
             _continueButton.onClick.AddListener(OnContinueButton);
@@ -45,7 +59,7 @@ namespace Comma.Gameplay.UI
 
         private void OnContinueButton()
         {
-            gameObject.SetActive(false);
+            _pausePanel.SetActive(false);
         }
         private void OnOptionsButton()
         {

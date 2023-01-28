@@ -20,6 +20,7 @@ namespace Comma.Gameplay.UserInput
             //_userInputManager.Player.Interact.canceled += OnInteractInput;
             _userInputManager.Player.Sprint.performed += OnSprintInput;
             _userInputManager.Player.Sprint.canceled += OnSprintInput;
+            _userInputManager.Player.Pause.performed += OnPauseInput;
         }
 
         private void OnMoveInput(InputAction.CallbackContext context)
@@ -62,6 +63,13 @@ namespace Comma.Gameplay.UserInput
             {
                 EventConnector.Publish("OnPlayerSprint", new OnPlayerSprint(false));
 
+            }
+        }
+        private void OnPauseInput(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                EventConnector.Publish("OnPauseInput", 0);
             }
         }
     }
