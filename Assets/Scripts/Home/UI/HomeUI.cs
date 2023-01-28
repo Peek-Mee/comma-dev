@@ -23,13 +23,17 @@ namespace Comma.Home.UI
         [SerializeField] private string _gameplaySceneName = "Gameplay";
 
         [Header("Home Menu Pop Up")]
-        [SerializeField] private GameObject _panel;
         [SerializeField] private GameObject _creditsPopUp;
         [SerializeField] private GameObject _warningNewGamePopUp;
         [SerializeField] private GameObject _warningQuitPopUp;
 
         private void Start()
         {
+            if (SaveSystem.IsNewPlayer())
+            {
+                _continueButton.onClick.RemoveAllListeners();
+                _continueButton.gameObject.SetActive(false);
+            }
         }
         
         private void OnEnable()
@@ -54,9 +58,11 @@ namespace Comma.Home.UI
 
         private void OnNewGameButton()
         {
-            _transition.SetActive(true);
-            SceneManager.LoadSceneAsync(_gameplaySceneName);
+            //_transition.SetActive(true);
+            //SceneManager.LoadSceneAsync(_gameplaySceneName);
             //SceneManager.LoadScene(_gameplaySceneName);
+            if (!SaveSystem.IsNewPlayer()) _warningNewGamePopUp.SetActive(true);
+            else SceneManager.LoadSceneAsync(_gameplaySceneName);
         }
         private  void OnContinueButton()
         {
@@ -65,12 +71,10 @@ namespace Comma.Home.UI
         }
         private void OnCreditsButton()
         {
-            _panel.SetActive(true);
             _creditsPopUp.SetActive(true);
         }
         private void OnQuitButton()
         {
-            _panel.SetActive(true);
             _warningQuitPopUp.SetActive(true);
         }
     }

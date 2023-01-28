@@ -11,7 +11,6 @@ namespace Comma.Home.UI
         [SerializeField] private Button _noButton;
 
         [Header("Panels")]
-        [SerializeField] private GameObject _panel;
         private Animator _animator;
         private void Awake()
         {
@@ -46,7 +45,6 @@ namespace Comma.Home.UI
         }
         public void BackToMenu()
         {
-            _panel.SetActive(false);
             gameObject.SetActive(false);
         }
     }
