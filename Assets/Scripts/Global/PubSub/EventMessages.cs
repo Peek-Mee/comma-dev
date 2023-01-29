@@ -1,4 +1,5 @@
 ﻿using Comma.Gameplay.Environment;
+using Comma.Prolog.CameraProlog;
 using System.Collections;
 using UnityEngine;
 
@@ -61,6 +62,14 @@ namespace Comma.Global.PubSub
     {
         public CutSceneData Data { get; private set; }
         public OnCutSceneTrigger (CutSceneData data)
+        {
+            Data = data;
+        }
+    }
+    public struct OnCameraPrologTrigger
+    {
+        public CameraPrologData Data { get; private set; }
+        public OnCameraPrologTrigger(CameraPrologData data)
         {
             Data = data;
         }
