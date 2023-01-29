@@ -273,6 +273,8 @@ MonoBehaviour:
   _sfxClips:
   - _SFXName: Jump
     _audioClip: {fileID: 8300000, guid: 603e93b156e124944b8e9cbe3ce19c11, type: 3}
+  - _SFXName: Landing
+    _audioClip: {fileID: 8300000, guid: 3760f16a59e8c2847ae296ffcbb835cc, type: 3}
   - _SFXName: Pull
     _audioClip: {fileID: 8300000, guid: 3aa58e5515450d645bfe9c3fcc427e89, type: 3}
   - _SFXName: Push
@@ -287,5 +289,6 @@ MonoBehaviour:
   _walkPlayRate: 1.076
   _runPlayRate: 1.614
   _jumpPlayRate: 0.832
+  _landingPlayRate: 0.778
   _pullPlayRate: 3.699
   _pushPlayRate: 3.699
