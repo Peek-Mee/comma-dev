@@ -4,6 +4,7 @@ using Comma.Gameplay.DetectableObject;
 using Comma.Global.AudioManager;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Comma.Global.PubSub;
 
 namespace Comma.Gameplay.Player
 {
@@ -14,11 +15,88 @@ namespace Comma.Gameplay.Player
         private bool isHoldingObject = false; 
         [SerializeField] private LayerMask _layerMask; 
         [SerializeField] private float _distance,_radius;
+        private PlayerAnimationController _playerAnimator;
 
+        private void Awake()
+        {
+            _playerAnimator = GetComponent<PlayerAnimationController>();
+        }
         private void Start()
         {
             _player = GetComponent<PlayerMovement>();
+            EventConnector.Subscribe("OnInteractInput", new(OnInteract));
+
         }
+
+        #region PubSub
+        private bool _isHoldMoveable;
+        private IMoveableObject _moveableObject;
+        private bool _objectOnRight;
+        private float _direction;
+        private void OnInteract(object msg)
+        {
+            _moveableObject.Interact();
+            _moveableObject.UnInteract();
+
+            if (_isHoldMoveable)
+            {
+                _isHoldMoveable = false;
+                SFXController.Instance.StopObjectSFX();
+            }
+            else if (_moveableObject != null)
+            {
+                _isHoldMoveable = true;
+                SFXController.Instance.PlayInteractObjectSFX();
+            }
+        }
+        #endregion
+
+        #region Detection
+        private bool _inGrabArea;
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Moveable"))
+            {
+                _inGrabArea = true;
+                _moveableObject = collision.GetComponent<IMoveableObject>();
+
+                Vector2 normal = collision.transform.position - transform.position;
+                _objectOnRight = normal.x > 0;
+            }
+        }
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Moveable"))
+            {
+                _inGrabArea = false;
+                _moveableObject.UnInteract();
+                _moveableObject = null;
+            }
+        }
+        private void ChangeAnimationState()
+        {
+            int normalizeDirection = (int) _direction * (_objectOnRight ? 1 : -1);
+
+            _playerAnimator.Push = normalizeDirection > 0;
+            _playerAnimator.Pull = normalizeDirection < 0;
+
+            // Play SFX
+            switch (normalizeDirection)
+            {
+                case 0:
+                    SFXController.Instance.StopObjectSFX();
+                    break;
+                case 1:
+                    SFXController.Instance.PlayPushSFX();
+                    break;
+                case -1:
+                    SFXController.Instance.PlayPullSFX();
+                    break;
+            }
+
+
+        } 
+        #endregion
 
         private void Update()
         {
@@ -131,24 +209,6 @@ namespace Comma.Gameplay.Player
             Gizmos.DrawWireSphere(leftDirection,_radius);
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (collision.CompareTag("Moveable"))
-            {
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    if (isHoldingObject)
-                    {
-                        isHoldingObject = false;
-                    }
-                    else
-                    {
-                        IDetectable coll = collision.gameObject.GetComponent<IDetectable>();
-                        coll?.Interact();
-                    }
-            
-                }
-            }
-        }
+        
     }
 }
