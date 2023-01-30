@@ -381,7 +381,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 303913227}
   m_LocalRotation: {x: -1e-45, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15, y: 265, z: -10}
+  m_LocalPosition: {x: -10, y: 265, z: -10}
   m_LocalScale: {x: 1.4126525, y: 1.3322172, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -970,8 +970,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1164264513}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 100, z: 0}
-  m_LocalScale: {x: 40, y: 3, z: 1}
+  m_LocalPosition: {x: 0, y: 97.4993, z: 0}
+  m_LocalScale: {x: 35, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1498178998}
@@ -990,7 +990,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cameraPrologData:
-    Offset: {x: -15, y: -13, z: -10}
+    Offset: {x: -15, y: -15, z: -10}
     Size: 0
 --- !u!61 &1164264516
 BoxCollider2D:
@@ -1201,7 +1201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: -15, y: -35, z: -10}
+  m_FollowOffset: {x: -10, y: -35, z: -10}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1312,7 +1312,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1294011935}
   m_LocalRotation: {x: -1e-45, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15, y: 265, z: -10}
+  m_LocalPosition: {x: -10, y: 265, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1568,7 +1568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cameraPrologData:
-    Offset: {x: -15, y: 0, z: -10}
+    Offset: {x: -15, y: -5, z: -10}
     Size: 0
 --- !u!61 &1549841890
 BoxCollider2D:
@@ -2667,8 +2667,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7150825706762289742}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 185, z: 0}
-  m_LocalScale: {x: 210, y: 2, z: 1}
+  m_LocalPosition: {x: -0, y: 193.7225, z: 0}
+  m_LocalScale: {x: 230, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7150825705382382657}
@@ -2788,7 +2788,7 @@ MonoBehaviour:
     NewPosition: {x: 0, y: 0}
     TargetPosition: {x: 0, y: 0}
     Speed: 0
-    AnimationStates: 3
+    AnimationStates: 0
     DelayAnimation: 0
     CanRemove: 0
     TimeRemove: 0
