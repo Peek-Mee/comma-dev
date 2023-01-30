@@ -1,3 +1,4 @@
+using Comma.Global.AudioManager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,6 +51,7 @@ namespace Comma.Home.UI
 
         private void OnNewGameButton()
         {
+            BGMController.Instance.StartCourotineHome();
             SceneManager.LoadScene(_gameplaySceneName);
         }
         private  void OnContinueButton()
