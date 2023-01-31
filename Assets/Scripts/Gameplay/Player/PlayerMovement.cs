@@ -363,12 +363,29 @@ namespace Comma.Gameplay.Player
 
         private bool IsGrounded()
         {
+
+
             RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
             if (tryToCheckGround)
             {
                 _currentPlatformDegree = tryToCheckGround.normal;
+                return tryToCheckGround;
             }
-            return tryToCheckGround;
+            else
+            {
+                Collider2D[] colls = Physics2D.OverlapCircleAll(_ground.position, .5f, _groundLayers[_currentLayer]);
+                if (colls.Length <= 0) return false;
+                for (int i =0; i < colls.Length; i++)
+                {
+                    if (colls[i].gameObject != gameObject)
+                    {
+                        _currentPlatformDegree = new(0, 1);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private RaycastHit2D IsCollide(Vector3 from, Vector2 direction, float distance)
