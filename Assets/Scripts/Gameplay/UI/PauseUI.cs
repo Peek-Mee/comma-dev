@@ -8,6 +8,7 @@ namespace Comma.Gameplay.UI
     public class PauseUI : MonoBehaviour
     {
         [SerializeField] private GameObject _pausePanel;
+        [SerializeField] private GameObject _pauseParentMenu;
         [Header("Pause Buttons")]
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _optionsButton;
@@ -16,15 +17,6 @@ namespace Comma.Gameplay.UI
         [Header("Pop Ups")]
         [SerializeField] private GameObject _optionsPopUp;
         [SerializeField] private GameObject _warningMenuPopUp;
-
-        //private void Update()
-        //{
-        //    if(Input.GetKeyDown(KeyCode.Escape))
-        //    {
-        //        if(_optionsPopUp.activeSelf) return;
-        //        gameObject.SetActive(!gameObject.activeSelf);
-        //    }
-        //}
 
         private void Start()
         {
@@ -63,10 +55,12 @@ namespace Comma.Gameplay.UI
         }
         private void OnOptionsButton()
         {
+            _pauseParentMenu.SetActive(false);
             _optionsPopUp.SetActive(true);
         }
         private void OnMenuButton()
         {
+            _pauseParentMenu.SetActive(false);
             _warningMenuPopUp.SetActive(true);
         }
     }
