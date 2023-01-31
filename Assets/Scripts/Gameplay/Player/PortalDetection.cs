@@ -1,4 +1,5 @@
 ﻿using Comma.Gameplay.DetectableObject;
+using Comma.Global.AudioManager;
 using Comma.Global.PubSub;
 using Comma.Utility.Collections;
 using UnityEngine;
@@ -51,6 +52,7 @@ namespace Comma.Gameplay.Player
         {
             if (!_isInPortalArea || _portal == null) return;
             _portal.Interact();
+            SFXController.Instance.PlayInteractPortalSFX();
         }
 
         public string ToDebug()

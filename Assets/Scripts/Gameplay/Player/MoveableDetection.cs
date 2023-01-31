@@ -1,6 +1,7 @@
 ﻿using System;
 using Comma.Gameplay.Player;
 using Comma.Gameplay.DetectableObject;
+using Comma.Global.AudioManager;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -33,18 +34,18 @@ namespace Comma.Gameplay.Player
             
             if(rightHit.collider != null && rightHit.collider.CompareTag("Moveable"))
             {
-                GetInput(rightHit.collider);
+                GetInput(rightHit.collider,1);
                 RightTriggerAnimation(_player.GetInput);
-                Debug.Log("Right hand detection Moveable "+rightHit.collider.gameObject.name);
+                Debug.Log("Hit Moveable");
             }
             else if(leftHit.collider != null && leftHit.collider.CompareTag("Moveable"))
             {
-                GetInput(leftHit.collider);
+                GetInput(leftHit.collider,-1);
                 LeftTriggerAnimation(_player.GetInput);
-                Debug.Log("Left hand detection Moveable "+leftHit.collider.gameObject.name);
+                Debug.Log("Hit Moveable");
             }
         }
-        private void GetInput(Collider2D col)
+        private void GetInput(Collider2D col,float direction)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -55,38 +56,69 @@ namespace Comma.Gameplay.Player
                     isHoldingObject = false;
                     var moveable = col.GetComponent<MoveableObject>();
                     moveable.UnInteract();
+
+                    SFXController.Instance.StopObjectSFX();
                 }
                 else
                 {
-                    _player.IsFlipProhibited = true;
                     isHoldingObject = true;
+                    PlayerFlip(direction);
+                    _player.IsFlipProhibited = true;
                     IDetectable detectable = col.gameObject.GetComponent<IDetectable>();
                     detectable?.Interact();
+                    var moveable = col.GetComponent<MoveableObject>();
+                    moveable.GetDetection(this,direction);
+
+                    SFXController.Instance.PlayInteractObjectSFX();
                 }
             }
         }
         private void LeftTriggerAnimation(float input)
         {
-            if (input == 0 && !isHoldingObject) return;// Play Idle Animation
-            if(input > 0)
+            if (!isHoldingObject) return;// Play Idle Animation
+            if (input == 0)
             {
-                //Play Pull Animation
+               SFXController.Instance.StopObjectSFX();
             }
-            else if(input < 0)
+            else if(input > 0)
             {
-                // Play Push Animation
+                //Play Pull ANim
+                SFXController.Instance.PlayPullSFX();
+            }
+            else if (input < 0)
+            {
+                //Play Push Animation
+                SFXController.Instance.PlayPushSFX();
             }
         }
         private void RightTriggerAnimation(float input)
         {
-            if (input == 0 && !isHoldingObject) return;// Play Idle Animation
-            if (input > 0)
+            if (!isHoldingObject) return;// Play Idle Animation
+            if (input == 0)
             {
-                //Play Push Animation
+                SFXController.Instance.StopObjectSFX();
+            }
+            else if (input > 0)
+            {
+                //Play Push Anim
+                SFXController.Instance.PlayPushSFX();
             }
             else if (input < 0)
             {
-                // Play Pull Animation
+                //Play Pull Animation
+                SFXController.Instance.PlayPullSFX();
+            }
+        }
+
+        private void PlayerFlip(float dir)
+        {
+            if (dir > 0)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else if(dir < 0)
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
             }
         }
 

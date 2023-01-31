@@ -1,3 +1,4 @@
+using Comma.Global.AudioManager;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -34,6 +35,13 @@ namespace Comma.Gameplay.Player
             _playerAnimator.SetBool(_varOnEndFall, EndFall);
             _playerAnimator.SetFloat(_varXSpeed, XSpeed);
             _playerAnimator.SetFloat(_varYSpeed, YSpeed);
+
+            var SFXWalk = Move && XSpeed > 0.01 && XSpeed < 1.01;
+            var SFXRun = Move && XSpeed > 1.01;
+            SFXController.Instance.PlayMovementSFX(SFXWalk,SFXRun);
+            SFXController.Instance.PlayJumpSFX(StartJump);
+            SFXController.Instance.PlayLandingSFX(EndFall);
+           // SFXController.Instance.PlayWalkSFX(Move && XSpeed > 1.01);
         }
 
         public void StartWalkFinish()
