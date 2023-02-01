@@ -123,7 +123,7 @@ namespace Comma.Gameplay.Player
         public float GetInput
         {
             get { return _horizontalUserInput; }
-            set { _horizontalUserInput = value; }
+            //set { _horizontalUserInput = value; }
         }
         private bool _isHoldSprint = false;
         private bool _isPressJump = false;
@@ -231,7 +231,7 @@ namespace Comma.Gameplay.Player
             if (_playerAnimator.PortalInteract) return;
             if (_isWalking)
             {
-                if (_isHoldSprint)
+                if (_isHoldSprint && !(_playerAnimator.Pull || _playerAnimator.Push))
                 {
                     if (_playerAnimator.Idle)
                     {
@@ -244,7 +244,7 @@ namespace Comma.Gameplay.Player
                 }
                 else
                 {
-                    if (_horizontalUserInput != 0 && _playerAnimator.Idle == true)
+                    if (_horizontalUserInput != 0 && _playerAnimator.Idle && !_playerAnimator.Pull && !_playerAnimator.Push)
                     {
                         _playerAnimator.StartWalk = true;
                     }
@@ -274,6 +274,7 @@ namespace Comma.Gameplay.Player
             {
                 _isPressJump = false;
                 if (_playerAnimator.PortalInteract) return;
+                if (_playerAnimator.Pull || _playerAnimator.Push) return;
                 if (_isGrounded)
                 {
                     _isAbleToMoveAfterJump = true;
