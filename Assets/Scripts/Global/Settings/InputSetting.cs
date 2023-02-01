@@ -32,6 +32,8 @@ namespace Comma.Global.Setting
 
         private InputActionRebindingExtensions.RebindingOperation _rebindingOperation;
 
+        private string _previousBinding;
+
         private void Start()
         {
             UserInputController.OnInputManagerLoaded.AddListener(Init);
@@ -54,6 +56,7 @@ namespace Comma.Global.Setting
             if (!_isRebinding)
             {
                 UserInputController.UserInputManager.Disable();
+                _previousBinding = keyBind.InputAction.bindings[0].effectivePath;
                 Rebinding(keyBind);
             }
         }
@@ -69,7 +72,7 @@ namespace Comma.Global.Setting
                 .WithControlsExcluding("Mouse")
                 .WithCancelingThrough("/<Mouse>/leftButton/")
                 .OnMatchWaitForAnother(0.1f)
-                .OnCancel(operation => RebindComplete(keyBind))
+                .OnCancel(operation => SetToPreviousBind(keyBind))
                 .OnComplete(operation => CheckForDuplicate(keyBind))
                 .Start();
         }
@@ -102,6 +105,12 @@ namespace Comma.Global.Setting
             Debug.Log("Rebind canceled, retrying...");
 
             Rebinding(keyBind);
+        }
+
+        private void SetToPreviousBind(KeyBind keyBind)
+        {
+            keyBind.InputAction.ApplyBindingOverride(_previousBinding);
+            RebindComplete(keyBind);
         }
 
         private void RebindComplete(KeyBind keyBind)
