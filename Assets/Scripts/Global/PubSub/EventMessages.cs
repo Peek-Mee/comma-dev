@@ -49,6 +49,25 @@ namespace Comma.Global.PubSub
         }
     }
     public struct OnPlayerSwapDown { }
+    public struct OnEnterCameraTrigger
+    {
+        public int MoveToRight { get; private set; }
+        public float StartScale { get; private set; }
+        public float FinishScale { get; private set; }
+        public Vector2 StartOffset { get; private set; }
+        public Vector2 FinishOffset { get; private set; }
+        public float Distance { get; private set; }
+        public OnEnterCameraTrigger(int toRight, float startScale, float finishScale, Vector2 startOff, Vector2 finishOff, float distance)
+        {
+            MoveToRight = toRight;
+            StartScale = startScale;
+            FinishScale = finishScale;
+            StartOffset = startOff;
+            FinishOffset = finishOff;
+            Distance = distance;
+        }
+    }
+    public struct OnExitCameraTrigger { }
     public struct OnCameraChangeTrigger
     {
         public CameraChangeData Data { get; private set; }
