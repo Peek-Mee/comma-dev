@@ -1,3 +1,4 @@
+using Comma.Global.SaveLoad;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,10 +15,13 @@ namespace Comma.Home.UI
         [SerializeField] private Button _newGameButton;
         [SerializeField] private Button _creditssButton;
         [SerializeField] private Button _quitButton;
-        
+
+        [Header("Transitions")]
+        [SerializeField] private GameObject _transition;
+
         [Header("Scene Management")]
         [SerializeField] private string _gameplaySceneName = "Gameplay";
-        
+
         [Header("Home Menu Pop Up")]
         [SerializeField] private GameObject _creditsPopUp;
         [SerializeField] private GameObject _warningNewGamePopUp;
@@ -25,7 +29,11 @@ namespace Comma.Home.UI
 
         private void Start()
         {
-            
+            if (SaveSystem.IsNewPlayer())
+            {
+                _continueButton.onClick.RemoveAllListeners();
+                _continueButton.gameObject.SetActive(false);
+            }
         }
         
         private void OnEnable()
@@ -50,11 +58,16 @@ namespace Comma.Home.UI
 
         private void OnNewGameButton()
         {
-            SceneManager.LoadScene(_gameplaySceneName);
+            //_transition.SetActive(true);
+            //SceneManager.LoadSceneAsync(_gameplaySceneName);
+            //SceneManager.LoadScene(_gameplaySceneName);
+            if (!SaveSystem.IsNewPlayer()) _warningNewGamePopUp.SetActive(true);
+            else SceneManager.LoadSceneAsync(_gameplaySceneName);
         }
         private  void OnContinueButton()
         {
-            SceneManager.LoadScene(_gameplaySceneName);
+            _transition.SetActive(true);
+            SceneManager.LoadSceneAsync(_gameplaySceneName);
         }
         private void OnCreditsButton()
         {
