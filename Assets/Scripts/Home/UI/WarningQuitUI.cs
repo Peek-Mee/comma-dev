@@ -9,7 +9,15 @@ namespace Comma.Home.UI
         [Header("Warning Quit Buttons")]
         [SerializeField] private Button _yesButton;
         [SerializeField] private Button _noButton;
-        
+
+        [Header("Panels")]
+        private Animator _animator;
+        private void Awake()
+        {
+            _animator= GetComponent<Animator>();
+        }
+
+
         private void OnEnable()
         {
             RemoveAllButtonListeners();
@@ -31,6 +39,11 @@ namespace Comma.Home.UI
             Application.Quit();
         }
         private void OnNoButton()
+        {
+            //gameObject.SetActive(false);
+            _animator.SetTrigger("exit");
+        }
+        public void BackToMenu()
         {
             gameObject.SetActive(false);
         }

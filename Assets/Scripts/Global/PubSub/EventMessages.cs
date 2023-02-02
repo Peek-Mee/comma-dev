@@ -1,7 +1,7 @@
-﻿using Comma.Gameplay.Environment;
+using Comma.Gameplay.Environment;
 using Comma.Prolog.CameraProlog;
 using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Comma.Global.PubSub
 {
@@ -50,14 +50,25 @@ namespace Comma.Global.PubSub
         }
     }
     public struct OnPlayerSwapDown { }
-    public struct OnCameraChangeTrigger
+    public struct OnEnterCameraTrigger
     {
-        public CameraChangeData Data { get; private set; }
-        public OnCameraChangeTrigger(CameraChangeData data)
+        public int MoveToRight { get; private set; }
+        public float StartScale { get; private set; }
+        public float FinishScale { get; private set; }
+        public Vector2 StartOffset { get; private set; }
+        public Vector2 FinishOffset { get; private set; }
+        public float Distance { get; private set; }
+        public OnEnterCameraTrigger(int toRight, float startScale, float finishScale, Vector2 startOff, Vector2 finishOff, float distance)
         {
-            Data = data;
+            MoveToRight = toRight;
+            StartScale = startScale;
+            FinishScale = finishScale;
+            StartOffset = startOff;
+            FinishOffset = finishOff;
+            Distance = distance;
         }
     }
+    public struct OnExitCameraTrigger { }
     public struct OnCutSceneTrigger
     {
         public CutSceneData Data { get; private set; }

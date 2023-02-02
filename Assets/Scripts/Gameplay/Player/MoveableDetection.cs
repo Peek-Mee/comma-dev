@@ -1,113 +1,127 @@
-﻿using System;
-using Comma.Gameplay.Player;
-using Comma.Gameplay.DetectableObject;
+﻿using Comma.Gameplay.DetectableObject;
 using Comma.Global.AudioManager;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Comma.Global.PubSub;
+using Comma.Utility.Collections;
 
 namespace Comma.Gameplay.Player
 {
     [RequireComponent(typeof(Collider2D))]
-    public class MoveableDetection : MonoBehaviour
+    public class MoveableDetection : MonoBehaviour, IDebugger
     {
         private PlayerMovement _player;
-        private bool isHoldingObject = false; 
-        [SerializeField] private LayerMask _layerMask; 
-        [SerializeField] private float _distance,_radius;
+        private PlayerAnimationController _playerAnimator;
+        private Rigidbody2D _rigid;
 
+        private void Awake()
+        {
+            _playerAnimator = GetComponent<PlayerAnimationController>();
+            _player = GetComponent<PlayerMovement>();
+            _rigid= GetComponent<Rigidbody2D>();
+        }
         private void Start()
         {
-            _player = GetComponent<PlayerMovement>();
+            
+            EventConnector.Subscribe("OnPlayerInteract", new(OnInteract));
+
         }
+
+        #region PubSub
+        private bool _isHoldMoveable;
+        private IMoveableObject _moveableObject;
+        private bool _objectOnRight;
+        private float _direction;
+        private void OnInteract(object msg)
+        {
+            
+
+            if (_isHoldMoveable)
+            {
+                _isHoldMoveable = false;
+                _player.IsFlipProhibited = false;
+                _playerAnimator.Push = false;
+                _playerAnimator.Pull = false;
+                _moveableObject.UnInteract();
+                SFXController.Instance.StopObjectSFX();
+            }
+            else if (_moveableObject != null)
+            {
+                if (!_inGrabArea) return;
+                _isHoldMoveable = true;
+                _player.IsFlipProhibited = true;
+                HandleMovable(1);
+                _moveableObject.Interact();
+                _playerAnimator.Push = true;
+                SFXController.Instance.PlayInteractObjectSFX();
+            }
+        }
+        #endregion
+
+        #region Detection
+        private bool _inGrabArea;
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Moveable"))
+            {
+                _inGrabArea = true;
+                _moveableObject = collision.GetComponent<IMoveableObject>();
+
+                Vector2 normal = collision.transform.position - transform.position;
+                _objectOnRight = normal.x > 0;
+            }
+        }
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Moveable"))
+            {
+                _inGrabArea = false;
+            }
+        }
+        private void ChangeAnimationState()
+        {
+            if (!_isHoldMoveable) return;
+            _direction = _player.GetInput;
+            int normalizeDirection = (int) _direction * (_objectOnRight ? 1 : -1);
+            PlayerFlip(_objectOnRight ? 1 : -1);
+
+
+            // Play SFX
+            switch (normalizeDirection)
+            {
+                case 0:
+                    SFXController.Instance.StopObjectSFX();
+                    if (!_isHoldMoveable)
+                    {
+                        _playerAnimator.Push = false; 
+                        _playerAnimator.Pull = false;
+                    }
+                    break;
+                case 1:
+                    SFXController.Instance.PlayPushSFX();
+                    _playerAnimator.Push = true;
+                    _playerAnimator.Pull = false;
+                    break;
+                case -1:
+                    SFXController.Instance.PlayPullSFX();
+                    _playerAnimator.Push = false;
+                    _playerAnimator.Pull = true;
+                    break;
+            }
+
+        } 
+        private void HandleMovable(float direction)
+        {
+            if (!_isHoldMoveable) return;
+            _moveableObject.GetDetection(_rigid, direction);
+        }
+        #endregion
 
         private void Update()
         {
-            OnHitMoveable();
+            ChangeAnimationState();
         }
 
-        private void OnHitMoveable()
-        {
-            var rightDirection = new Vector2(transform.position.x + _distance, transform.position.y);
-            var leftDirection = new Vector2(transform.position.x - _distance, transform.position.y);
-            RaycastHit2D rightHit = Physics2D.CircleCast(rightDirection, _radius, rightDirection,0,_layerMask);
-            RaycastHit2D leftHit = Physics2D.CircleCast(leftDirection, _radius, leftDirection,0,_layerMask);
-            
-            if(rightHit.collider != null && rightHit.collider.CompareTag("Moveable"))
-            {
-                GetInput(rightHit.collider,1);
-                RightTriggerAnimation(_player.GetInput);
-            }
-            else if(leftHit.collider != null && leftHit.collider.CompareTag("Moveable"))
-            {
-                GetInput(leftHit.collider,-1);
-                LeftTriggerAnimation(_player.GetInput);
-            }
-        }
-        private void GetInput(Collider2D col,float direction)
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                if (isHoldingObject)
-                {
-                    //Play idle animation
-                    _player.IsFlipProhibited = false;
-                    isHoldingObject = false;
-                    var moveable = col.GetComponent<MoveableObject>();
-                    moveable.UnInteract();
 
-                    SFXController.Instance.StopObjectSFX();
-                }
-                else
-                {
-                    PlayerFlip(direction);
-                    _player.IsFlipProhibited = true;
-                    isHoldingObject = true;
-                    IDetectable detectable = col.gameObject.GetComponent<IDetectable>();
-                    detectable?.Interact();
-
-                    var moveable = col.GetComponent<MoveableObject>();
-                    moveable.GetDetection(this,direction);
-
-                    SFXController.Instance.PlayInteractObjectSFX();
-                }
-            }
-        }
-        private void LeftTriggerAnimation(float input)
-        {
-            if (!isHoldingObject) return;// Play Idle Animation
-            if (input == 0)
-            {
-               SFXController.Instance.StopObjectSFX();
-            }
-            else if(input > 0)
-            {
-                //Play Pull ANim
-                SFXController.Instance.PlayPullSFX();
-            }
-            else if (input < 0)
-            {
-                //Play Push Animation
-                SFXController.Instance.PlayPushSFX();
-            }
-        }
-        private void RightTriggerAnimation(float input)
-        {
-            if (!isHoldingObject) return;// Play Idle Animation
-            if (input == 0)
-            {
-                SFXController.Instance.StopObjectSFX();
-            }
-            else if (input > 0)
-            {
-                //Play Push Anim
-                SFXController.Instance.PlayPushSFX();
-            }
-            else if (input < 0)
-            {
-                //Play Pull Animation
-                SFXController.Instance.PlayPullSFX();
-            }
-        }
 
         private void PlayerFlip(float dir)
         {
@@ -121,33 +135,16 @@ namespace Comma.Gameplay.Player
             }
         }
 
-        private void OnDrawGizmos()
-        {
-            var rightDirection = new Vector2(transform.position.x + _distance, transform.position.y);
-            var leftDirection = new Vector2(transform.position.x - _distance, transform.position.y);
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(rightDirection, _radius);
-            Gizmos.DrawWireSphere(leftDirection,_radius);
-        }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        public string ToDebug()
         {
-            if (collision.CompareTag("Moveable"))
-            {
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    if (isHoldingObject)
-                    {
-                        isHoldingObject = false;
-                    }
-                    else
-                    {
-                        IDetectable coll = collision.gameObject.GetComponent<IDetectable>();
-                        coll?.Interact();
-                    }
-            
-                }
-            }
+            string returner = "\n";
+            returner += $"In Grab Area: <i>{_inGrabArea}</i>\n";
+            returner += $"Is interacting: <i>{_isHoldMoveable}</i>\n";
+            returner += $"IMovable: <i>{_moveableObject}</i>\n";
+            returner += $"From Right: <i>{_objectOnRight}</i>\n";
+
+            return returner;
         }
     }
 }

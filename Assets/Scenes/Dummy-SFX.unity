@@ -5136,7 +5136,7 @@ MonoBehaviour:
   _newGameButton: {fileID: 760712888}
   _creditssButton: {fileID: 585536884}
   _quitButton: {fileID: 1347411190}
-  _gameplaySceneName: Dummy-UI-Gameplay
+  _gameplaySceneName: Dummy-Character-Backup
   _creditsPopUp: {fileID: 1586193305}
   _warningNewGamePopUp: {fileID: 303039394}
   _warningQuitPopUp: {fileID: 947420002}
@@ -5279,7 +5279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3920732849314813301, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3920732849314813304, guid: 2ba6b8781456cfe498a8dcdb42e339e3, type: 3}
       propertyPath: m_RootOrder

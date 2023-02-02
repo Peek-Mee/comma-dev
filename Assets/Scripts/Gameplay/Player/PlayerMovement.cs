@@ -3,6 +3,7 @@ using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -123,7 +124,7 @@ namespace Comma.Gameplay.Player
         public float GetInput
         {
             get { return _horizontalUserInput; }
-            set { _horizontalUserInput = value; }
+            //set { _horizontalUserInput = value; }
         }
         private bool _isHoldSprint = false;
         private bool _isPressJump = false;
@@ -228,9 +229,10 @@ namespace Comma.Gameplay.Player
 
         private void OnWalk()
         {
+            if (_playerAnimator.PortalInteract) return;
             if (_isWalking)
             {
-                if (_isHoldSprint)
+                if (_isHoldSprint && !(_playerAnimator.Pull || _playerAnimator.Push))
                 {
                     if (_playerAnimator.Idle)
                     {
@@ -243,7 +245,7 @@ namespace Comma.Gameplay.Player
                 }
                 else
                 {
-                    if (_horizontalUserInput != 0 && _playerAnimator.Idle == true)
+                    if (_horizontalUserInput != 0 && _playerAnimator.Idle && !_playerAnimator.Pull && !_playerAnimator.Push)
                     {
                         _playerAnimator.StartWalk = true;
                     }
@@ -272,6 +274,8 @@ namespace Comma.Gameplay.Player
             if (_isPressJump)
             {
                 _isPressJump = false;
+                if (_playerAnimator.PortalInteract) return;
+                if (_playerAnimator.Pull || _playerAnimator.Push) return;
                 if (_isGrounded)
                 {
                     _isAbleToMoveAfterJump = true;
@@ -363,12 +367,34 @@ namespace Comma.Gameplay.Player
 
         private bool IsGrounded()
         {
+
+
             RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
-            if (tryToCheckGround)
+            if (tryToCheckGround.collider.gameObject != gameObject)
             {
                 _currentPlatformDegree = tryToCheckGround.normal;
+                return tryToCheckGround;
             }
-            return tryToCheckGround;
+            else
+            {
+                Collider2D[] colls = Physics2D.OverlapCircleAll(_ground.position, .52f, _groundLayers[_currentLayer]);
+                if (colls.Length <= 0) return false;
+                for (int i =0; i < colls.Length; i++)
+                {
+                    if (colls[i].gameObject != gameObject)
+                    {
+                        _currentPlatformDegree = new(0, 1);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_ground.position, .52f);
         }
 
         private RaycastHit2D IsCollide(Vector3 from, Vector2 direction, float distance)
