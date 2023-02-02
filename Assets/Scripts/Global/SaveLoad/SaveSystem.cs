@@ -174,5 +174,10 @@ namespace Comma.Global.SaveLoad
                 return false;
             }
         }
+
+        public static bool IsNewPlayer()
+        {
+            return true;
+        }
     }
 }

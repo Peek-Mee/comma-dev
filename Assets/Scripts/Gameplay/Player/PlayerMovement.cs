@@ -3,9 +3,10 @@ using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-namespace Comma.Gameplay.CharacterMovement
+namespace Comma.Gameplay.Player
 {
     public enum PlayerState
     {
@@ -41,6 +42,11 @@ namespace Comma.Gameplay.CharacterMovement
         private SpriteRenderer _playerSprite;
         private bool _isInCutScene = false;
         private bool _isFlipProhibited = false;
+        public bool IsFlipProhibited
+        {
+            get { return _isFlipProhibited; }
+            set { _isFlipProhibited = value; }
+        }
         // #######
 
         [Header("Movement")]
@@ -51,24 +57,20 @@ namespace Comma.Gameplay.CharacterMovement
 
         private bool isDashing = false;
         private bool _isFacingRight = true;
+     
         
         [Header("Jump")]
         [SerializeField] private float _jumpForce;
         [SerializeField] private float _fallMultiplier;
-        
+
         [Header("Animation")]
-        private Animator _animator;
-        private const string On_Idle= "OnIdle";
-        private const string On_Move = "OnMove";
-        private const string On_Jump = "OnJump";
-        private const string On_Fall = "OnFall";
-        private const string Speed = "Speed";
+        [SerializeField] private PlayerAnimationController _playerAnimator;
         
         [Header("State")]
-        [SerializeField] private PlayerState _playerState;
-        [SerializeField] private bool _isGrounded;
+        private PlayerState _playerState;
+        private bool _isGrounded;
         private bool _wasGrounded;
-        [SerializeField] private bool _isWalking;
+        private bool _isWalking;
 
         private void Awake()
         {
@@ -77,9 +79,7 @@ namespace Comma.Gameplay.CharacterMovement
         private void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            _animator = GetComponent<Animator>();
             _playerSprite = GetComponent<SpriteRenderer>();
-
             //init layer value
             foreach(var layer in _groundLayers)
             {
@@ -104,6 +104,7 @@ namespace Comma.Gameplay.CharacterMovement
         {
             OnPlayerMove msg = (OnPlayerMove)message;
             _horizontalUserInput = msg.Direction.x;
+            
         }
         private void OnJumpInput(object message)
         {
@@ -120,6 +121,11 @@ namespace Comma.Gameplay.CharacterMovement
 
         #region Movement From User Input
         private float _horizontalUserInput = 0f;
+        public float GetInput
+        {
+            get { return _horizontalUserInput; }
+            //set { _horizontalUserInput = value; }
+        }
         private bool _isHoldSprint = false;
         private bool _isPressJump = false;
 
@@ -135,6 +141,14 @@ namespace Comma.Gameplay.CharacterMovement
             }
             _isWalking = Mathf.Abs(_horizontalUserInput) > 0.1f;
             _isGrounded = IsGrounded();
+            if (_isGrounded)
+            {
+                _playerAnimator.Move = _isWalking;
+            }
+            else
+            {
+                _playerAnimator.Move = false;
+            }
             
 
             ChangePlayerState();
@@ -185,7 +199,7 @@ namespace Comma.Gameplay.CharacterMovement
         private bool _isAbleToMoveAfterJump = false;
         private void OnMove()
         {
-            if (!_isWalking && _isGrounded)
+            if ((!_isWalking && _isGrounded) || _playerAnimator.StartWalk || _playerAnimator.StartRun)
             {
                 _rigidbody2D.velocity= Vector2.zero;
                 return;
@@ -210,70 +224,95 @@ namespace Comma.Gameplay.CharacterMovement
 
 
             _rigidbody2D.velocity = vel;
+           
         }
 
         private void OnWalk()
         {
+            if (_playerAnimator.PortalInteract) return;
             if (_isWalking)
             {
-                if (_isHoldSprint)
+                if (_isHoldSprint && !(_playerAnimator.Pull || _playerAnimator.Push))
                 {
+                    if (_playerAnimator.Idle)
+                    {
+                        _playerAnimator.StartRun = true;
+                    }
+                    _playerAnimator.Idle = false;
+                    _playerAnimator.XSpeed = 2f;
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
-                    IdleAnimation(false);
-                    MoveAnimation(2, _isGrounded);
                 }
                 else
                 {
+                    if (_horizontalUserInput != 0 && _playerAnimator.Idle && !_playerAnimator.Pull && !_playerAnimator.Push)
+                    {
+                        _playerAnimator.StartWalk = true;
+                    }
+                    _playerAnimator.Idle = false;
+                    _playerAnimator.XSpeed = 1f;
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
                         _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
-                    IdleAnimation(false);
-                    MoveAnimation(1, _isGrounded);
                 }
             }
             else
             {
                 _currentSpeed = _normalSpeed;
-                IdleAnimation(_isGrounded && !_isWalking);
-                MoveAnimation(0);
+                _playerAnimator.Idle = _isGrounded;
+                _playerAnimator.XSpeed = 0f;
             }
         }
+
         private void OnJump()
         {
-            JumpAnimation(false);
+            if (_playerAnimator.EndFall == false)
+            {
+                if (_playerAnimator.StartJump == true) _playerAnimator.YSpeed = 0f;
+                else _playerAnimator.YSpeed = .5f;
+            }
+
             if (_isPressJump)
             {
                 _isPressJump = false;
+                if (_playerAnimator.PortalInteract) return;
+                if (_playerAnimator.Pull || _playerAnimator.Push) return;
                 if (_isGrounded)
                 {
                     _isAbleToMoveAfterJump = true;
                     _rigidbody2D.AddForce(new Vector2(_rigidbody2D.velocity.x, _jumpForce * 50f));
-
-                    JumpAnimation(true);
-                    IdleAnimation(false);
-                    MoveAnimation();
-                    FallAnimation(false);
+                    _playerAnimator.Idle = false;
+                    _playerAnimator.StartJump = true;
+                    _playerAnimator.EndFall= false;
                 }
             }
+
         }
 
+        [SerializeField] private float _rangeNearGround = 3f;
         private void OnFall()
         {
-            FallAnimation(false);
             if (_wasGrounded) return;
             Vector2 gravity = -Physics2D.gravity;
             _rigidbody2D.velocity -= _fallMultiplier * Time.deltaTime * gravity;
-            if(_rigidbody2D.velocity.y < (-_jumpForce/2))
+
+
+            if (_playerAnimator.YSpeed == .5f)
             {
-                IdleAnimation(false);
-                MoveAnimation();
-                JumpAnimation(false);
-                FallAnimation(true);
+                RaycastHit2D nearGround = IsCollide(_ground.position, Vector2.down, _rangeNearGround);
+                if (nearGround && !_wasGrounded)
+                {
+                    _playerAnimator.YSpeed = 1f;
+                    _playerAnimator.EndFall = true;
+                }
+
             }
+            else if (_playerAnimator.YSpeed == 1f && _isGrounded) _playerAnimator.EndFall = false;
+
         }
 
         private void OnFlip()
         {
+            if (_isFlipProhibited) return;
             if (_isFacingRight && _horizontalUserInput < 0)
             {
                 _isFacingRight = !_isFacingRight;
@@ -282,7 +321,7 @@ namespace Comma.Gameplay.CharacterMovement
             {
                 _isFacingRight = !_isFacingRight;
             }
-            if (_isFlipProhibited) return;
+          
             _playerSprite.flipX = !_isFacingRight;
         }
         #region SwapLayerMask
@@ -326,33 +365,41 @@ namespace Comma.Gameplay.CharacterMovement
         }
         #endregion
 
-        #region Animation
-        private void IdleAnimation(bool isIdle)
-        {
-            _animator.SetBool(On_Idle, isIdle);
-        }
-        private void MoveAnimation(float speed = 0, bool ismove = false)
-        {
-            _animator.SetFloat(Speed,speed);
-            _animator.SetBool(On_Move, ismove);
-        }
-        private void JumpAnimation(bool isJumping)
-        {
-            _animator.SetBool(On_Jump, isJumping);
-        }
-        private void FallAnimation(bool isFalling)
-        {
-            _animator.SetBool(On_Fall, isFalling);
-        }
-        #endregion
-
         private bool IsGrounded()
         {
-            RaycastHit2D hit = Physics2D.Raycast(_ground.position, Vector2.down, _checkRadius, _groundLayers[_currentLayer]);
-            if (hit)
+
+
+            RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
+            if (tryToCheckGround.collider.gameObject != gameObject)
             {
-                _currentPlatformDegree = hit.normal;
+                _currentPlatformDegree = tryToCheckGround.normal;
+                return tryToCheckGround;
             }
+            else
+            {
+                Collider2D[] colls = Physics2D.OverlapCircleAll(_ground.position, .52f, _groundLayers[_currentLayer]);
+                if (colls.Length <= 0) return false;
+                for (int i =0; i < colls.Length; i++)
+                {
+                    if (colls[i].gameObject != gameObject)
+                    {
+                        _currentPlatformDegree = new(0, 1);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_ground.position, .52f);
+        }
+
+        private RaycastHit2D IsCollide(Vector3 from, Vector2 direction, float distance)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(from, direction, distance, _groundLayers[_currentLayer]);
             return hit;
         }
 
@@ -364,7 +411,7 @@ namespace Comma.Gameplay.CharacterMovement
             returner += $"In Ground: <i>{_isGrounded}</i>\n";
             returner += $"Velocity: <i>{_rigidbody2D.velocity}</i>\n";
             returner += $"Position: <i>{transform.position}</i>\n";
-            returner += $"Current Layer: <i>{gameObject.layer}</i>\n";
+            returner += $"Current Layer: <i>{LayerMask.LayerToName(Converter.BitToLayer(_groundLayers[_currentLayer]))}</i>\n";
             returner += $"State: <i>{_playerState}</i>\n";
             returner += $"Orbs: <i>{SaveSystem.GetPlayerData().GetOrbsInHand()}</i>\n";
 

@@ -1,6 +1,8 @@
 ﻿using Comma.Gameplay.DetectableObject;
+using Comma.Global.AudioManager;
 using Comma.Global.PubSub;
 using Comma.Utility.Collections;
+using System.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -11,6 +13,12 @@ namespace Comma.Gameplay.Player
         private bool _isInPortalArea = false;
         private IDetectable _portal;
         private int _currentInstanceId;
+        private PlayerAnimationController _playerAnimator;
+
+        private void Awake()
+        {
+            _playerAnimator= GetComponent<PlayerAnimationController>();
+        }
 
         private void Start()
         {
@@ -49,10 +57,20 @@ namespace Comma.Gameplay.Player
         }
         private void OnInteractInput(object msg)
         {
+            if (!_playerAnimator.Idle && !_playerAnimator.Move) return;
             if (!_isInPortalArea || _portal == null) return;
-            _portal.Interact();
+            _playerAnimator.PortalInteract = true;
+            //_portal.Interact();
+            StartCoroutine(WaitAnimation());
+            //SFXController.Instance.PlayInteractPortalSFX();
         }
 
+        IEnumerator WaitAnimation()
+        {
+            _playerAnimator.WaitInteract = true;
+            yield return new WaitUntil(() => !_playerAnimator.PortalInteract);
+            _portal.Interact();
+        }
         public string ToDebug()
         {
             string returner = "\n";
