@@ -11,8 +11,10 @@ namespace Comma.Global.Setting
     {
         public string Name;
         public Button Button;
+        public Button SetToDefault;
         [HideInInspector] public TMP_Text Text;
         [HideInInspector] public InputAction InputAction;
+        [HideInInspector] public string DefaultBinding;
 
         public void Init()
         {
@@ -21,6 +23,7 @@ namespace Comma.Global.Setting
             this.Text.text = InputControlPath.ToHumanReadableString(
                 InputAction.bindings[0].effectivePath,
                 InputControlPath.HumanReadableStringOptions.OmitDevice);
+            DefaultBinding = InputAction.bindings[0].effectivePath;
         }
     }
 
@@ -45,7 +48,9 @@ namespace Comma.Global.Setting
             {
                 KeyBind keyBind = _keyBinds[i];
                 keyBind.Button.onClick.RemoveAllListeners();
+                keyBind.SetToDefault.onClick.RemoveAllListeners();
                 keyBind.Button.onClick.AddListener(delegate { StartRebind(keyBind); });
+                keyBind.SetToDefault.onClick.AddListener(delegate { SetToDefault(keyBind); });
                 keyBind.Init();
                 _keyBinds[i] = keyBind;
             }
@@ -81,29 +86,23 @@ namespace Comma.Global.Setting
         {
             for (int i = 0; i < _keyBinds.Length; i++)
             {
-                Debug.Log($"Comparing {keyBind.Name} ({keyBind.InputAction}) with {_keyBinds[i].Name} ({_keyBinds[i].InputAction})");
                 if (_keyBinds[i].Name == keyBind.Name)
                 {
                     continue;
                 }
                 if (keyBind.InputAction.bindings[0].effectivePath == _keyBinds[i].InputAction.bindings[0].effectivePath)
                 {
-                    Debug.Log("found duplicate");
                     CancelRebind(keyBind);
                     return;
                 }
             }
 
-            Debug.Log("Rebind succesful");
             RebindComplete(keyBind);
         }
 
         private void CancelRebind(KeyBind keyBind)
         {
             _rebindingOperation.Dispose();
-
-            Debug.Log("Rebind canceled, retrying...");
-
             Rebinding(keyBind);
         }
 
@@ -117,17 +116,21 @@ namespace Comma.Global.Setting
         {
             _rebindingOperation.Dispose();
 
-            Debug.Log("Rebind complete");
-
             keyBind.Text.text = InputControlPath.ToHumanReadableString(
                 keyBind.InputAction.bindings[0].effectivePath,
                 InputControlPath.HumanReadableStringOptions.OmitDevice);
 
             UserInputController.UserInputManager.Enable();
-
             keyBind.Button.interactable = true;
-
             _isRebinding = false;
+        }
+
+        private void SetToDefault(KeyBind keyBind)
+        {
+            keyBind.InputAction.ApplyBindingOverride(keyBind.DefaultBinding);
+            keyBind.Text.text = InputControlPath.ToHumanReadableString(
+                keyBind.InputAction.bindings[0].effectivePath,
+                InputControlPath.HumanReadableStringOptions.OmitDevice);
         }
     }
 }
