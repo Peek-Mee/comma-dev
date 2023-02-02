@@ -21,6 +21,9 @@ namespace Comma.Gameplay.Player
         [SerializeField] private string _varOnPush = "OnPush";
         [SerializeField] private string _varOnPortalInteract = "OnPortalInteract";
         [SerializeField] private string _varOnWaitInteract = "OnWaitInteract";
+        [SerializeField] private string _varOnFallRoll = "OnFallRoll";
+        [SerializeField] private string _varOnFallStaright = "OnFallStraight";
+        [SerializeField] private string _varOnGetUp = "OnGetUp";
 
         public bool Idle { get; set; } = true;
         public bool Move { get; set; } = false;
@@ -34,6 +37,12 @@ namespace Comma.Gameplay.Player
         public bool WaitInteract { get; set; } = false;
         public float XSpeed { get; set; } = 0f;
         public float YSpeed { get; set; } = 0f;
+
+        // Cutscene only
+
+        [SerializeField] private bool _fallRoll;
+        [SerializeField] private bool _fallStraight;
+        [SerializeField] private bool _getUp;
 
         private void Update()
         {
@@ -49,6 +58,11 @@ namespace Comma.Gameplay.Player
             _playerAnimator.SetBool(_varOnWaitInteract, WaitInteract);
             _playerAnimator.SetFloat(_varXSpeed, XSpeed);
             _playerAnimator.SetFloat(_varYSpeed, YSpeed);
+
+            //Cutscene only
+            _playerAnimator.SetBool(_varOnFallRoll, _fallRoll);
+            _playerAnimator.SetBool(_varOnFallStaright, _fallStraight);
+            _playerAnimator.SetBool(_varOnGetUp, _getUp);
 
             var SFXWalk = Move && XSpeed == 1 && StartWalk == false;
             var SFXRun = Move && XSpeed == 2 && StartRun == false;
