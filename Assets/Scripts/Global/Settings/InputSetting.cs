@@ -3,8 +3,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Comma.Gameplay.UserInput;
 using TMPro;
+using Comma.Global.SaveLoad;
 
-namespace Comma.Global.Setting
+namespace Comma.Global.Settings
 {
     [System.Serializable]
     public struct KeyBind
@@ -12,7 +13,6 @@ namespace Comma.Global.Setting
         public string Name;
         public int Index;
         public Button Button;
-        public Button SetToDefault;
         [HideInInspector] public TMP_Text Text;
         [HideInInspector] public InputAction InputAction;
         [HideInInspector] public string DefaultBinding;
@@ -21,9 +21,6 @@ namespace Comma.Global.Setting
         {
             this.InputAction = UserInputController.UserInputManager.FindAction(Name);
             this.Text = Button.gameObject.GetComponentInChildren<TMP_Text>();
-            this.Text.text = InputControlPath.ToHumanReadableString(
-                InputAction.bindings[Index].effectivePath,
-                InputControlPath.HumanReadableStringOptions.OmitDevice);
             DefaultBinding = InputAction.bindings[Index].effectivePath;
         }
     }
@@ -31,29 +28,71 @@ namespace Comma.Global.Setting
     public class InputSetting : MonoBehaviour
     {
         [SerializeField] private KeyBind[] _keyBinds;
+        [SerializeField] private Button _setToDefault;
+        [SerializeField] private Button _applyButton;
+        [SerializeField] private Button _cancelButton;
 
         private bool _isRebinding = false;
 
         private InputActionRebindingExtensions.RebindingOperation _rebindingOperation;
 
         private string _previousBinding;
+        private InputSaveData _currentInputSaveData;
+        private InputSaveData _newInputSaveData;
+        public static InputSetting Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                Instance = this;
+            }
+            DontDestroyOnLoad(gameObject);
+        }
 
         private void Start()
         {
             UserInputController.OnInputManagerLoaded.AddListener(Init);
+            _setToDefault.onClick.RemoveAllListeners();
+            _applyButton.onClick.RemoveAllListeners();
+            _cancelButton.onClick.RemoveAllListeners();
+            _setToDefault.onClick.AddListener(SetToDefault);
+            _applyButton.onClick.AddListener(ApplyInputSetting);
+            _cancelButton.onClick.AddListener(CancelInputSetting);
         }
 
         private void Init()
         {
+            _currentInputSaveData = SaveSystem.GetInputSetting();
+            _newInputSaveData = (InputSaveData)_currentInputSaveData.Clone();
+
             for (int i = 0; i < _keyBinds.Length; i++)
             {
                 KeyBind keyBind = _keyBinds[i];
                 keyBind.Button.onClick.RemoveAllListeners();
-                keyBind.SetToDefault.onClick.RemoveAllListeners();
                 keyBind.Button.onClick.AddListener(delegate { StartRebind(keyBind); });
-                keyBind.SetToDefault.onClick.AddListener(delegate { SetToDefault(keyBind); });
                 keyBind.Init();
                 _keyBinds[i] = keyBind;
+            }
+
+            UserInputController.UserInputManager.LoadBindingOverridesFromJson(_currentInputSaveData.GetBindingOverride());
+
+            RefreshUI();
+        }
+
+        private void RefreshUI()
+        {
+            for (int i = 0; i < _keyBinds.Length; i++)
+            {
+                KeyBind keyBind = _keyBinds[i];
+                keyBind.Text.text = InputControlPath.ToHumanReadableString(
+                    keyBind.InputAction.bindings[keyBind.Index].effectivePath,
+                    InputControlPath.HumanReadableStringOptions.OmitDevice);
             }
         }
 
@@ -78,7 +117,7 @@ namespace Comma.Global.Setting
                 .WithControlsExcluding("Mouse")
                 .WithCancelingThrough("/<Mouse>/leftButton/")
                 .OnMatchWaitForAnother(0.1f)
-                .OnCancel(operation => SetToPreviousBind(keyBind))
+                .OnCancel(operation => CancelRebind(keyBind))
                 .OnComplete(operation => CheckForDuplicate(keyBind))
                 .Start();
         }
@@ -89,11 +128,14 @@ namespace Comma.Global.Setting
             {
                 if (_keyBinds[i].Name == keyBind.Name)
                 {
-                    continue;
+                    if (_keyBinds[i].Index == keyBind.Index)
+                    {
+                        continue;
+                    }
                 }
                 if (keyBind.InputAction.bindings[keyBind.Index].effectivePath == _keyBinds[i].InputAction.bindings[_keyBinds[i].Index].effectivePath)
                 {
-                    CancelRebind(keyBind);
+                    SetToPreviousBind(keyBind);
                     return;
                 }
             }
@@ -101,13 +143,13 @@ namespace Comma.Global.Setting
             RebindComplete(keyBind);
         }
 
-        private void CancelRebind(KeyBind keyBind)
+        private void SetToPreviousBind(KeyBind keyBind)
         {
             _rebindingOperation.Dispose();
             Rebinding(keyBind);
         }
 
-        private void SetToPreviousBind(KeyBind keyBind)
+        private void CancelRebind(KeyBind keyBind)
         {
             keyBind.InputAction.ApplyBindingOverride(keyBind.Index, _previousBinding);
             RebindComplete(keyBind);
@@ -124,14 +166,29 @@ namespace Comma.Global.Setting
             UserInputController.UserInputManager.Enable();
             keyBind.Button.interactable = true;
             _isRebinding = false;
+
+            _newInputSaveData.ChangeBindingOverride(UserInputController.UserInputManager.SaveBindingOverridesAsJson());
         }
 
-        private void SetToDefault(KeyBind keyBind)
+        private void SetToDefault()
         {
-            keyBind.InputAction.ApplyBindingOverride(keyBind.Index, keyBind.DefaultBinding);
-            keyBind.Text.text = InputControlPath.ToHumanReadableString(
-                keyBind.InputAction.bindings[keyBind.Index].effectivePath,
-                InputControlPath.HumanReadableStringOptions.OmitDevice);
+            UserInputController.UserInputManager.RemoveAllBindingOverrides();
+            RefreshUI();
+            _newInputSaveData.ChangeBindingOverride(UserInputController.UserInputManager.SaveBindingOverridesAsJson());
+        }
+
+        private void ApplyInputSetting()
+        {
+            _currentInputSaveData = (InputSaveData)_newInputSaveData.Clone();
+            SaveSystem.ChangeDataReference(_currentInputSaveData);
+            SaveSystem.SaveDataToDisk();
+        }
+
+        private void CancelInputSetting()
+        {
+            UserInputController.UserInputManager.RemoveAllBindingOverrides();
+            UserInputController.UserInputManager.LoadBindingOverridesFromJson(_currentInputSaveData.GetBindingOverride());
+            RefreshUI();
         }
     }
 }
