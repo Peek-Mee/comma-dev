@@ -10,6 +10,7 @@ namespace Comma.Global.Setting
     public struct KeyBind
     {
         public string Name;
+        public int Index;
         public Button Button;
         public Button SetToDefault;
         [HideInInspector] public TMP_Text Text;
@@ -21,9 +22,9 @@ namespace Comma.Global.Setting
             this.InputAction = UserInputController.UserInputManager.FindAction(Name);
             this.Text = Button.gameObject.GetComponentInChildren<TMP_Text>();
             this.Text.text = InputControlPath.ToHumanReadableString(
-                InputAction.bindings[0].effectivePath,
+                InputAction.bindings[Index].effectivePath,
                 InputControlPath.HumanReadableStringOptions.OmitDevice);
-            DefaultBinding = InputAction.bindings[0].effectivePath;
+            DefaultBinding = InputAction.bindings[Index].effectivePath;
         }
     }
 
@@ -61,7 +62,7 @@ namespace Comma.Global.Setting
             if (!_isRebinding)
             {
                 UserInputController.UserInputManager.Disable();
-                _previousBinding = keyBind.InputAction.bindings[0].effectivePath;
+                _previousBinding = keyBind.InputAction.bindings[keyBind.Index].effectivePath;
                 Rebinding(keyBind);
             }
         }
@@ -73,7 +74,7 @@ namespace Comma.Global.Setting
             keyBind.Text.text = "Press input..";
             keyBind.Button.interactable = false;
 
-            _rebindingOperation = keyBind.InputAction.PerformInteractiveRebinding()
+            _rebindingOperation = keyBind.InputAction.PerformInteractiveRebinding(keyBind.Index)
                 .WithControlsExcluding("Mouse")
                 .WithCancelingThrough("/<Mouse>/leftButton/")
                 .OnMatchWaitForAnother(0.1f)
@@ -84,18 +85,20 @@ namespace Comma.Global.Setting
 
         private void CheckForDuplicate(KeyBind keyBind)
         {
+            Debug.Log("check duplicate");
             for (int i = 0; i < _keyBinds.Length; i++)
             {
                 if (_keyBinds[i].Name == keyBind.Name)
                 {
                     continue;
                 }
-                if (keyBind.InputAction.bindings[0].effectivePath == _keyBinds[i].InputAction.bindings[0].effectivePath)
+                if (keyBind.InputAction.bindings[keyBind.Index].effectivePath == _keyBinds[i].InputAction.bindings[_keyBinds[i].Index].effectivePath)
                 {
                     CancelRebind(keyBind);
                     return;
                 }
             }
+            Debug.Log("no duplicate found");
 
             RebindComplete(keyBind);
         }
@@ -108,7 +111,7 @@ namespace Comma.Global.Setting
 
         private void SetToPreviousBind(KeyBind keyBind)
         {
-            keyBind.InputAction.ApplyBindingOverride(_previousBinding);
+            keyBind.InputAction.ApplyBindingOverride(keyBind.Index, _previousBinding);
             RebindComplete(keyBind);
         }
 
@@ -117,7 +120,7 @@ namespace Comma.Global.Setting
             _rebindingOperation.Dispose();
 
             keyBind.Text.text = InputControlPath.ToHumanReadableString(
-                keyBind.InputAction.bindings[0].effectivePath,
+                keyBind.InputAction.bindings[keyBind.Index].effectivePath,
                 InputControlPath.HumanReadableStringOptions.OmitDevice);
 
             UserInputController.UserInputManager.Enable();
@@ -127,9 +130,9 @@ namespace Comma.Global.Setting
 
         private void SetToDefault(KeyBind keyBind)
         {
-            keyBind.InputAction.ApplyBindingOverride(keyBind.DefaultBinding);
+            keyBind.InputAction.ApplyBindingOverride(keyBind.Index, keyBind.DefaultBinding);
             keyBind.Text.text = InputControlPath.ToHumanReadableString(
-                keyBind.InputAction.bindings[0].effectivePath,
+                keyBind.InputAction.bindings[keyBind.Index].effectivePath,
                 InputControlPath.HumanReadableStringOptions.OmitDevice);
         }
     }
