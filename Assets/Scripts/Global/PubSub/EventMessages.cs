@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Comma.Global.PubSub
 {
@@ -12,7 +11,6 @@ namespace Comma.Global.PubSub
             Destination = destination;
         }
     }
-
     public struct OnPlayerMove
     {
         public Vector2 Direction { get; private set; }
@@ -25,26 +23,47 @@ namespace Comma.Global.PubSub
 
     public struct OnPlayerJump
     {
-        public bool Jumping { get; private set; }
-
-        public OnPlayerJump(bool jumping)
-        {
-            Jumping = jumping;
-        }
     }
 
     public struct OnPlayerInteract
+    { 
+    }
+    public struct OnPlayerNearPortal
     {
-        
+        public string Portal { get; private set; }
+        public OnPlayerNearPortal(string portals)
+        {
+            Portal= portals;
+        }
     }
 
     public struct OnPlayerSprint
     {
-        public bool Sprinting { get; private set; }
+        public bool Sprint { get; private set; }
 
         public OnPlayerSprint(bool sprinting)
         {
-            Sprinting = sprinting;
+            Sprint = sprinting;
         }
     }
+    public struct OnPlayerSwapDown { }
+    public struct OnEnterCameraTrigger
+    {
+        public int MoveToRight { get; private set; }
+        public float StartScale { get; private set; }
+        public float FinishScale { get; private set; }
+        public Vector2 StartOffset { get; private set; }
+        public Vector2 FinishOffset { get; private set; }
+        public float Distance { get; private set; }
+        public OnEnterCameraTrigger(int toRight, float startScale, float finishScale, Vector2 startOff, Vector2 finishOff, float distance)
+        {
+            MoveToRight = toRight;
+            StartScale = startScale;
+            FinishScale = finishScale;
+            StartOffset = startOff;
+            FinishOffset = finishOff;
+            Distance = distance;
+        }
+    }
+    public struct OnExitCameraTrigger { }
 }

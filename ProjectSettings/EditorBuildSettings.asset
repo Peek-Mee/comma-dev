@@ -11,4 +11,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Dummy-UI-Gameplay.unity
     guid: 05a1b525937fa244ba995a5c5d719a07
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/Production/Gameplay.unity
+    guid: ffc105882b1e414439c108fec2e880b3
+  - enabled: 1
+    path: Assets/Scenes/Production/Main Menu.unity
+    guid: 958d4e20ce659274caea232bca90cf76
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: c8ec8aca7e58869428b51ae35955fabf, type: 2}

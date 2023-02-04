@@ -85,7 +85,6 @@ namespace Comma.Global.Setting
 
         private void CheckForDuplicate(KeyBind keyBind)
         {
-            Debug.Log("check duplicate");
             for (int i = 0; i < _keyBinds.Length; i++)
             {
                 if (_keyBinds[i].Name == keyBind.Name)
@@ -98,7 +97,6 @@ namespace Comma.Global.Setting
                     return;
                 }
             }
-            Debug.Log("no duplicate found");
 
             RebindComplete(keyBind);
         }
