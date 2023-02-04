@@ -48,6 +48,7 @@ namespace Comma.Gameplay.Player
             get { return _isFlipProhibited; }
             set { _isFlipProhibited = value; }
         }
+        public bool IsJumpProhibited { get; set; }
         // #######
 
         [Header("Movement")]
@@ -276,6 +277,7 @@ namespace Comma.Gameplay.Player
             if (_isPressJump)
             {
                 _isPressJump = false;
+                if (IsJumpProhibited) return;
                 if (_playerAnimator.PortalInteract) return;
                 if (_playerAnimator.Pull || _playerAnimator.Push) return;
                 if (_isGrounded)
