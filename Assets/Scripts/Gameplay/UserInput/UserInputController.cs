@@ -25,6 +25,7 @@ namespace Comma.Gameplay.UserInput
             //_userInputManager.Player.Interact.canceled += OnInteractInput;
             _userInputManager.Player.Sprint.performed += OnSprintInput;
             _userInputManager.Player.Sprint.canceled += OnSprintInput;
+            _userInputManager.Player.Pause.performed += OnPauseInput;
             OnInputManagerLoaded?.Invoke();
         }
 
