@@ -135,7 +135,7 @@ namespace Comma.Gameplay.Player
 
         private void Update()
         {
-            if (_isInCutScene) return;
+            if (InCutScene) return;
             if (!Physics2D.GetIgnoreLayerCollision(_layerValue[0], _layerValue[1]) || !Physics2D.GetIgnoreLayerCollision(_layerValue[1], _layerValue[0]))
             {
                 Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], true);
