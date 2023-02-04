@@ -1366,7 +1366,7 @@ MonoBehaviour:
   _creditssButton: {fileID: 903189080}
   _quitButton: {fileID: 418952930}
   _transition: {fileID: 21389993}
-  _gameplaySceneName: Gameplay
+  _gameplaySceneName: Prolog
   _creditsPopUp: {fileID: 2129781175}
   _warningNewGamePopUp: {fileID: 306482983}
   _warningQuitPopUp: {fileID: 1878837323}

@@ -1,12 +1,15 @@
 using Comma.Gameplay.Player;
+using Comma.Global.SaveLoad;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Comma.CutScene
 {
+    //[RequireComponent(typeof(Playeable))]
     public class CutScenePlayerController : MonoBehaviour
     {
+        [SerializeField] private string _cutsceneId;
         [SerializeField] private GameObject _player;
 
         private Rigidbody2D _playerRigid;
@@ -16,6 +19,13 @@ namespace Comma.CutScene
 
         private void Awake()
         {
+            bool data = SaveSystem.GetPlayerData().IsCutsceneInCollection(_cutsceneId);
+            if (data)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             _playerRigid = _player.GetComponent<Rigidbody2D>();
             _playerMovement = _player.GetComponent<PlayerMovement>();
             _playerAnimator = _player.GetComponent<PlayerAnimationController>();
@@ -29,7 +39,8 @@ namespace Comma.CutScene
             _playerRigid.isKinematic= true;
             _playerColl.enabled = false;
             SetDefaultAnimator();
-
+            SaveSystem.GetPlayerData().AddCutsceneToCollection(_cutsceneId);
+            SaveSystem.SaveDataToDisk();
         }
         public void OnExitCutscene()
         {
@@ -37,6 +48,8 @@ namespace Comma.CutScene
             _playerRigid.isKinematic= false;
             _playerColl.enabled = true;
             SetDefaultAnimator();
+            SaveSystem.GetPlayerData().AddCutsceneToCollection(_cutsceneId);
+            SaveSystem.SaveDataToDisk();
         }
 
         private void SetDefaultAnimator()
