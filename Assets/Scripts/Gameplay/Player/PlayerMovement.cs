@@ -41,6 +41,7 @@ namespace Comma.Gameplay.Player
         private Rigidbody2D _rigidbody2D;
         private SpriteRenderer _playerSprite;
         private bool _isInCutScene = false;
+        public bool InCutScene { get; set; }
         private bool _isFlipProhibited = false;
         public bool IsFlipProhibited
         {
@@ -133,6 +134,7 @@ namespace Comma.Gameplay.Player
 
         private void Update()
         {
+            if (_isInCutScene) return;
             if (!Physics2D.GetIgnoreLayerCollision(_layerValue[0], _layerValue[1]) || !Physics2D.GetIgnoreLayerCollision(_layerValue[1], _layerValue[0]))
             {
                 Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], true);

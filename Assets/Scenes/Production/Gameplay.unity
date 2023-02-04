@@ -964,6 +964,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2126445113}
   - component: {fileID: 2126445114}
+  - component: {fileID: 2126445115}
+  - component: {fileID: 2126445116}
   m_Layer: 0
   m_Name: Cutscene
   m_TagString: Untagged
@@ -1007,6 +1009,64 @@ PlayableDirector:
     value: {fileID: 1503977123}
   m_ExposedReferences:
     m_References: []
+--- !u!114 &2126445115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126445112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 813a8c90f5fa7dc42962d672c93899b4, type: 2}
+    - {fileID: 11400000, guid: a37c044e0a33abf489a90caf25e0cc7e, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2126445116}
+          m_TargetAssemblyTypeName: Comma.CutScene.CutScenePlayerController, Assembly-CSharp
+          m_MethodName: OnEnterCutscene
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2126445116}
+          m_TargetAssemblyTypeName: Comma.CutScene.CutScenePlayerController, Assembly-CSharp
+          m_MethodName: OnExitCutscene
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &2126445116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126445112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31e62005c9f023b4ba35f239837dcd32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _player: {fileID: 0}
 --- !u!1001 &2991218597701215765
 PrefabInstance:
   m_ObjectHideFlags: 0
