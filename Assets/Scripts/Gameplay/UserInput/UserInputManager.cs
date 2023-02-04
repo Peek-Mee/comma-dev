@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace Comma.Gameplay
+namespace Comma.Gameplay.UserInput
 {
     public partial class @UserInputManager : IInputActionCollection2, IDisposable
     {
@@ -176,6 +176,12 @@ namespace Comma.Gameplay
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Menu"",
+            ""id"": ""369560ef-233e-4b6b-8b26-b077c726691f"",
+            ""actions"": [],
+            ""bindings"": []
         }
     ],
     ""controlSchemes"": []
@@ -187,6 +193,8 @@ namespace Comma.Gameplay
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+            // Menu
+            m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -307,6 +315,31 @@ namespace Comma.Gameplay
             }
         }
         public PlayerActions @Player => new PlayerActions(this);
+
+        // Menu
+        private readonly InputActionMap m_Menu;
+        private IMenuActions m_MenuActionsCallbackInterface;
+        public struct MenuActions
+        {
+            private @UserInputManager m_Wrapper;
+            public MenuActions(@UserInputManager wrapper) { m_Wrapper = wrapper; }
+            public InputActionMap Get() { return m_Wrapper.m_Menu; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
+            public void SetCallbacks(IMenuActions instance)
+            {
+                if (m_Wrapper.m_MenuActionsCallbackInterface != null)
+                {
+                }
+                m_Wrapper.m_MenuActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                }
+            }
+        }
+        public MenuActions @Menu => new MenuActions(this);
         public interface IPlayerActions
         {
             void OnMovement(InputAction.CallbackContext context);
@@ -314,6 +347,9 @@ namespace Comma.Gameplay
             void OnInteract(InputAction.CallbackContext context);
             void OnSprint(InputAction.CallbackContext context);
             void OnPause(InputAction.CallbackContext context);
+        }
+        public interface IMenuActions
+        {
         }
     }
 }
