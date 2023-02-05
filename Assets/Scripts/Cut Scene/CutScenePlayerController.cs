@@ -50,6 +50,7 @@ namespace Comma.CutScene
             SetDefaultAnimator();
             SaveSystem.GetPlayerData().AddCutsceneToCollection(_cutsceneId);
             SaveSystem.SaveDataToDisk();
+            gameObject.SetActive(false);
         }
 
         private void SetDefaultAnimator()
