@@ -32,8 +32,17 @@ namespace Comma.Global.SaveLoad
 
         private void Awake()
         {
-            if (saveInstance != null && saveInstance != this) Destroy(gameObject);
-            else saveInstance = this;
+            if (saveInstance != null && saveInstance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                saveInstance = this;
+                Init();
+            }
+            
 
             // Make this object persistent once it's instantiated
             DontDestroyOnLoad(gameObject);
@@ -52,13 +61,15 @@ namespace Comma.Global.SaveLoad
             InitiateData<InputSaveData>(ref _inputSetting, "InputData");
         }
 
-        private void InitiateData<T>(ref T data, string prefsName)
+        private void InitiateData<T>(ref T data, string prefsName) 
         {
             if(!PlayerPrefs.HasKey(prefsName))
             {
+                //print($"{prefsName} hasn't been saved");
                 SaveData<T>(ref data, prefsName);
                 return;
             }
+            //print(PlayerPrefs.GetString(prefsName));
             data = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
         }
 
@@ -66,6 +77,11 @@ namespace Comma.Global.SaveLoad
         {
             PlayerPrefs.SetString(prefsName, JsonUtility.ToJson(data));
             PlayerPrefs.Save();
+        }
+
+        private void ChangeDataAsObject<T>(ref T target, T newObject)
+        {
+            target = newObject;
         }
 
         private void SaveAllDataToDisk()
@@ -76,6 +92,41 @@ namespace Comma.Global.SaveLoad
             SaveData<InputSaveData>(ref _inputSetting, "InputData");
         }
 
+        /// <summary>
+        /// Change save data value as a whole object by re-assign its reference
+        /// </summary>
+        /// <param name="newObject">PlayerSaveData</param>
+        public static void ChangeDataReference(PlayerSaveData newObject)
+        {
+            Instance.ChangeDataAsObject<PlayerSaveData>(ref Instance._playerData, newObject);
+        }
+        /// <summary>
+        /// Change save data value as a whole object by re-assign its reference
+        /// </summary>
+        /// <param name="newObject">AudioSaveData</param>
+        public static void ChangeDataReference(AudioSaveData newObject)
+        {
+
+            Instance.ChangeDataAsObject<AudioSaveData>(ref Instance._audioSetting, newObject);
+        }
+        /// <summary>
+        /// Change save data value as a whole object by re-assign its reference
+        /// </summary>
+        /// <param name="newObject">VideoSaveData</param>
+        public static void ChangeDataReference(VideoSaveData newObject)
+        {
+
+            Instance.ChangeDataAsObject<VideoSaveData>(ref Instance._videoSetting, newObject);
+        }
+        /// <summary>
+        /// Change save data value as a whole object by re-assign its reference
+        /// </summary>
+        /// <param name="newObject">InputSaveData</param>
+        public static void ChangeDataReference(InputSaveData newObject)
+        {
+
+            Instance.ChangeDataAsObject<InputSaveData>(ref Instance._inputSetting, newObject);
+        }
         /// <summary>
         /// Get saved player data as reference
         /// </summary>
@@ -111,9 +162,22 @@ namespace Comma.Global.SaveLoad
         /// <summary>
         /// Save all dirty data into disk
         /// </summary>
-        public static void SaveDataToDisk()
+        public static bool SaveDataToDisk()
         {
-            Instance.SaveAllDataToDisk();
+            try
+            {
+                Instance.SaveAllDataToDisk();
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
+        }
+
+        public static bool IsNewPlayer()
+        {
+            return true;
         }
     }
 }

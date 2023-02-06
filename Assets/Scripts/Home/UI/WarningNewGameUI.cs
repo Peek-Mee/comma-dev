@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.UI;
 
 namespace Comma.Home.UI
@@ -10,10 +9,17 @@ namespace Comma.Home.UI
         [Header("Warning New Game Buttons")]
         [SerializeField] private Button _yesButton;
         [SerializeField] private Button _noButton;
-        
+        [Header("Panels")]
+        private Animator _animator;
+
+
         [Header("Scene Management")]
         [SerializeField] private string _gameplaySceneName = "Gameplay";
-        
+
+        private void Awake()
+        {
+            _animator= GetComponent<Animator>();
+        }
         private void OnEnable()
         {
             RemoveAllButtonListeners();
@@ -35,6 +41,11 @@ namespace Comma.Home.UI
             SceneManager.LoadScene(_gameplaySceneName);
         }
         private void OnNoButton()
+        {
+            //gameObject.SetActive(false);
+            _animator.SetTrigger("exit");
+        }
+        public void BackToMenu()
         {
             gameObject.SetActive(false);
         }
