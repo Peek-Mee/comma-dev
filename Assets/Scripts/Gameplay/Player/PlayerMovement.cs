@@ -300,8 +300,9 @@ namespace Comma.Gameplay.Player
 
             if (_playerAnimator.YSpeed == .5f)
             {
-                RaycastHit2D nearGround = IsCollide(_ground.position, Vector2.down, _rangeNearGround);
-                if (nearGround && !_wasGrounded)
+                RaycastHit2D nearGround = IsCollide(_normalChecker.position, Vector2.down, _rangeNearGround);
+                //Debug.Log(nearGround.collider, nearGround.collider);
+                if (nearGround.collider !=null && !_wasGrounded)
                 {
                     _playerAnimator.YSpeed = 1f;
                     _playerAnimator.EndFall = true;
@@ -336,7 +337,7 @@ namespace Comma.Gameplay.Player
                 layerToCheck = 0;
             Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], false);
             Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], false);
-            RaycastHit2D hit = Physics2D.Raycast(_ground.position,
+            RaycastHit2D hit = Physics2D.Raycast(_normalChecker.position,
                 Vector2.down, _checkRadius, _groundLayers[layerToCheck]);
             Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], true);
             Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], true);
@@ -419,6 +420,7 @@ namespace Comma.Gameplay.Player
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(_ground.position, _circleForGround);
+            //Gizmos.DrawRay(_normalChecker.position, Vector2.down);
         }
 
         private RaycastHit2D IsCollide(Vector3 from, Vector2 direction, float distance)

@@ -55,7 +55,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874046904873477730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.024, y: -2.987, z: 0}
+  m_LocalPosition: {x: -0.024, y: -2.989, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -148,7 +148,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874046905199477736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.024, y: -3.514, z: 0}
+  m_LocalPosition: {x: -0.024, y: -3.521, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -288,7 +288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _checkRadius: 0.25
-  _circleForGround: 0.54
+  _circleForGround: 0.542
   _ground: {fileID: 1874046904873477729}
   _normalChecker: {fileID: 1874046905199477743}
   _ceil: {fileID: 1874046904939670345}
@@ -304,7 +304,7 @@ MonoBehaviour:
   _jumpForce: 20
   _fallMultiplier: 4
   _playerAnimator: {fileID: 852962807448629436}
-  _rangeNearGround: 3
+  _rangeNearGround: 1.5
 --- !u!70 &1874046906382160644
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
