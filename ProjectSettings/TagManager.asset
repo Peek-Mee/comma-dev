@@ -47,12 +47,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: BG6
-    uniqueID: 4237292371
-    locked: 0
-  - name: BG5
-    uniqueID: 3782365551
-    locked: 0
   - name: BG4
     uniqueID: 2522597171
     locked: 0
@@ -65,7 +59,19 @@ TagManager:
   - name: BG1
     uniqueID: 1961549493
     locked: 0
-  - name: Midground
+  - name: Midground5
+    uniqueID: 792994175
+    locked: 0
+  - name: Midground4
+    uniqueID: 2689651849
+    locked: 0
+  - name: Midground3
+    uniqueID: 2361212169
+    locked: 0
+  - name: Midground2
+    uniqueID: 2063379881
+    locked: 0
+  - name: Midground1
     uniqueID: 749502103
     locked: 0
   - name: Foreground
