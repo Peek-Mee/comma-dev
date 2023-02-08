@@ -8,6 +8,7 @@ namespace Gameplay.UI
     public class ConfirmSettingUI : MonoBehaviour
     {
         [SerializeField] private GameObject _optionsPopUp;
+        [SerializeField] private GameObject _pausePanel;
         [Header("Confirm Setting Buttons")]
         [SerializeField] private Button _yesButton;
         [SerializeField] private Button _noButton;
@@ -32,13 +33,15 @@ namespace Gameplay.UI
         {
             VideoSetting.Instance.AcceptVideoSetting();
             AudioSetting.Instance.AcceptAudioSetting();
-            gameObject.SetActive(false);
+            _pausePanel.SetActive(true);
             _optionsPopUp.SetActive(false);
+            gameObject.SetActive(false);
         }
         private void OnNoButton()
         {
             VideoSetting.Instance.CancelVideoSetting();
             AudioSetting.Instance.CancelAudioSetting();
+            _pausePanel.SetActive(true);
             gameObject.SetActive(false);
             _optionsPopUp.SetActive(false);
         }

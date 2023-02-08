@@ -1,12 +1,17 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 using Comma.Global.PubSub;
+using UnityEngine.Events;
 
 namespace Comma.Gameplay.UserInput
 {
     public class UserInputController : MonoBehaviour
     {
-        private UserInputManager _userInputManager;
+        private static UserInputManager _userInputManager;
+
+        public static UserInputManager UserInputManager => _userInputManager;
+        
+        public static UnityEvent OnInputManagerLoaded = new UnityEvent();
 
         private void Start()
         {
@@ -20,6 +25,8 @@ namespace Comma.Gameplay.UserInput
             //_userInputManager.Player.Interact.canceled += OnInteractInput;
             _userInputManager.Player.Sprint.performed += OnSprintInput;
             _userInputManager.Player.Sprint.canceled += OnSprintInput;
+            _userInputManager.Player.Pause.performed += OnPauseInput;
+            OnInputManagerLoaded?.Invoke();
         }
 
         private void OnMoveInput(InputAction.CallbackContext context)
@@ -62,6 +69,13 @@ namespace Comma.Gameplay.UserInput
             {
                 EventConnector.Publish("OnPlayerSprint", new OnPlayerSprint(false));
 
+            }
+        }
+        private void OnPauseInput(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                EventConnector.Publish("OnPauseInput", 0);
             }
         }
     }
