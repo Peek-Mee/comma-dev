@@ -10,6 +10,7 @@ namespace Comma.Gameplay.Environment
         [Tooltip("Only Use three sprites")]
         [Header("General")]
         [SerializeField] private bool _loop = true;
+        [SerializeField] private bool _persistent;
         [SerializeField] private float _minX;
         [SerializeField] private float _maxX;
         private bool _isStarted;
@@ -36,7 +37,8 @@ namespace Comma.Gameplay.Environment
         private void Awake()
         {
             _targetTransform = _cameraToFollow.transform;
-            if (_targetTransform.position.x > _maxX || _targetTransform.position.x < _minX) return;
+            var screen = GetCoverableOrthoCamera();
+            if (_targetTransform.position.x - screen.x > _maxX || _targetTransform.position.x - screen.x < _minX) return;
 
             InitPosition();
         }
@@ -50,9 +52,12 @@ namespace Comma.Gameplay.Environment
             _leftIndex = 0;
             _rightIndex = 2;
 
-            Vector3 pos = transform.position;
-            transform.position = new(
-                _targetTransform.position.x, pos.y, pos.z);
+            if (!_persistent)
+            {
+                Vector3 pos = transform.position;
+                transform.position = new(
+                    _targetTransform.position.x, pos.y, pos.z);
+            }
             _camStart = _targetTransform.position;
             _startPoint = transform.position;
             _isStarted = true;
