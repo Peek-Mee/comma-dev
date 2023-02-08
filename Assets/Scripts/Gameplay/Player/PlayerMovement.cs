@@ -24,8 +24,10 @@ namespace Comma.Gameplay.Player
         [SerializeField]
         [Range(0.2f, 0.35f)]
         private float _checkRadius = .25f;
+        [SerializeField] float _circleForGround = .52f;
         [SerializeField]
         private Transform _ground;
+        [SerializeField] private Transform _normalChecker;
         [SerializeField]
         private Transform _ceil;
         [SerializeField]
@@ -298,8 +300,9 @@ namespace Comma.Gameplay.Player
 
             if (_playerAnimator.YSpeed == .5f)
             {
-                RaycastHit2D nearGround = IsCollide(_ground.position, Vector2.down, _rangeNearGround);
-                if (nearGround && !_wasGrounded)
+                RaycastHit2D nearGround = IsCollide(_normalChecker.position, Vector2.down, _rangeNearGround);
+                //Debug.Log(nearGround.collider, nearGround.collider);
+                if (nearGround.collider !=null && !_wasGrounded)
                 {
                     _playerAnimator.YSpeed = 1f;
                     _playerAnimator.EndFall = true;
@@ -334,7 +337,7 @@ namespace Comma.Gameplay.Player
                 layerToCheck = 0;
             Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], false);
             Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], false);
-            RaycastHit2D hit = Physics2D.Raycast(_ground.position,
+            RaycastHit2D hit = Physics2D.Raycast(_normalChecker.position,
                 Vector2.down, _checkRadius, _groundLayers[layerToCheck]);
             Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], true);
             Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], true);
@@ -368,33 +371,56 @@ namespace Comma.Gameplay.Player
         private bool IsGrounded()
         {
 
-
-            RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
-            if (tryToCheckGround.collider.gameObject != gameObject)
+            // For applying slope velocity
+            RaycastHit2D normalChecker = IsCollide(_normalChecker.position, Vector2.down, _checkRadius);
+            if (normalChecker)
             {
-                _currentPlatformDegree = tryToCheckGround.normal;
-                return tryToCheckGround;
+                _currentPlatformDegree = normalChecker.normal;
+
             }
             else
             {
-                Collider2D[] colls = Physics2D.OverlapCircleAll(_ground.position, .52f, _groundLayers[_currentLayer]);
-                if (colls.Length <= 0) return false;
-                for (int i =0; i < colls.Length; i++)
+                _currentPlatformDegree = new(0, 1);
+            }
+
+            // Checking Ground
+            Collider2D[] overlaps = Physics2D.OverlapCircleAll(_ground.position, _circleForGround, _groundLayers[_currentLayer]);
+            if (overlaps.Length <= 0) return false;
+            for (int i = 0; i < overlaps.Length; i++)
+            {
+                if (!overlaps[i].CompareTag("Player"))
                 {
-                    if (colls[i].gameObject != gameObject)
-                    {
-                        _currentPlatformDegree = new(0, 1);
-                        return true;
-                    }
+                    return true;
                 }
             }
+
+            //RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
+            //if (tryToCheckGround.collider.gameObject != gameObject)
+            //{
+            //    _currentPlatformDegree = tryToCheckGround.normal;
+            //    return tryToCheckGround;
+            //}
+            //else
+            //{
+            //    Collider2D[] colls = Physics2D.OverlapCircleAll(_ground.position, .52f, _groundLayers[_currentLayer]);
+            //    if (colls.Length <= 0) return false;
+            //    for (int i =0; i < colls.Length; i++)
+            //    {
+            //        if (colls[i].gameObject != gameObject)
+            //        {
+            //            _currentPlatformDegree = new(0, 1);
+            //            return true;
+            //        }
+            //    }
+            //}
 
             return false;
         }
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(_ground.position, .52f);
+            Gizmos.DrawWireSphere(_ground.position, _circleForGround);
+            //Gizmos.DrawRay(_normalChecker.position, Vector2.down);
         }
 
         private RaycastHit2D IsCollide(Vector3 from, Vector2 direction, float distance)
