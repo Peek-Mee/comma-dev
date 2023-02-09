@@ -57,7 +57,9 @@ namespace Comma.Gameplay.Player
         }
         private void OnInteractInput(object msg)
         {
-            if (!_playerAnimator.Idle && !_playerAnimator.Move) return;
+            if (!_playerAnimator.Idle || _playerAnimator.Move || _playerAnimator.XSpeed != 0) return;
+            if (_playerAnimator.WaitInteract || _playerAnimator.PortalInteract) return;
+            if (_playerAnimator.StartJump || _playerAnimator.EndFall || _playerAnimator.YSpeed != 0) return;
             if (!_isInPortalArea || _portal == null) return;
             _playerAnimator.PortalInteract = true;
             //_portal.Interact();
