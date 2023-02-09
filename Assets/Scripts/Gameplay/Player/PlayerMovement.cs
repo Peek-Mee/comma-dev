@@ -390,7 +390,7 @@ namespace Comma.Gameplay.Player
             {
                 if (!overlaps[i].CompareTag("Player"))
                 {
-                    return true;
+                    if (!overlaps[i].isTrigger) return true;
                 }
             }
 
