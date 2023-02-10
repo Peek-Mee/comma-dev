@@ -48,27 +48,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: BG6
-    uniqueID: 4237292371
-    locked: 0
-  - name: BG5
-    uniqueID: 3782365551
-    locked: 0
-  - name: BG4
-    uniqueID: 2522597171
-    locked: 0
-  - name: BG3
-    uniqueID: 3700692939
-    locked: 0
-  - name: BG2
-    uniqueID: 1554875157
-    locked: 0
-  - name: BG1
-    uniqueID: 1961549493
-    locked: 0
-  - name: Midground
-    uniqueID: 749502103
-    locked: 0
-  - name: Foreground
-    uniqueID: 2712498191
+  - name: Particles
+    uniqueID: 217516601
     locked: 0

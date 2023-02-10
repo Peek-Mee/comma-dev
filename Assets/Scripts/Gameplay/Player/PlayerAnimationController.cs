@@ -66,9 +66,9 @@ namespace Comma.Gameplay.Player
 
             var SFXWalk = Move && XSpeed == 1 && StartWalk == false;
             var SFXRun = Move && XSpeed == 2 && StartRun == false;
-            SFXController.Instance.PlayMovementSFX(SFXWalk,SFXRun);
-            SFXController.Instance.PlayJumpSFX(StartJump);
-            SFXController.Instance.PlayLandingSFX(EndFall);
+            //SFXController.Instance.PlayMovementSFX(SFXWalk,SFXRun);
+            //SFXController.Instance.PlayJumpSFX(StartJump);
+            //SFXController.Instance.PlayLandingSFX(EndFall);
            // SFXController.Instance.PlayWalkSFX(Move && XSpeed > 1.01);
         }
 
