@@ -402,7 +402,7 @@ namespace Comma.Gameplay.Player
             if (normalChecker)
             {
                 _currentPlatformDegree = normalChecker.normal;
-                return true;
+                if (!normalChecker.collider.isTrigger) return true;
             }
             else
             {
