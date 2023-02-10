@@ -182,6 +182,12 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: OnWaitInteract
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: OnPull
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: OnPush
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8093009585485050464}
   m_Solo: 0
