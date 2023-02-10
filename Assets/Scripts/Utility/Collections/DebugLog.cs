@@ -12,6 +12,7 @@ namespace   Comma.Utility.Collections
         [SerializeField] private TMP_Text _righthPanel;
         [SerializeField] private bool _showFPS;
         [SerializeField] private GameObject[] _toDebug;
+        [SerializeField] private GameObject[] _objectToBeDestroyedWhenRestart;
 
         private void Update()
         {
@@ -19,6 +20,10 @@ namespace   Comma.Utility.Collections
             if (Input.GetKeyDown(KeyCode.R))
             {
                 string now = SceneManager.GetActiveScene().name;
+                foreach(GameObject go in _objectToBeDestroyedWhenRestart)
+                {
+                    Destroy(go);
+                }
                 SceneManager.LoadScene(now);
             }
 
@@ -54,21 +59,6 @@ namespace   Comma.Utility.Collections
                             break;
                     }
                 }
-
-
-                //if (data == null) continue;
-
-
-                //switch (count%2 == 0)
-                //{
-                //    case true:
-                //        _leftPanel.text += data.ToDebug();
-                //        break;
-                //    case false:
-                //        _righthPanel.text += data.ToDebug();
-                //        break;
-                //}
-
                 count++;
             }
         }
