@@ -6,7 +6,7 @@ namespace Comma.Gameplay.Environment
     [RequireComponent(typeof(Collider2D))]
     public class CameraTrigger : MonoBehaviour
     {
-        [SerializeField] private bool _leftToRight;
+        [SerializeField] private bool _rightToLeft;
         [SerializeField] private float _startZoomScale;
         [SerializeField] private float _finishZoomScale;
         [SerializeField] private Vector2 _startOffset;
@@ -27,8 +27,8 @@ namespace Comma.Gameplay.Environment
             float playerSizeX = other.bounds.size.x/2f;
             bool playerFromLeft = IsPlayerFromLeft(other);
             OnEnterCameraTrigger val;
-            _ = _leftToRight == playerFromLeft ? val = new(_leftToRight ? 1 : -1, _startZoomScale, _finishZoomScale, _startOffset, _finishOffset, _distance + playerSizeX) :
-                val = new(_leftToRight ? 1: -1, _finishZoomScale, _startZoomScale, _finishOffset, _startOffset, _distance + playerSizeX);
+            _ = _rightToLeft == playerFromLeft ? val = new(_rightToLeft ? 1 : -1, _startZoomScale, _finishZoomScale, _startOffset, _finishOffset, _distance + playerSizeX) :
+                val = new(_rightToLeft ? 1: -1, _finishZoomScale, _startZoomScale, _finishOffset, _startOffset, _distance + playerSizeX);
 
             EventConnector.Publish("OnEnterCameraTrigger", val);
         }
