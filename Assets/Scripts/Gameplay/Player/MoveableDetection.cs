@@ -37,12 +37,7 @@ namespace Comma.Gameplay.Player
 
             if (_isHoldMoveable)
             {
-                _isHoldMoveable = false;
-                _player.IsFlipProhibited = false;
-                _playerAnimator.Push = false;
-                _playerAnimator.Pull = false;
-                _moveableObject.UnInteract();
-                SFXController.Instance.StopObjectSFX();
+                EjectMovable();
             }
             else if (_moveableObject != null)
             {
@@ -55,6 +50,15 @@ namespace Comma.Gameplay.Player
                 SFXController.Instance.PlayInteractObjectSFX();
             }
         }
+        private void EjectMovable()
+        {
+            _isHoldMoveable = false;
+            _player.IsFlipProhibited = false;
+            _playerAnimator.Push = false;
+            _playerAnimator.Pull = false;
+            _moveableObject.UnInteract();
+            SFXController.Instance.StopObjectSFX();
+        }
         #endregion
 
         #region Detection
@@ -63,10 +67,10 @@ namespace Comma.Gameplay.Player
         {
             if (collision.CompareTag("Moveable"))
             {
+                Vector2 normal = collision.transform.position - transform.position;
                 _inGrabArea = true;
                 _moveableObject = collision.GetComponent<IMoveableObject>();
 
-                Vector2 normal = collision.transform.position - transform.position;
                 _objectOnRight = normal.x > 0;
             }
         }
@@ -75,6 +79,10 @@ namespace Comma.Gameplay.Player
             if (collision.CompareTag("Moveable"))
             {
                 _inGrabArea = false;
+                if (_isHoldMoveable)
+                {
+                    EjectMovable();
+                }
             }
         }
         private void ChangeAnimationState()
