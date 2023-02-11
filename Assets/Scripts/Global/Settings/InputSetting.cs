@@ -90,9 +90,10 @@ namespace Comma.Global.Settings
             for (int i = 0; i < _keyBinds.Length; i++)
             {
                 KeyBind keyBind = _keyBinds[i];
-                keyBind.Text.text = InputControlPath.ToHumanReadableString(
+                string newText = InputControlPath.ToHumanReadableString(
                     keyBind.InputAction.bindings[keyBind.Index].effectivePath,
                     InputControlPath.HumanReadableStringOptions.OmitDevice);
+                keyBind.Text.text = newText.Replace("Right", "R.").Replace("Left", "L.");
             }
         }
 
@@ -110,7 +111,7 @@ namespace Comma.Global.Settings
         {
             _isRebinding = true;
 
-            keyBind.Text.text = "Press input..";
+            keyBind.Text.text = "Press input...";
             keyBind.Button.interactable = false;
 
             _rebindingOperation = keyBind.InputAction.PerformInteractiveRebinding(keyBind.Index)
