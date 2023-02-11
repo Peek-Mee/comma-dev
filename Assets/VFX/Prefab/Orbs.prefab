@@ -505,8 +505,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9132406311451458762}
-  - component: {fileID: 975926413700516511}
-  - component: {fileID: 7614679341639191484}
   m_Layer: 0
   m_Name: Orbs
   m_TagString: Untagged
@@ -523,7 +521,7 @@ Transform:
   m_GameObject: {fileID: 9132406311451458765}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -12.593, y: 0.994, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.70788944, y: 0.7506268, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 9132406313004617601}
@@ -535,35 +533,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &975926413700516511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9132406311451458765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9664a093096e4c4b8145efe42d9190b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _orbId: O1
---- !u!58 &7614679341639191484
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9132406311451458765}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.44403076, y: -0.98670435}
-  serializedVersion: 2
-  m_Radius: 1.2400422
 --- !u!1 &9132406311980923476
 GameObject:
   m_ObjectHideFlags: 0
