@@ -11,6 +11,7 @@ namespace Comma.Global.SaveLoad
         [SerializeField] private List<string> _orbsCollection;
         [SerializeField] private int _orbsInHand;
         [SerializeField] private List<string> _portalsCollection;
+        [SerializeField] private float _lastCameraScale;
 
         public PlayerSaveData()
         {
@@ -18,6 +19,7 @@ namespace Comma.Global.SaveLoad
             _orbsCollection = new();
             _orbsInHand = 0;
             _portalsCollection = new();
+            _lastCameraScale= 1f;
         }
         /// <summary>
         /// Get the last player position saved in the disk
@@ -66,12 +68,28 @@ namespace Comma.Global.SaveLoad
             if (!IsPortalInCollection(id)) _portalsCollection.Add(id);
         }
         /// <summary>
-        /// Is portal was already used?
+        /// Was portal already used?
         /// </summary>
         /// <param name="id">Portal ID</param>
         /// <returns>bool</returns>
         public bool IsPortalInCollection(string id) { return _portalsCollection.Contains(id); }
 
+        /// <summary>
+        /// Set latest player camera scale
+        /// </summary>
+        /// <param name="scale"></param>
+        public void SetCameraScale(float scale)
+        {
+            _lastCameraScale = scale;
+        }
+        /// <summary>
+        /// Get the latest camera scale saved in the disk
+        /// </summary>
+        /// <returns></returns>
+        public float GetCameraScale()
+        {
+            return _lastCameraScale;
+        }
         public object Clone()
         {
             return (PlayerSaveData)this.MemberwiseClone();
