@@ -11,9 +11,6 @@
         },
         {
             "m_Id": "240bff520b554281982cd7075eb92a42"
-        },
-        {
-            "m_Id": "5257ec463a0e485f85e78d4114ab0ebb"
         }
     ],
     "m_Keywords": [],
@@ -812,33 +809,6 @@
 }
 
 {
-    "m_SGVersion": 1,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
-    "m_ObjectId": "5257ec463a0e485f85e78d4114ab0ebb",
-    "m_Guid": {
-        "m_GuidSerialized": "fa615cb7-579e-4c54-a11e-4c5043cab76e"
-    },
-    "m_Name": "Power",
-    "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Power",
-    "m_DefaultReferenceName": "_Power",
-    "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
-    "m_UseCustomSlotLabel": false,
-    "m_CustomSlotLabel": "",
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_Value": 0.0,
-    "m_FloatType": 0,
-    "m_RangeValues": {
-        "x": 0.0,
-        "y": 1.0
-    }
-}
-
-{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "537f9e94affb4d65b939017135bd77da",
@@ -1198,9 +1168,6 @@
         },
         {
             "m_Id": "240bff520b554281982cd7075eb92a42"
-        },
-        {
-            "m_Id": "5257ec463a0e485f85e78d4114ab0ebb"
         }
     ]
 }
