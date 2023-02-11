@@ -35,6 +35,7 @@ namespace Comma.Gameplay.UI
         {
             BGMController.Instance.StartCourotineGameplay();
             SceneManager.LoadScene(_gameplaySceneName);
+            BgmPlayer.Instance.PlayBgm(0);
         }
         private void OnNoButton()
         {

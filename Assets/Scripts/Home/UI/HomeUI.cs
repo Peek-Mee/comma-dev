@@ -1,7 +1,5 @@
+using Comma.Global.AudioManager;
 using Comma.Global.SaveLoad;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -34,6 +32,7 @@ namespace Comma.Home.UI
                 _continueButton.onClick.RemoveAllListeners();
                 _continueButton.gameObject.SetActive(false);
             }
+            BgmPlayer.Instance.PlayBgm(0, true);
         }
         
         private void OnEnable()
@@ -62,7 +61,11 @@ namespace Comma.Home.UI
             //SceneManager.LoadSceneAsync(_gameplaySceneName);
             //SceneManager.LoadScene(_gameplaySceneName);
             if (!SaveSystem.IsNewPlayer()) _warningNewGamePopUp.SetActive(true);
-            else SceneManager.LoadSceneAsync(_gameplaySceneName);
+            else
+            {
+                SceneManager.LoadSceneAsync(_gameplaySceneName);
+                BgmPlayer.Instance.PlayBgm(1);
+            } 
         }
         private  void OnContinueButton()
         {
