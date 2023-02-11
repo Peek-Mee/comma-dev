@@ -20,10 +20,10 @@ TagManager:
   - UI
   - TopDown
   - Ground2
-  - Moveable
-  - 
-  - 
-  - 
+  - Foreground
+  - BG1
+  - BG2
+  - BG3
   - 
   - 
   - 
@@ -47,4 +47,34 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BG4
+    uniqueID: 2522597171
+    locked: 0
+  - name: BG3
+    uniqueID: 3700692939
+    locked: 0
+  - name: BG2
+    uniqueID: 1554875157
+    locked: 0
+  - name: BG1
+    uniqueID: 1961549493
+    locked: 0
+  - name: Midground5
+    uniqueID: 792994175
+    locked: 0
+  - name: Midground4
+    uniqueID: 2689651849
+    locked: 0
+  - name: Midground3
+    uniqueID: 2361212169
+    locked: 0
+  - name: Midground2
+    uniqueID: 2063379881
+    locked: 0
+  - name: Midground1
+    uniqueID: 749502103
+    locked: 0
+  - name: Foreground
+    uniqueID: 2712498191
     locked: 0

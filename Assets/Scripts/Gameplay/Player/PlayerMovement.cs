@@ -3,6 +3,7 @@ using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -23,8 +24,10 @@ namespace Comma.Gameplay.Player
         [SerializeField]
         [Range(0.2f, 0.35f)]
         private float _checkRadius = .25f;
+        [SerializeField] float _circleForGround = .52f;
         [SerializeField]
         private Transform _ground;
+        [SerializeField] private Transform _normalChecker;
         [SerializeField]
         private Transform _ceil;
         [SerializeField]
@@ -123,7 +126,7 @@ namespace Comma.Gameplay.Player
         public float GetInput
         {
             get { return _horizontalUserInput; }
-            set { _horizontalUserInput = value; }
+            //set { _horizontalUserInput = value; }
         }
         private bool _isHoldSprint = false;
         private bool _isPressJump = false;
@@ -142,7 +145,18 @@ namespace Comma.Gameplay.Player
             _isGrounded = IsGrounded();
             if (_isGrounded)
             {
+                if (!_playerAnimator.WaitInteract)
+                {
+                _playerAnimator.Idle = true;
+                }
                 _playerAnimator.Move = _isWalking;
+
+                if (_playerAnimator.Move)
+                {
+                    _playerAnimator.Idle = false;
+                    //_playerAnimator.PortalInteract = false;
+                    //_playerAnimator.WaitInteract = false;
+                }
             }
             else
             {
@@ -228,14 +242,15 @@ namespace Comma.Gameplay.Player
 
         private void OnWalk()
         {
+            if (_playerAnimator.PortalInteract) return;
             if (_isWalking)
             {
-                if (_isHoldSprint)
+                if (_isHoldSprint && !(_playerAnimator.Pull || _playerAnimator.Push))
                 {
-                    if (_playerAnimator.Idle)
-                    {
-                        _playerAnimator.StartRun = true;
-                    }
+                    //if (_playerAnimator.Idle)
+                    //{
+                    //    _playerAnimator.StartRun = true;
+                    //}
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 2f;
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
@@ -243,10 +258,10 @@ namespace Comma.Gameplay.Player
                 }
                 else
                 {
-                    if (_horizontalUserInput != 0 && _playerAnimator.Idle == true)
-                    {
-                        _playerAnimator.StartWalk = true;
-                    }
+                    //if (_horizontalUserInput != 0 && _playerAnimator.Idle && !_playerAnimator.Pull && !_playerAnimator.Push)
+                    //{
+                    //    _playerAnimator.StartWalk = true;
+                    //}
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 1f;
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
@@ -263,15 +278,22 @@ namespace Comma.Gameplay.Player
 
         private void OnJump()
         {
-            if (_playerAnimator.EndFall == false)
+            if (!_playerAnimator.EndFall)
             {
-                if (_playerAnimator.StartJump == true) _playerAnimator.YSpeed = 0f;
-                else _playerAnimator.YSpeed = .5f;
+                if (_playerAnimator.StartJump) _playerAnimator.YSpeed = 0f;
+                else if (!_isGrounded && !_wasGrounded)
+                {
+                    _playerAnimator.YSpeed = .5f;
+                    _playerAnimator.Idle = false;
+                }
+                else if (_isGrounded && _wasGrounded) _playerAnimator.StartJump = false;
             }
 
             if (_isPressJump)
             {
                 _isPressJump = false;
+                if (_playerAnimator.PortalInteract) return;
+                if (_playerAnimator.Pull || _playerAnimator.Push) return;
                 if (_isGrounded)
                 {
                     _isAbleToMoveAfterJump = true;
@@ -292,17 +314,24 @@ namespace Comma.Gameplay.Player
             _rigidbody2D.velocity -= _fallMultiplier * Time.deltaTime * gravity;
 
 
-            if (_playerAnimator.YSpeed == .5f)
+            if (_playerAnimator.YSpeed == .5f && !_playerAnimator.EndFall)
             {
-                RaycastHit2D nearGround = IsCollide(_ground.position, Vector2.down, _rangeNearGround);
-                if (nearGround && !_wasGrounded)
+                if (_isGrounded) return;
+                RaycastHit2D nearGround = IsCollide(_normalChecker.position, Vector2.down, _rangeNearGround);
+                //Debug.Log(nearGround.collider, nearGround.collider);
+                if (nearGround.collider != null && !_wasGrounded && !_isGrounded)
                 {
-                    _playerAnimator.YSpeed = 1f;
+                    //_playerAnimator.YSpeed = 1f;
                     _playerAnimator.EndFall = true;
+                    _playerAnimator.Idle=false;
                 }
 
             }
-            else if (_playerAnimator.YSpeed == 1f && _isGrounded) _playerAnimator.EndFall = false;
+            else if (_playerAnimator.EndFall && _isGrounded)
+            {
+                _playerAnimator.EndFall = false;
+                _playerAnimator.YSpeed= 0f;
+            }
 
         }
 
@@ -330,7 +359,7 @@ namespace Comma.Gameplay.Player
                 layerToCheck = 0;
             Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], false);
             Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], false);
-            RaycastHit2D hit = Physics2D.Raycast(_ground.position,
+            RaycastHit2D hit = Physics2D.Raycast(_normalChecker.position,
                 Vector2.down, _checkRadius, _groundLayers[layerToCheck]);
             Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], true);
             Physics2D.IgnoreLayerCollision(_layerValue[1], _layerValue[0], true);
@@ -363,12 +392,59 @@ namespace Comma.Gameplay.Player
 
         private bool IsGrounded()
         {
-            RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
-            if (tryToCheckGround)
+
+            // For applying slope velocity
+            RaycastHit2D normalChecker = IsCollide(_normalChecker.position, Vector2.down, _checkRadius);
+            if (normalChecker)
             {
-                _currentPlatformDegree = tryToCheckGround.normal;
+                _currentPlatformDegree = normalChecker.normal;
+                if (!normalChecker.collider.isTrigger) return true;
             }
-            return tryToCheckGround;
+            else
+            {
+                _currentPlatformDegree = new(0, 1);
+            }
+
+
+
+            // Checking Ground
+            Collider2D[] overlaps = Physics2D.OverlapCircleAll(_ground.position, _circleForGround, _groundLayers[_currentLayer]);
+            if (overlaps.Length <= 0) return false;
+            for (int i = 0; i < overlaps.Length; i++)
+            {
+                if (!overlaps[i].CompareTag("Player"))
+                {
+                    if (!overlaps[i].isTrigger) return true;
+                }
+            }
+
+            //RaycastHit2D tryToCheckGround = IsCollide(_ground.position, Vector2.down, _checkRadius);
+            //if (tryToCheckGround.collider.gameObject != gameObject)
+            //{
+            //    _currentPlatformDegree = tryToCheckGround.normal;
+            //    return tryToCheckGround;
+            //}
+            //else
+            //{
+            //    Collider2D[] colls = Physics2D.OverlapCircleAll(_ground.position, .52f, _groundLayers[_currentLayer]);
+            //    if (colls.Length <= 0) return false;
+            //    for (int i =0; i < colls.Length; i++)
+            //    {
+            //        if (colls[i].gameObject != gameObject)
+            //        {
+            //            _currentPlatformDegree = new(0, 1);
+            //            return true;
+            //        }
+            //    }
+            //}
+
+            return false;
+        }
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_ground.position, _circleForGround);
+            //Gizmos.DrawRay(_normalChecker.position, Vector2.down);
         }
 
         private RaycastHit2D IsCollide(Vector3 from, Vector2 direction, float distance)

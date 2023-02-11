@@ -55,7 +55,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874046904873477730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3.55, z: 0}
+  m_LocalPosition: {x: -0.0255, y: -2.989, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -133,7 +133,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1874046905199477743}
-  - component: {fileID: 1874046905199477742}
   m_Layer: 0
   m_Name: TopDown-Check
   m_TagString: Untagged
@@ -149,39 +148,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874046905199477736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.024, y: -3.521, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1874046906382160645}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &1874046905199477742
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874046905199477736}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 4}
-  m_EdgeRadius: 0
 --- !u!1 &1874046906382160641
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,6 +173,7 @@ GameObject:
   - component: {fileID: 1874046906382160650}
   - component: {fileID: 1874046906382160648}
   - component: {fileID: 852962807448629436}
+  - component: {fileID: 4406172908942543950}
   m_Layer: 3
   m_Name: Gameplay-Character
   m_TagString: Player
@@ -298,7 +272,7 @@ Rigidbody2D:
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 53d5206996aba71449cf6f059f6210bb, type: 2}
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &1874046906382160640
@@ -313,8 +287,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a38d71a866041c8813421c14c0a59fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _checkRadius: 0.25
+  _checkRadius: 0.2
+  _circleForGround: 0.5425
   _ground: {fileID: 1874046904873477729}
+  _normalChecker: {fileID: 1874046905199477743}
   _ceil: {fileID: 1874046904939670345}
   _rightHand: {fileID: 1874046904854633787}
   _leftHand: {fileID: 1874046904934106706}
@@ -328,9 +304,7 @@ MonoBehaviour:
   _jumpForce: 20
   _fallMultiplier: 4
   _playerAnimator: {fileID: 852962807448629436}
-  _playerState: 0
-  _isGrounded: 0
-  _isWalking: 0
+  _rangeNearGround: 1.5
 --- !u!70 &1874046906382160644
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -423,6 +397,23 @@ MonoBehaviour:
   _varOnStartJump: OnStartJump
   _varOnEndFall: OnEndFall
   _varYSpeed: YSpeed
+  _varOnMove: OnMove
+  _varOnPull: OnPull
+  _varOnPush: OnPush
+  _varOnPortalInteract: OnPortalInteract
+  _varOnWaitInteract: OnWaitInteract
+--- !u!114 &4406172908942543950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874046906382160641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79996d5419af2364f9208a3db578788e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1874046906486841755
 GameObject:
   m_ObjectHideFlags: 0

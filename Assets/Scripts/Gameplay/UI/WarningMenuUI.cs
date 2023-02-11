@@ -7,6 +7,7 @@ namespace Comma.Gameplay.UI
 {
     public class WarningMenuUI : MonoBehaviour
     {
+        [SerializeField] private GameObject _pauseMenuParent;
         [Header("Warning Menu Buttons")]
         [SerializeField] private Button _yesButton;
         [SerializeField] private Button _noButton;
@@ -37,6 +38,7 @@ namespace Comma.Gameplay.UI
         }
         private void OnNoButton()
         {
+            _pauseMenuParent.SetActive(true);
             gameObject.SetActive(false);
         }
     }

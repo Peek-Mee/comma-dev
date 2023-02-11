@@ -5234,7 +5234,7 @@ MonoBehaviour:
   _newGameButton: {fileID: 760712888}
   _creditssButton: {fileID: 585536884}
   _quitButton: {fileID: 1347411190}
-  _gameplaySceneName: Dummy-UI-Gameplay
+  _gameplaySceneName: Dummy-Character-Backup
   _creditsPopUp: {fileID: 1586193305}
   _warningNewGamePopUp: {fileID: 303039394}
   _warningQuitPopUp: {fileID: 947420002}
