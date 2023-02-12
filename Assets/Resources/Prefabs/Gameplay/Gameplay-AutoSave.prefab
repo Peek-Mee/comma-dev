@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76d408aa8a2cac4db6a52cfbec0e59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeAutoSave: 60
+  _timeAutoSave: 15
   _playerToTrack: {fileID: 0}
+  _cameraToTrack: {fileID: 0}
   _isAutoSaveEnabled: 1
