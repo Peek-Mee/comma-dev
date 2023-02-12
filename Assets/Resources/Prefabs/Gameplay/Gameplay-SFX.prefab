@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9077957719226998291
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9077957719226998289}
+  - component: {fileID: 9077957719226998288}
+  m_Layer: 0
+  m_Name: Gameplay-SFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9077957719226998289
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9077957719226998291}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9077957719226998288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9077957719226998291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 484db1f9f7906714ca6ff710884fa4fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sfxClips:
+  - _name: Walk
+    _audioClip: {fileID: 8300000, guid: 68ee5609ace0bf64d83285d4e6f36f4c, type: 3}
+    _defaultVolume: 1
+  - _name: Run
+    _audioClip: {fileID: 8300000, guid: 1caba631f5092774d8901ccf80daf3f2, type: 3}
+    _defaultVolume: 1
+  - _name: Jump
+    _audioClip: {fileID: 8300000, guid: 7ac0614703de0c84ebc42dc8b4b398f4, type: 3}
+    _defaultVolume: 1
+  - _name: Land
+    _audioClip: {fileID: 8300000, guid: 0bc0f3fc1ae927c4fbcaa9b6fd2e61a2, type: 3}
+    _defaultVolume: 1
+  - _name: DragObject
+    _audioClip: {fileID: 8300000, guid: 7fd082b1e6d75944d9e36379cf6609b2, type: 3}
+    _defaultVolume: 1
+  - _name: ObtainOrb
+    _audioClip: {fileID: 8300000, guid: 2601d6eae04f1e14daa6788a895ad666, type: 3}
+    _defaultVolume: 1
+  - _name: InteractObject
+    _audioClip: {fileID: 8300000, guid: e74eda1c9d980fd4289388afb8b3de29, type: 3}
+    _defaultVolume: 1
+  - _name: InteractPortal
+    _audioClip: {fileID: 8300000, guid: 838c15409a1f3da4891c767c5aa7f0e7, type: 3}
+    _defaultVolume: 1
+  _mixer: {fileID: 3681308156623335978, guid: ee1592abf6500cb4aba30ce82bfa80a0, type: 2}
+  _finishPercentage: 0.8

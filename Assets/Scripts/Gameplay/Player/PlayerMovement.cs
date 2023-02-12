@@ -1,4 +1,5 @@
-﻿using Comma.Global.PubSub;
+﻿using Comma.Global.AudioManager;
+using Comma.Global.PubSub;
 using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
@@ -286,7 +287,11 @@ namespace Comma.Gameplay.Player
                     _playerAnimator.YSpeed = .5f;
                     _playerAnimator.Idle = false;
                 }
-                else if (_isGrounded && _wasGrounded) _playerAnimator.StartJump = false;
+                else if (_isGrounded && _wasGrounded)
+                {
+                    _playerAnimator.StartJump = false;
+                    _playerAnimator.YSpeed = 0f;
+                }
             }
 
             if (_isPressJump)
@@ -301,6 +306,7 @@ namespace Comma.Gameplay.Player
                     _playerAnimator.Idle = false;
                     _playerAnimator.StartJump = true;
                     _playerAnimator.EndFall= false;
+                    SfxPlayer.Instance.PlaySFX("Jump", true);
                 }
             }
 
@@ -324,6 +330,8 @@ namespace Comma.Gameplay.Player
                     //_playerAnimator.YSpeed = 1f;
                     _playerAnimator.EndFall = true;
                     _playerAnimator.Idle=false;
+                    if (_playerAnimator.XSpeed == 0)
+                        SfxPlayer.Instance.PlaySFX("Land", true);
                 }
 
             }

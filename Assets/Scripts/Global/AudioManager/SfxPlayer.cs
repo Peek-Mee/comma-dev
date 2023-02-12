@@ -19,8 +19,9 @@ namespace Comma.Global.AudioManager
     {
         [SerializeField] private SfxClip[] _sfxClips;
         [SerializeField] private AudioMixerGroup _mixer;
+        [SerializeField] private float _finishPercentage = .8f;
         private Dictionary<string, SfxClip> _sfxBank;
-        private List<AudioSource> _sourceBank;
+        private AudioSource _source;
 
         public static SfxPlayer Instance { get; private set; }
 
@@ -36,50 +37,65 @@ namespace Comma.Global.AudioManager
                 Instance = this;
             }
             _sfxBank = new();
-            _sourceBank = new();
 
             for (int i =0; i < _sfxClips.Length; i++)
             {
                 _sfxBank.Add(_sfxClips[i].Name, _sfxClips[i]);
             }
 
-            for (int i = 0; i < 2; i++)
-            {
-                // Add source 0 = loop; 1 = once
-                var source = gameObject.AddComponent<AudioSource>();
-                source.playOnAwake = false;
-                source.loop = i == 0;
+            //for (int i = 0; i < 2; i++)
+            //{
+            //    // Add source 0 = loop; 1 = once
+            //    var source = gameObject.AddComponent<AudioSource>();
+            //    source.outputAudioMixerGroup= _mixer;
+            //    source.playOnAwake = false;
+            //    source.loop = i == 0;
 
-                _sourceBank.Add(source);
-            }
+            //    _sourceBank.Add(source);
+            //}
 
-            DontDestroyOnLoad(gameObject);
+            var source = gameObject.AddComponent<AudioSource>();
+            source.playOnAwake = false;
+            source.loop = true;
+            source.outputAudioMixerGroup = _mixer;
+            _source = source;
+
         }
 
         private string _playedLoop = "";
-        public void PlaySfx(string audioName, bool isLooping = false)
+        public void PlaySFX(string audioName, bool oneShoot = false)
         {
-            int loop = isLooping ? 0 : 1;
-            if (isLooping) _playedLoop = audioName;
-            var source = _sourceBank[loop];
-            var audio = _sfxBank[audioName];
-            source.clip = audio.AudioClip;
-            source.volume = audio.Volume;
-            if (!source.isPlaying)
-            {
-                source.Play();
-            }
-        }
 
-        public void StopLoopingSfx()
-        {
-            var source = _sourceBank[0];
-            source.Stop();
-            _playedLoop = "";
-            source.clip = null;
-            source.volume = 0f;
+            switch (oneShoot)
+            {
+                case true:
+                    _source.PlayOneShot(_sfxBank[audioName].AudioClip);
+                    break;
+                case false:
+                    if (_source.clip != null)
+                    {
+                        if (!IsAbleToTransition()) return;
+                    }
+                    _playedLoop = audioName;
+                    _source.clip = _sfxBank[audioName].AudioClip;
+                    _source.Play();
+                    break;
+            }
+
+
         }
-        public bool IsPlaying => _sourceBank[1].isPlaying;
+        public void StopSFX()
+        {
+            
+            _source.clip = null;
+            _playedLoop = "";
+        }
+        
+        private bool IsAbleToTransition()
+        {
+            return _source.time >= _source.clip.length * _finishPercentage;
+        }
+        
         public string PlayedLoop => _playedLoop;
     }
 }

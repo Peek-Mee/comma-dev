@@ -35,11 +35,6 @@ namespace Comma.Gameplay.Player
                 _currentInstanceId = collision.GetInstanceID();
             }
         }
-        //private void OnTriggerStay2D(Collider2D collision)
-        //{
-        //    if (_portal != null) return;
-        //    _portal = collision.GetComponentInParent<IDetectable>();
-        //}
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (collision.CompareTag("Portal"))
@@ -65,12 +60,14 @@ namespace Comma.Gameplay.Player
             //_portal.Interact();
             StartCoroutine(WaitAnimation());
             //SFXController.Instance.PlayInteractPortalSFX();
+            
         }
 
         IEnumerator WaitAnimation()
         {
             _playerAnimator.WaitInteract = true;
             yield return new WaitUntil(() => !_playerAnimator.PortalInteract);
+            SfxPlayer.Instance.PlaySFX("InteractPortal", true);
             _portal.Interact();
         }
         public string ToDebug()

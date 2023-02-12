@@ -63,19 +63,37 @@ namespace Comma.Gameplay.Player
             //SFXController.Instance.PlayWalkSFX(Move && XSpeed > 1.01);
             if (_sfxPlayer != null)
             {
-                if (Idle)
+                if (Idle || YSpeed != 0)
                 {
-                    _sfxPlayer.StopLoopingSfx();
+                    _sfxPlayer.StopSFX();
                     return;
                 }
-                else if (StartJump && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("Jump");
-                else if (EndFall && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("Land");
-                else if (PortalInteract && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("PortalInteract");
-                if (Move && XSpeed == 1 && _sfxPlayer.PlayedLoop != "Walk")
-                    _sfxPlayer.PlaySfx("Walk", true);
-                else if (Move && XSpeed == 2 && _sfxPlayer.PlayedLoop != "Run")
-                    _sfxPlayer.PlaySfx("Run", true);
+                //else if (StartJump && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("Jump");
+                //else if (EndFall && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("Land");
+                //else if (PortalInteract && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("PortalInteract");
+                
+                else if (Move && YSpeed == 0 && !(Pull || Push))
+                {
+                    if (XSpeed == 1 && _sfxPlayer.PlayedLoop != "Walk")
+                        _sfxPlayer.PlaySFX("Walk");
+                    else if (XSpeed == 2 && _sfxPlayer.PlayedLoop != "Run")
+                        _sfxPlayer.PlaySFX("Run");
+                }else if (Pull || Push)
+                {
+                    if (XSpeed == 1 && _sfxPlayer.PlayedLoop != "DragObject")
+                        _sfxPlayer.PlaySFX("DragObject");
+                       
+                }
 
+                //if (StartJump) _sfxPlayer.PlaySFX("Jump", true);
+                //if (EndFall) _sfxPlayer.PlaySFX("Land", true);
+                //if (PortalInteract) _sfxPlayer.PlaySFX("PortalInteract", true);
+
+
+            }
+            else
+            {
+                _sfxPlayer = SfxPlayer.Instance;
             }
         }
 
