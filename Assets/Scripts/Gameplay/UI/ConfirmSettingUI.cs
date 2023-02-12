@@ -33,6 +33,7 @@ namespace Gameplay.UI
         {
             VideoSetting.Instance.AcceptVideoSetting();
             AudioSetting.Instance.AcceptAudioSetting();
+            InputSetting.Instance.ApplyInputSetting();
             _pausePanel.SetActive(true);
             _optionsPopUp.SetActive(false);
             gameObject.SetActive(false);
@@ -41,6 +42,7 @@ namespace Gameplay.UI
         {
             VideoSetting.Instance.CancelVideoSetting();
             AudioSetting.Instance.CancelAudioSetting();
+            InputSetting.Instance.CancelInputSetting();
             _pausePanel.SetActive(true);
             gameObject.SetActive(false);
             _optionsPopUp.SetActive(false);
