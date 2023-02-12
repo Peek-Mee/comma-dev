@@ -10,9 +10,11 @@ namespace Comma.Gameplay.UI
     {
         [SerializeField] private Button _tabButton;
         [SerializeField] private GameObject _tabContent;
+        [SerializeField] private GameObject _indicator;
                 
         public Button Button => _tabButton;
         public GameObject Content => _tabContent;
+        public GameObject Indicator => _indicator;
     }
     public class TabsMenuUI : MonoBehaviour
     {
@@ -45,12 +47,16 @@ namespace Comma.Gameplay.UI
          
          private void OnTabButton(int index)
          {
-             _tabs[_activeTabIndex].Content.SetActive(false);
-             _tabs[_activeTabIndex].Button.GetComponent<TMP_Text>().fontStyle = FontStyles.UpperCase;
-             
-             _tabs[index].Content.SetActive(true);
-             _tabs[index].Button.GetComponent<TMP_Text>().fontStyle = FontStyles.Bold | FontStyles.UpperCase;
-             _activeTabIndex = index;
+            _tabs[_activeTabIndex].Content.SetActive(false);
+
+             //_tabs[_activeTabIndex].Button.GetComponent<TMP_Text>().fontStyle = FontStyles.UpperCase;
+            _tabs[_activeTabIndex].Indicator?.SetActive(false);
+            _tabs[index].Indicator?.SetActive(true);
+
+
+            _tabs[index].Content.SetActive(true);
+             //_tabs[index].Button.GetComponent<TMP_Text>().fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+            _activeTabIndex = index;
          }
     }
 }

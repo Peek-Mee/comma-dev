@@ -1,5 +1,6 @@
 using Cinemachine;
 using Comma.Global.PubSub;
+using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using UnityEngine;
 
@@ -30,6 +31,17 @@ namespace Comma.Gameplay.Environment
         {
             EventConnector.Subscribe("OnEnterCameraTrigger", new(EnterCameraTrigger));
             EventConnector.Subscribe("OnExitCameraTrigger", new(ExitCameraTrigger));
+            PlayerSaveData data = SaveSystem.GetPlayerData();
+            float savedScale;
+            if (data == null)
+            {
+                savedScale = 1f;
+            }
+            else
+            {
+                savedScale = data.GetCameraScale();
+            }
+            _camera.m_Lens.OrthographicSize = savedScale;
         }
 
         #region PubSub
@@ -68,6 +80,11 @@ namespace Comma.Gameplay.Environment
             return newOrthoSize;
         }
         #endregion
+
+        public float GetCurrentScale()
+        {
+            return _camera.m_Lens.OrthographicSize/_defaultOrthoSize;
+        }
         public string ToDebug()
         {
             float _current = _camera.m_Lens.OrthographicSize;

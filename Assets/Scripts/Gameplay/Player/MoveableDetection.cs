@@ -47,7 +47,8 @@ namespace Comma.Gameplay.Player
                 HandleMovable(1);
                 _moveableObject.Interact();
                 _playerAnimator.Push = true;
-                SFXController.Instance.PlayInteractObjectSFX();
+                SfxPlayer.Instance.PlaySFX("InteractObject", true);
+                //SFXController.Instance.PlayInteractObjectSFX();
             }
         }
         private void EjectMovable()
@@ -57,7 +58,7 @@ namespace Comma.Gameplay.Player
             _playerAnimator.Push = false;
             _playerAnimator.Pull = false;
             _moveableObject.UnInteract();
-            SFXController.Instance.StopObjectSFX();
+            //SFXController.Instance.StopObjectSFX();
         }
         #endregion
 
@@ -97,7 +98,7 @@ namespace Comma.Gameplay.Player
             switch (normalizeDirection)
             {
                 case 0:
-                    SFXController.Instance.StopObjectSFX();
+                    //SFXController.Instance.StopObjectSFX();
                     if (!_isHoldMoveable)
                     {
                         _playerAnimator.Push = false; 
@@ -105,12 +106,12 @@ namespace Comma.Gameplay.Player
                     }
                     break;
                 case 1:
-                    SFXController.Instance.PlayPushSFX();
+                    //SFXController.Instance.PlayPushSFX();
                     _playerAnimator.Push = true;
                     _playerAnimator.Pull = false;
                     break;
                 case -1:
-                    SFXController.Instance.PlayPullSFX();
+                    //SFXController.Instance.PlayPullSFX();
                     _playerAnimator.Push = false;
                     _playerAnimator.Pull = true;
                     break;
