@@ -35,6 +35,11 @@ namespace Comma.Gameplay.Player
         public float XSpeed { get; set; } = 0f;
         public float YSpeed { get; set; } = 0f;
 
+        private SfxPlayer _sfxPlayer;
+        private void Start()
+        {
+            _sfxPlayer = SfxPlayer.Instance;
+        }
         private void Update()
         {
             _playerAnimator.SetBool(_varOnIdle, Idle);
@@ -52,10 +57,26 @@ namespace Comma.Gameplay.Player
 
             var SFXWalk = Move && XSpeed == 1 && StartWalk == false;
             var SFXRun = Move && XSpeed == 2 && StartRun == false;
-            //SFXController.Instance.PlayMovementSFX(SFXWalk,SFXRun);
+            //SFXController.Instance.PlayMovementSFX(SFXWalk, SFXRun);
             //SFXController.Instance.PlayJumpSFX(StartJump);
             //SFXController.Instance.PlayLandingSFX(EndFall);
-           // SFXController.Instance.PlayWalkSFX(Move && XSpeed > 1.01);
+            //SFXController.Instance.PlayWalkSFX(Move && XSpeed > 1.01);
+            if (_sfxPlayer != null)
+            {
+                if (Idle)
+                {
+                    _sfxPlayer.StopLoopingSfx();
+                    return;
+                }
+                else if (StartJump && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("Jump");
+                else if (EndFall && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("Land");
+                else if (PortalInteract && !_sfxPlayer.IsPlaying) _sfxPlayer.PlaySfx("PortalInteract");
+                if (Move && XSpeed == 1 && _sfxPlayer.PlayedLoop != "Walk")
+                    _sfxPlayer.PlaySfx("Walk", true);
+                else if (Move && XSpeed == 2 && _sfxPlayer.PlayedLoop != "Run")
+                    _sfxPlayer.PlaySfx("Run", true);
+
+            }
         }
 
         public void StartWalkFinish()
