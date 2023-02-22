@@ -20,6 +20,7 @@ namespace Comma.CutScene
             }
             if (_playOnAwake)
             {
+                GetComponent<Collider2D>().enabled = false;
                 _cutsceneToBePlay.Play();
                 gameObject.SetActive(false);
             }

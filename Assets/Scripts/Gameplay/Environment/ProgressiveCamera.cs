@@ -41,7 +41,7 @@ namespace Comma.Gameplay.Environment
             {
                 savedScale = data.GetCameraScale();
             }
-            _camera.m_Lens.OrthographicSize = savedScale;
+            _camera.m_Lens.OrthographicSize = savedScale * _defaultOrthoSize;
         }
 
         #region PubSub

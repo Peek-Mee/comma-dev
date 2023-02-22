@@ -91,5 +91,9 @@ namespace Comma.Global.PubSub
                 thisEvent.Invoke(message);
             }
         }
+        public static void DestroyAllConnections()
+        {
+
+        }
     }
 }

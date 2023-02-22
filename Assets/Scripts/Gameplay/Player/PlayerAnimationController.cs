@@ -8,6 +8,7 @@ namespace Comma.Gameplay.Player
     public class PlayerAnimationController : MonoBehaviour, IDebugger
     {
         [SerializeField] private Animator _playerAnimator;
+        [SerializeField] private bool _deactivateAnimation;
 
         [SerializeField] private string _varOnIdle = "OnIdle";
         [SerializeField] private string _varOnStartWalk = "OnStartWalk";
@@ -21,6 +22,8 @@ namespace Comma.Gameplay.Player
         [SerializeField] private string _varOnPush = "OnPush";
         [SerializeField] private string _varOnPortalInteract = "OnPortalInteract";
         [SerializeField] private string _varOnWaitInteract = "OnWaitInteract";
+
+
         [SerializeField] private string _varOnFallRoll = "OnFallRoll";
         [SerializeField] private string _varOnFallStaright = "OnFallStraight";
         [SerializeField] private string _varOnGetUp = "OnGetUp";
@@ -39,7 +42,9 @@ namespace Comma.Gameplay.Player
         public float YSpeed { get; set; } = 0f;
 
         // Cutscene only
-
+        [SerializeField] private bool _idle;
+        [SerializeField] private bool _move;
+        [SerializeField] private float _speedX;
         [SerializeField] private bool _fallRoll;
         [SerializeField] private bool _fallStraight;
         [SerializeField] private bool _getUp;
@@ -50,6 +55,14 @@ namespace Comma.Gameplay.Player
         }
         private void Update()
         {
+            if (_deactivateAnimation)
+            {
+                _sfxPlayer.StopSFX();
+                _playerAnimator.SetBool(_varOnIdle, _idle);
+                _playerAnimator.SetBool(_varOnMove, _move);
+                _playerAnimator.SetFloat(_varXSpeed, _speedX);
+                return;
+            }
             _playerAnimator.SetBool(_varOnIdle, Idle);
             _playerAnimator.SetBool(_varOnMove, Move);
             _playerAnimator.SetBool(_varOnStartWalk, StartWalk);
@@ -76,7 +89,7 @@ namespace Comma.Gameplay.Player
             //SFXController.Instance.PlayWalkSFX(Move && XSpeed > 1.01);
             if (_sfxPlayer != null)
             {
-                if (Idle || YSpeed != 0)
+                if (Idle || YSpeed != 0 || _deactivateAnimation)
                 {
                     _sfxPlayer.StopSFX();
                     return;

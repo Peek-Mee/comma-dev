@@ -1,8 +1,10 @@
 using Comma.Gameplay.Player;
+using Comma.Global.AudioManager;
 using Comma.Global.SaveLoad;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Comma.CutScene
 {
@@ -11,7 +13,6 @@ namespace Comma.CutScene
     {
         [SerializeField] private string _cutsceneId;
         [SerializeField] private GameObject _player;
-
         private Rigidbody2D _playerRigid;
         private Collider2D _playerColl;
         private PlayerMovement _playerMovement;
@@ -50,6 +51,13 @@ namespace Comma.CutScene
             SetDefaultAnimator();
             SaveSystem.GetPlayerData().AddCutsceneToCollection(_cutsceneId);
             SaveSystem.SaveDataToDisk();
+            gameObject.SetActive(false);
+        }
+        public void OnEndingCutscene()
+        {
+            SaveSystem.ResetPlayerData();
+            BgmPlayer.Instance.PlayBgm(0);
+            SceneManager.LoadSceneAsync("Main Menu");
             gameObject.SetActive(false);
         }
 

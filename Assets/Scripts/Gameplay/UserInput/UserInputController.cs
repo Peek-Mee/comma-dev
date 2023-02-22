@@ -28,6 +28,18 @@ namespace Comma.Gameplay.UserInput
             _userInputManager.Player.Pause.performed += OnPauseInput;
             OnInputManagerLoaded?.Invoke();
         }
+        private void OnDisable()
+        {
+            _userInputManager.Player.Movement.performed -= OnMoveInput;
+            _userInputManager.Player.Movement.canceled -= OnMoveInput;
+            _userInputManager.Player.Jump.performed -= OnJumpInput;
+            //_userInputManager.Player.Jump.canceled += OnJumpInput;
+            _userInputManager.Player.Interact.performed -= OnInteractInput;
+            //_userInputManager.Player.Interact.canceled += OnInteractInput;
+            _userInputManager.Player.Sprint.performed -= OnSprintInput;
+            _userInputManager.Player.Sprint.canceled -= OnSprintInput;
+            _userInputManager.Player.Pause.performed -= OnPauseInput;
+        }
 
         private void OnMoveInput(InputAction.CallbackContext context)
         {

@@ -246,7 +246,7 @@ namespace Comma.Gameplay.Player
 
         private void OnWalk()
         {
-            if (_playerAnimator.PortalInteract) return;
+            if (_playerAnimator.PortalInteract || _playerAnimator.WaitInteract) return;
             if (_isWalking)
             {
                 if (_isHoldSprint && !(_playerAnimator.Pull || _playerAnimator.Push))
@@ -301,7 +301,7 @@ namespace Comma.Gameplay.Player
             {
                 _isPressJump = false;
                 if (IsJumpProhibited) return;
-                if (_playerAnimator.PortalInteract) return;
+                if (_playerAnimator.PortalInteract || _playerAnimator.WaitInteract) return;
                 if (_playerAnimator.Pull || _playerAnimator.Push) return;
                 if (_isGrounded)
                 {
