@@ -70,11 +70,11 @@ namespace Comma.Global.Settings
         }
         public float GetCurrentVolume(AudioDataType type)
         {
-            return _currentAudioSaveData.GetVolumeSetting(type);
+            return _newAudioSaveData.GetVolumeSetting(type);
         }
         public bool GetCurrentMute(AudioDataType type)
         {
-            return _currentAudioSaveData.GetMuteSetting(type);
+            return _newAudioSaveData.GetMuteSetting(type);
         }
     }
 }
