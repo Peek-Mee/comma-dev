@@ -102,6 +102,7 @@ namespace Comma.Gameplay.Player
             EventConnector.Subscribe("OnPlayerMove", new(OnMoveInput));
             EventConnector.Subscribe("OnPlayerJump", new(OnJumpInput));
             EventConnector.Subscribe("OnPlayerSprint", new(OnSprintInput));
+            EventConnector.Subscribe("OnGamePause", new(OnGamePause));
         }
 
         #region PubSub
@@ -113,19 +114,31 @@ namespace Comma.Gameplay.Player
         // User Input
         private void OnMoveInput(object message)
         {
+            if (_isPaused) return;
             OnPlayerMove msg = (OnPlayerMove)message;
             _horizontalUserInput = msg.Direction.x;
             
         }
         private void OnJumpInput(object message)
         {
+            if (_isPaused) return;
             _isPressJump = true;
         }
         private void OnSprintInput(object message)
         {
+            if (_isPaused) return;
             OnPlayerSprint msg = (OnPlayerSprint)message;
             _isHoldSprint = msg.Sprint;
 
+        }
+        private bool _isPaused = false;
+        private void OnGamePause(object message)
+        {
+            bool msg = (bool)message;
+            _isPaused = msg;
+            _horizontalUserInput = 0;
+            _isPressJump = false;
+            _isHoldSprint = false;
         }
         /////////////////////////////
         #endregion

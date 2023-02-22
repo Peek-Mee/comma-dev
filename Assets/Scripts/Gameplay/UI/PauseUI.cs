@@ -28,6 +28,7 @@ namespace Comma.Gameplay.UI
         {
             if (_optionsPopUp.activeSelf) return;
             _pausePanel.SetActive(!_pausePanel.activeSelf);
+            EventConnector.Publish("OnGamePause", _pausePanel.activeSelf);
         }
         #endregion
         private void OnEnable()
