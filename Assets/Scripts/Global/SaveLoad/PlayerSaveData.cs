@@ -13,6 +13,7 @@ namespace Comma.Global.SaveLoad
         [SerializeField] private List<string> _portalsCollection;
         [SerializeField] private List<string> _cutsceneCollection;
         [SerializeField] private float _lastCameraScale;
+        [SerializeField] private bool _isNew;
 
         public PlayerSaveData()
         {
@@ -22,6 +23,7 @@ namespace Comma.Global.SaveLoad
             _portalsCollection = new();
             _cutsceneCollection = new();
             _lastCameraScale= 1f;
+            _isNew = true;
         }
         /// <summary>
         /// Get the last player position saved in the disk
@@ -106,6 +108,14 @@ namespace Comma.Global.SaveLoad
         public float GetCameraScale()
         {
             return _lastCameraScale;
+        }
+        public bool IsNewData()
+        {
+            return _isNew;
+        }
+        public void SetOldData()
+        {
+            _isNew = false;
         }
         public object Clone()
         {

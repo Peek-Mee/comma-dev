@@ -83,6 +83,11 @@ namespace Comma.Gameplay.Player
         }
         private void Start()
         {
+            if (!SaveSystem.IsNewPlayer())
+            {
+                transform.position = SaveSystem.GetPlayerData().GetLastPosition();
+            }
+
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _playerSprite = GetComponent<SpriteRenderer>();
             //init layer value
@@ -90,6 +95,7 @@ namespace Comma.Gameplay.Player
             {
                 _layerValue.Add(Converter.BitToLayer(layer));
             }
+
 
             // PubSub Area
             EventConnector.Subscribe("OnPlayerSwapDown", new(OnPlayerSwapDown));
