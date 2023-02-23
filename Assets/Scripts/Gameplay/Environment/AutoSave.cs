@@ -36,6 +36,7 @@ namespace Comma.Gameplay.Environment
             PlayerSaveData saveData = SaveSystem.GetPlayerData();
             
             saveData.SetLastPosition(_playerToTrack.position);
+            saveData.SetLastLayer(_playerToTrack.gameObject.layer);
             saveData.SetCameraScale(_cameraToTrack.GetCurrentScale());
             saveData.SetOldData();
             SaveSystem.SaveDataToDisk();

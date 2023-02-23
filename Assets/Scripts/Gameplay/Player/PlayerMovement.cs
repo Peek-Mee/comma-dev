@@ -86,6 +86,12 @@ namespace Comma.Gameplay.Player
             if (!SaveSystem.IsNewPlayer())
             {
                 transform.position = SaveSystem.GetPlayerData().GetLastPosition();
+                int layer = SaveSystem.GetPlayerData().GetCurrentLayer();
+                if (layer != Converter.BitToLayer(_currentLayer))
+                {
+                    SwapLayer();
+                }
+                //_ = layer != Converter.BitToLayer(_currentLayer) ? SwapLayer() : 0;
             }
 
             _rigidbody2D = GetComponent<Rigidbody2D>();

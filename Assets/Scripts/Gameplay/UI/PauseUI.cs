@@ -41,6 +41,7 @@ namespace Comma.Gameplay.UI
         private void OnDisable()
         {
             RemoveAllButtonListeners();
+            
         }
 
         private void RemoveAllButtonListeners()
@@ -52,6 +53,7 @@ namespace Comma.Gameplay.UI
 
         private void OnContinueButton()
         {
+            EventConnector.Publish("OnGamePause", false);
             _pausePanel.SetActive(false);
         }
         private void OnOptionsButton()
