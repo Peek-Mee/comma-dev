@@ -83,15 +83,11 @@ namespace Comma.Gameplay.Player
         }
         private void Start()
         {
-            if (!SaveSystem.IsNewPlayer())
+            var data = SaveSystem.GetPlayerData();
+            if (!data.IsNewData())
             {
-                transform.position = SaveSystem.GetPlayerData().GetLastPosition();
-                int layer = SaveSystem.GetPlayerData().GetCurrentLayer();
-                if (layer != Converter.BitToLayer(_currentLayer))
-                {
-                    SwapLayer();
-                }
-                //_ = layer != Converter.BitToLayer(_currentLayer) ? SwapLayer() : 0;
+                transform.position = data.GetLastPosition();
+                SwapLayer(data.GetCurrentLayer());
             }
 
             _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -183,8 +179,6 @@ namespace Comma.Gameplay.Player
                 if (_playerAnimator.Move)
                 {
                     _playerAnimator.Idle = false;
-                    //_playerAnimator.PortalInteract = false;
-                    //_playerAnimator.WaitInteract = false;
                 }
             }
             else
@@ -412,7 +406,14 @@ namespace Comma.Gameplay.Player
 
             gameObject.layer = Converter.BitToLayer(_groundLayers[_currentLayer]);
         }
-
+        public void SwapLayer(int dataLayer)
+        {
+            int crtLayer = Converter.BitToLayer(_groundLayers[_currentLayer]);
+            if (crtLayer != dataLayer)
+            {
+                SwapLayer();
+            }
+        }
         private void OnLayerEdge()
         {
             SwapLayer();

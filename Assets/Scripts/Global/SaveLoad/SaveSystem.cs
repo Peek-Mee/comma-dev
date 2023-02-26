@@ -71,7 +71,11 @@ namespace Comma.Global.SaveLoad
                 SaveData<T>(ref data, prefsName);
                 return;
             }
-            data = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
+            var testData = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
+            if (testData != null)
+            {
+                 data = testData;
+            }
         }
 
         private void SaveData<T>(ref T data, string prefsName)
@@ -183,7 +187,7 @@ namespace Comma.Global.SaveLoad
         public static void ResetPlayerData()
         {
             Instance._playerData = new();
-            PlayerPrefs.SetString("PlayerData", "");
+            PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(Instance._playerData));
             PlayerPrefs.Save();
             //Instance.Init();
         }

@@ -69,8 +69,7 @@ namespace Comma.Gameplay.DetectableObject
         private void TeleportPlayer()
         {
             EventConnector.Publish("OnPlayerUsePortal", 
-                new OnPlayerUsePortal(_destinations[0].ConnectedPortal.GetPosition()));
-
+                new OnPlayerUsePortal(_destinations[0].ConnectedPortal.GetPosition(), _destinations[0].ConnectedPortal.gameObject.layer));
         }
 
         public string GetObjectId()
@@ -87,9 +86,15 @@ namespace Comma.Gameplay.DetectableObject
         {
             
             if (!isActivated && _isMainPortal) return;
+            if (_interacted != null)
+            {
+                _interacted.Invoke();
+            }
+            else
+            {
 
-            _interacted?.Invoke();
-            TeleportPlayer();
+                TeleportPlayer();
+            }
         }
     }
 }
