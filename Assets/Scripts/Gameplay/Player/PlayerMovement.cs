@@ -428,6 +428,7 @@ namespace Comma.Gameplay.Player
         }
         #endregion
 
+        bool _useRaycast;
         private bool IsGrounded()
         {
 
@@ -436,6 +437,7 @@ namespace Comma.Gameplay.Player
             if (normalChecker)
             {
                 _currentPlatformDegree = normalChecker.normal;
+                _useRaycast = true;
                 if (!normalChecker.collider.isTrigger) return true;
             }
             else
@@ -443,7 +445,10 @@ namespace Comma.Gameplay.Player
                 _currentPlatformDegree = new(0, 1);
             }
 
-
+            _useRaycast= false;
+            // If slope >45deg
+            RaycastHit2D normalExtended = IsCollide(_normalChecker.position, Vector2.down, 2 * _checkRadius);
+            _currentPlatformDegree = normalExtended.normal;
 
             // Checking Ground
             Collider2D[] overlaps = Physics2D.OverlapCircleAll(_ground.position, _circleForGround, _groundLayers[_currentLayer]);
@@ -496,6 +501,7 @@ namespace Comma.Gameplay.Player
             
             string returner = "\n<b>Player Movement</b>\n";
             returner += "Facing: <i>" + (_isFacingRight ? "Right" : "Left") +"</i>\n";
+            returner += $"Use Raycast: <i>{_useRaycast}</i>\n";
             returner += $"In Ground: <i>{_isGrounded}</i>\n";
             returner += $"Velocity: <i>{_rigidbody2D.velocity}</i>\n";
             returner += $"Position: <i>{transform.position}</i>\n";
