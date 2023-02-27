@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 695646000007967559}
   - component: {fileID: 695646000007967558}
   - component: {fileID: 695646000007967557}
+  - component: {fileID: 4265656252810005303}
   m_Layer: 0
   m_Name: Gameplay-M-Figure
   m_TagString: Untagged
@@ -105,3 +106,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4265656252810005303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695646000007967556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d1c3d34428730e45b6079bd6d63b716, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 695646000007967557}
+  _idle: 0
+  _move: 0
+  _xSpeed: 0
+  _inAir: 0
+  _startWalk: 0
+  _startRun: 0
+  _startJump: 0
+  _startLand: 0

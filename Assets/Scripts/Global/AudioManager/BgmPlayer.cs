@@ -47,6 +47,7 @@ namespace Comma.Global.AudioManager
                 audioSource.outputAudioMixerGroup = _bgmMixer;
                 audioSource.clip = _bgmList[i].Clip;
                 audioSource.volume = 0f;
+                audioSource.loop = true;
                 audioSource.mute = true;
                 _audioSources.Add(audioSource);
 

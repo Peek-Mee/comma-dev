@@ -44,12 +44,14 @@ namespace Comma.Gameplay.Player
         private Rigidbody2D _rigidbody2D;
         private SpriteRenderer _playerSprite;
         private bool _isInCutScene = false;
+        public bool InCutScene { get; set; }
         private bool _isFlipProhibited = false;
         public bool IsFlipProhibited
         {
             get { return _isFlipProhibited; }
             set { _isFlipProhibited = value; }
         }
+        public bool IsJumpProhibited { get; set; }
         // #######
 
         [Header("Movement")]
@@ -136,6 +138,7 @@ namespace Comma.Gameplay.Player
 
         private void Update()
         {
+            if (InCutScene) return;
             if (!Physics2D.GetIgnoreLayerCollision(_layerValue[0], _layerValue[1]) || !Physics2D.GetIgnoreLayerCollision(_layerValue[1], _layerValue[0]))
             {
                 Physics2D.IgnoreLayerCollision(_layerValue[0], _layerValue[1], true);
@@ -243,7 +246,7 @@ namespace Comma.Gameplay.Player
 
         private void OnWalk()
         {
-            if (_playerAnimator.PortalInteract) return;
+            if (_playerAnimator.PortalInteract || _playerAnimator.WaitInteract) return;
             if (_isWalking)
             {
                 if (_isHoldSprint && !(_playerAnimator.Pull || _playerAnimator.Push))
@@ -297,7 +300,8 @@ namespace Comma.Gameplay.Player
             if (_isPressJump)
             {
                 _isPressJump = false;
-                if (_playerAnimator.PortalInteract) return;
+                if (IsJumpProhibited) return;
+                if (_playerAnimator.PortalInteract || _playerAnimator.WaitInteract) return;
                 if (_playerAnimator.Pull || _playerAnimator.Push) return;
                 if (_isGrounded)
                 {

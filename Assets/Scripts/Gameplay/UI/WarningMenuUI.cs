@@ -33,7 +33,7 @@ namespace Comma.Gameplay.UI
         }
         private void OnYesButton()
         {
-            BGMController.Instance.StartCourotineGameplay();
+            //BGMController.Instance.StartCourotineGameplay();
             SceneManager.LoadScene(_gameplaySceneName);
             BgmPlayer.Instance.PlayBgm(0);
         }

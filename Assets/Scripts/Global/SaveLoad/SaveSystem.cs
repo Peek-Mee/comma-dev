@@ -11,6 +11,7 @@ namespace Comma.Global.SaveLoad
 
         public static SaveSystem saveInstance;
         private static SaveSystem _saveSystem;
+        private bool _isNew;
         private static SaveSystem Instance
         {
             get
@@ -54,6 +55,8 @@ namespace Comma.Global.SaveLoad
             _audioSetting ??= new();
             _videoSetting ??= new();
             _inputSetting ??= new();
+
+            if (!PlayerPrefs.HasKey("PlayerData")) _isNew = true;
 
             InitiateData<PlayerSaveData>(ref _playerData, "PlayerData");
             InitiateData<AudioSaveData>(ref _audioSetting, "AudioData");
@@ -177,7 +180,14 @@ namespace Comma.Global.SaveLoad
 
         public static bool IsNewPlayer()
         {
-            return true;
+            return Instance._isNew;
+        }
+        public static void ResetPlayerData()
+        {
+            Instance._playerData = new();
+            PlayerPrefs.SetString("PlayerData", "");
+            PlayerPrefs.Save();
+            //Instance.Init();
         }
     }
 }

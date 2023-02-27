@@ -18,6 +18,7 @@ namespace Comma.Home.UI
         [SerializeField] private GameObject _transition;
 
         [Header("Scene Management")]
+        [SerializeField] private string _cutSceneProlog = "Prolog";
         [SerializeField] private string _gameplaySceneName = "Gameplay";
 
         [Header("Home Menu Pop Up")]
@@ -63,14 +64,25 @@ namespace Comma.Home.UI
             if (!SaveSystem.IsNewPlayer()) _warningNewGamePopUp.SetActive(true);
             else
             {
-                SceneManager.LoadSceneAsync(_gameplaySceneName);
+                SaveSystem.ResetPlayerData();
+                SceneManager.LoadSceneAsync(_cutSceneProlog);
                 BgmPlayer.Instance.PlayBgm(1);
             } 
         }
         private  void OnContinueButton()
         {
             _transition.SetActive(true);
+            BgmPlayer.Instance.PlayBgm(1);
+            if (SaveSystem.GetPlayerData().GetLastPosition() == Vector3.zero)
+            {
+                SaveSystem.ResetPlayerData();
+                SceneManager.LoadSceneAsync(_cutSceneProlog);
+            }
+            else
+            {
+
             SceneManager.LoadSceneAsync(_gameplaySceneName);
+            }
         }
         private void OnCreditsButton()
         {

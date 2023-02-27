@@ -8013,6 +8013,22 @@ PrefabInstance:
       propertyPath: m_text
       value: Back to menu
       objectReference: {fileID: 0}
+    - target: {fileID: 7630263241890546675, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7630263241890546675, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7630263241890546675, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7630263241890546675, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7630263240951764929, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}

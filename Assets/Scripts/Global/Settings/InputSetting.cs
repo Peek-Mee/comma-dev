@@ -53,7 +53,7 @@ namespace Comma.Global.Settings
                 Instance = this;
             }
             UserInputController.OnInputManagerLoaded.AddListener(Init);
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
 
         private void Start()

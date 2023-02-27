@@ -3,6 +3,7 @@ using Comma.Global.SaveLoad;
 using JetBrains.Annotations;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Comma.Gameplay.DetectableObject
 {
@@ -23,6 +24,7 @@ namespace Comma.Gameplay.DetectableObject
         [SerializeField] private bool _isMainPortal;
         [SerializeField] private PortalDestination[] _destinations;
         [SerializeField] private SpriteRenderer _portalSprite;
+        public UnityEvent _interacted;
         //[SerializeField] private GameObject _portalSprite;
         private bool isActivated;
         private Collider2D _coll;
@@ -86,6 +88,7 @@ namespace Comma.Gameplay.DetectableObject
             
             if (!isActivated && _isMainPortal) return;
 
+            _interacted?.Invoke();
             TeleportPlayer();
         }
     }
