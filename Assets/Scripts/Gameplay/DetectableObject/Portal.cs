@@ -1,6 +1,5 @@
 ﻿using Comma.Global.PubSub;
 using Comma.Global.SaveLoad;
-using JetBrains.Annotations;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,6 +23,7 @@ namespace Comma.Gameplay.DetectableObject
         [SerializeField] private bool _isMainPortal;
         [SerializeField] private PortalDestination[] _destinations;
         [SerializeField] private SpriteRenderer _portalSprite;
+        [SerializeField] private bool _isSinglePortal;
         public UnityEvent _interacted;
         //[SerializeField] private GameObject _portalSprite;
         private bool isActivated;
@@ -84,15 +84,14 @@ namespace Comma.Gameplay.DetectableObject
 
         public void Interact()
         {
-            
             if (!isActivated && _isMainPortal) return;
-            if (_interacted != null)
+            if (_isSinglePortal)
             {
+
                 _interacted.Invoke();
             }
             else
             {
-
                 TeleportPlayer();
             }
         }
