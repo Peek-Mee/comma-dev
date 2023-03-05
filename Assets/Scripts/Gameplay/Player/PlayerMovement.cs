@@ -263,6 +263,13 @@ namespace Comma.Gameplay.Player
            
         }
 
+        private float GetAirSpeed(bool isRun)
+        {
+            if (_rigidbody2D.velocity.x <= .01f) return _normalSpeed * .5f;
+            if (isRun) return _runSpeed * .5f;
+            return _normalSpeed * .5f;
+        }
+
         private void OnWalk()
         {
             if (_playerAnimator.PortalInteract || _playerAnimator.WaitInteract) return;
@@ -277,7 +284,7 @@ namespace Comma.Gameplay.Player
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 2f;
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
-                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
+                        _currentSpeed = GetAirSpeed(true) : _currentSpeed = _runSpeed;
                 }
                 else
                 {
@@ -288,7 +295,7 @@ namespace Comma.Gameplay.Player
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 1f;
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
-                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
+                        _currentSpeed = GetAirSpeed(false) : _currentSpeed = _normalSpeed;
                 }
             }
             else

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Comma.Global.SaveLoad;
+using UnityEngine;
 
 namespace Comma.Gameplay.DetectableObject
 {
@@ -13,7 +14,7 @@ namespace Comma.Gameplay.DetectableObject
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
         }
-
+        
         public string GetObjectId()
         {
             return _objectId;
@@ -26,12 +27,13 @@ namespace Comma.Gameplay.DetectableObject
 
         public void Interact()
         {
-            _rigidbody2D.constraints = RigidbodyConstraints2D.None ;
+            _rigidbody2D.constraints = RigidbodyConstraints2D.None | RigidbodyConstraints2D.FreezeRotation;
             _isInteracted = true;
         }
         public void UnInteract()
         {
             _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
+            //SaveSystem.GetPlayerData().SetInteractedObject(_objectId, transform.position);
             _isInteracted = false;
             GetDetection(null, 0);
         }
