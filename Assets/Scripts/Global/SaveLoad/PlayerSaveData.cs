@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Comma.Utility.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace Comma.Global.SaveLoad
         [SerializeField] private float _lastCameraScale;
         [SerializeField] private bool _isNew;
         [SerializeField] private int _layer;
+        [SerializeField] private StringVector3Dictionary _interactedObject;
 
         public PlayerSaveData()
         {
@@ -26,6 +28,7 @@ namespace Comma.Global.SaveLoad
             _lastCameraScale= 1f;
             _isNew = true;
             _layer = 1;
+            _interactedObject = new();
         }
         /// <summary>
         /// Get the last player position saved in the disk
@@ -126,6 +129,26 @@ namespace Comma.Global.SaveLoad
         public void SetLastLayer(int layer)
         {
             _layer = layer;
+        }
+
+        public void SetInteractedObject(string id, Vector3 pos)
+        {
+            if (_interactedObject.ContainsKey(id))
+            {
+                _interactedObject[id] = pos;
+            }
+            else
+            {
+                _interactedObject.Add(id, pos);
+            }
+        }
+        public bool IsObjectInteracted(string id)
+        {
+            return _interactedObject.ContainsKey(id);
+        }
+        public Vector3 GetObjectPosition(string id)
+        {
+            return _interactedObject[id];
         }
         public object Clone()
         {

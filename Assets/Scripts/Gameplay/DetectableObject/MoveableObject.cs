@@ -14,7 +14,15 @@ namespace Comma.Gameplay.DetectableObject
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
         }
-        
+
+        private void Start()
+        {
+            if (SaveSystem.GetPlayerData().IsObjectInteracted(_objectId))
+            {
+                transform.position = SaveSystem.GetPlayerData().GetObjectPosition(_objectId);
+            }
+        }
+
         public string GetObjectId()
         {
             return _objectId;
@@ -33,7 +41,7 @@ namespace Comma.Gameplay.DetectableObject
         public void UnInteract()
         {
             _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
-            //SaveSystem.GetPlayerData().SetInteractedObject(_objectId, transform.position);
+            SaveSystem.GetPlayerData().SetInteractedObject(_objectId, transform.position);
             _isInteracted = false;
             GetDetection(null, 0);
         }

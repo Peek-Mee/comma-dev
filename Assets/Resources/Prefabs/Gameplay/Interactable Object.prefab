@@ -102,7 +102,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0.4
-  m_AngularDrag: 1
+  m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 53d5206996aba71449cf6f059f6210bb, type: 2}
   m_Interpolate: 0
@@ -159,7 +159,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 6.85, y: 2.9307694}
+  m_Size: {x: 6.9, y: 2.9307694}
   m_EdgeRadius: 0
 --- !u!114 &1566284508320323825
 MonoBehaviour:
