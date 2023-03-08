@@ -29,8 +29,8 @@ namespace Comma.Global.Settings
     {
         [SerializeField] private KeyBind[] _keyBinds;
         [SerializeField] private Button _setToDefault;
-        [SerializeField] private Button _applyButton;
-        [SerializeField] private Button _cancelButton;
+        //[SerializeField] private Button _applyButton;
+        //[SerializeField] private Button _cancelButton;
 
         private bool _isRebinding = false;
 
@@ -52,18 +52,19 @@ namespace Comma.Global.Settings
             {
                 Instance = this;
             }
-            DontDestroyOnLoad(gameObject);
+            UserInputController.OnInputManagerLoaded.AddListener(Init);
+            //DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
         {
-            UserInputController.OnInputManagerLoaded.AddListener(Init);
+            
             _setToDefault.onClick.RemoveAllListeners();
-            _applyButton.onClick.RemoveAllListeners();
-            _cancelButton.onClick.RemoveAllListeners();
+            //_applyButton.onClick.RemoveAllListeners();
+            //_cancelButton.onClick.RemoveAllListeners();
             _setToDefault.onClick.AddListener(SetToDefault);
-            _applyButton.onClick.AddListener(ApplyInputSetting);
-            _cancelButton.onClick.AddListener(CancelInputSetting);
+            //_applyButton.onClick.AddListener(ApplyInputSetting);
+            //_cancelButton.onClick.AddListener(CancelInputSetting);
         }
 
         private void Init()
@@ -90,9 +91,10 @@ namespace Comma.Global.Settings
             for (int i = 0; i < _keyBinds.Length; i++)
             {
                 KeyBind keyBind = _keyBinds[i];
-                keyBind.Text.text = InputControlPath.ToHumanReadableString(
+                string newText = InputControlPath.ToHumanReadableString(
                     keyBind.InputAction.bindings[keyBind.Index].effectivePath,
                     InputControlPath.HumanReadableStringOptions.OmitDevice);
+                keyBind.Text.text = newText.ToLower().Replace("right", "r.").Replace("left", "l.");
             }
         }
 
@@ -110,7 +112,7 @@ namespace Comma.Global.Settings
         {
             _isRebinding = true;
 
-            keyBind.Text.text = "Press input..";
+            keyBind.Text.text = "Press input...";
             keyBind.Button.interactable = false;
 
             _rebindingOperation = keyBind.InputAction.PerformInteractiveRebinding(keyBind.Index)
@@ -177,14 +179,14 @@ namespace Comma.Global.Settings
             _newInputSaveData.ChangeBindingOverride(UserInputController.UserInputManager.SaveBindingOverridesAsJson());
         }
 
-        private void ApplyInputSetting()
+        public void ApplyInputSetting()
         {
             _currentInputSaveData = (InputSaveData)_newInputSaveData.Clone();
             SaveSystem.ChangeDataReference(_currentInputSaveData);
             SaveSystem.SaveDataToDisk();
         }
 
-        private void CancelInputSetting()
+        public void CancelInputSetting()
         {
             UserInputController.UserInputManager.RemoveAllBindingOverrides();
             UserInputController.UserInputManager.LoadBindingOverridesFromJson(_currentInputSaveData.GetBindingOverride());

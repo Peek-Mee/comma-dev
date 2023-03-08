@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Comma.Global.AudioManager;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -32,7 +33,9 @@ namespace Comma.Gameplay.UI
         }
         private void OnYesButton()
         {
+            //BGMController.Instance.StartCourotineGameplay();
             SceneManager.LoadScene(_gameplaySceneName);
+            BgmPlayer.Instance.PlayBgm(0);
         }
         private void OnNoButton()
         {

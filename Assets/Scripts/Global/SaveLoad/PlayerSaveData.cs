@@ -11,6 +11,8 @@ namespace Comma.Global.SaveLoad
         [SerializeField] private List<string> _orbsCollection;
         [SerializeField] private int _orbsInHand;
         [SerializeField] private List<string> _portalsCollection;
+        [SerializeField] private List<string> _cutsceneCollection;
+        [SerializeField] private float _lastCameraScale;
 
         public PlayerSaveData()
         {
@@ -18,6 +20,8 @@ namespace Comma.Global.SaveLoad
             _orbsCollection = new();
             _orbsInHand = 0;
             _portalsCollection = new();
+            _cutsceneCollection = new();
+            _lastCameraScale= 1f;
         }
         /// <summary>
         /// Get the last player position saved in the disk
@@ -66,12 +70,43 @@ namespace Comma.Global.SaveLoad
             if (!IsPortalInCollection(id)) _portalsCollection.Add(id);
         }
         /// <summary>
-        /// Is portal was already used?
+        /// Was portal already used?
         /// </summary>
         /// <param name="id">Portal ID</param>
         /// <returns>bool</returns>
         public bool IsPortalInCollection(string id) { return _portalsCollection.Contains(id); }
+        
+        /// <summary>
+        /// Add played cutscene to collection
+        /// </summary>
+        /// <param name="id"></param>
+        public void AddCutsceneToCollection(string id)
+        {
+            if (!IsCutsceneInCollection(id)) _cutsceneCollection.Add(id);
+        }
+        /// <summary>
+        /// Check if cutscene was already played in the past
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool IsCutsceneInCollection(string id) { return _cutsceneCollection.Contains(id); }
 
+        /// <summary>
+        /// Set latest player camera scale
+        /// </summary>
+        /// <param name="scale"></param>
+        public void SetCameraScale(float scale)
+        {
+            _lastCameraScale = scale;
+        }
+        /// <summary>
+        /// Get the latest camera scale saved in the disk
+        /// </summary>
+        /// <returns></returns>
+        public float GetCameraScale()
+        {
+            return _lastCameraScale;
+        }
         public object Clone()
         {
             return (PlayerSaveData)this.MemberwiseClone();

@@ -1,7 +1,5 @@
 ﻿using Comma.Gameplay.DetectableObject;
 using Comma.Global.AudioManager;
-using Comma.Global.PubSub;
-using System.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -16,7 +14,8 @@ namespace Comma.Gameplay.Player
             {
                 IDetectable coll = collision.gameObject.GetComponent<IDetectable>();
                 coll?.Interact();
-                SFXController.Instance.PlayObtainOrbSFX();
+                //SFXController.Instance.PlayObtainOrbSFX();
+                SfxPlayer.Instance.PlaySFX("ObtainOrb", true);
             }
         }
 

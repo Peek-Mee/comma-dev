@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Comma.Global.SaveLoad;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ namespace Comma.Home.UI
 
 
         [Header("Scene Management")]
-        [SerializeField] private string _gameplaySceneName = "Gameplay";
+        [SerializeField] private string _gameplaySceneName = "Prolog";
 
         private void Awake()
         {
@@ -38,6 +39,7 @@ namespace Comma.Home.UI
         }
         private void OnYesButton()
         {
+            SaveSystem.ResetPlayerData();
             SceneManager.LoadScene(_gameplaySceneName);
         }
         private void OnNoButton()
