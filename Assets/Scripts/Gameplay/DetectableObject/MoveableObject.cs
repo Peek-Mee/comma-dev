@@ -61,6 +61,7 @@ namespace Comma.Gameplay.DetectableObject
         private void FixedUpdate()
         {
             if (!_isInteracted) return;
+            if (_target == null) return;
 
             Vector2 newVel = new(_target.velocity.x, _rigidbody2D.velocity.y);
             _rigidbody2D.velocity = newVel;
