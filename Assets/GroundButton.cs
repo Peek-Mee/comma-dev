@@ -25,7 +25,10 @@ namespace Comma.Gameplay.Environment
             //make active button stop float on default location
             if (_activeButton.transform.localPosition.y < _yActiveButton)
             {
-                _activeButton.gravityScale = -1;
+                if (isShouldHold)
+                {
+                    _activeButton.gravityScale = -1;
+                }
             }
             else
             {
