@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Comma.Gameplay.Environment
 {
@@ -14,7 +13,7 @@ namespace Comma.Gameplay.Environment
         private float _yActiveButton;
 
         public bool isShouldHold = true;
-        public static UnityEvent OnGroundButtonPush = new UnityEvent();
+        public event System.Action<bool> OnGroundButtonPush;
         void Start()
         {
             _yActiveButton = _activeButton.transform.localPosition.y;
@@ -34,14 +33,11 @@ namespace Comma.Gameplay.Environment
                 _activeButton.velocity = Vector3.zero;
                 _activeButton.angularVelocity = 0;
             }
-            Debug.Log(_activeButton.transform.localPosition.y+" compare "+_yActiveButton);
-            Debug.Log(_groundTrigger.isTriggered);
+            //Debug.Log(_activeButton.transform.localPosition.y+" compare "+_yActiveButton);
+            //Debug.Log(_groundTrigger.isTriggered);
 
             //publish event if trigger is hit
-            if (_groundTrigger.isTriggered)
-            {
-                OnGroundButtonPush?.Invoke();
-            }
+            OnGroundButtonPush?.Invoke(_groundTrigger.isTriggered);
         }
     }
 
