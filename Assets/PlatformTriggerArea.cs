@@ -9,7 +9,8 @@ namespace Comma.Gameplay.Environment
     public class PlatformTriggerArea : MonoBehaviour
     {
         public GroundButton _groundButton;
-        //[SerializeField] private GameObject _triggerBox;
+        public Animator actuator;
+        
 
         private void OnEnable()
         {
@@ -29,13 +30,9 @@ namespace Comma.Gameplay.Environment
 
         }
 
-        void Start()
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            
-        }
-
-        void Update()
-        {
+            actuator.enabled = true;
         }
     }
 
