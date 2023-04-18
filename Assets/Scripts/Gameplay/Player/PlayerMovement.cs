@@ -193,6 +193,7 @@ namespace Comma.Gameplay.Player
             OnJump();
             OnFall();
             _wasGrounded = _isGrounded;
+            //print(_currentPlatformDegree.ToString());
         }
 
         private void FixedUpdate()

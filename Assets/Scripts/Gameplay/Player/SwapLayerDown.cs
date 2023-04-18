@@ -1,4 +1,5 @@
 ﻿using Comma.Global.PubSub;
+using Comma.Utility.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -11,6 +12,11 @@ namespace Comma.Gameplay.Player
         private void Start()
         {
             EventConnector.Subscribe("OnPlayerMove", new(OnDownInput));
+        }
+
+        private void OnDisable()
+        {
+            EventConnector.Unsubscribe("OnPlayerMove", new(Dummy.VoidAction));
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
