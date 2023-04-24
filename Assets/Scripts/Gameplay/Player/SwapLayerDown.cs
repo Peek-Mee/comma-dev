@@ -7,7 +7,7 @@ namespace Comma.Gameplay.Player
     [RequireComponent(typeof(Collider2D))]
     public class SwapLayerDown : MonoBehaviour
     {
-        private bool _isPlaceToSwap;
+        private bool _isPlaceToSwap = false;
 
         private void Start()
         {

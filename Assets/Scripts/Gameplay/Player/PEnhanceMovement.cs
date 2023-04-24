@@ -53,6 +53,7 @@ namespace Comma.Gameplay.Player
         private bool _isGrounded = false;
         private bool _isFaceRight = true;
         private bool _isMoveAfterJump = false;
+        private bool _hasFoundLayerForLand = false;
 
         private void Awake()
         {
@@ -319,6 +320,7 @@ namespace Comma.Gameplay.Player
         //Variables
         private int _currentLayerIdx;
         private bool _wasPermitToSwap = false;
+        private bool _isTimeToSwapEdge;
         // Check when first spawn
         private void InitLayerConversion()
         {
@@ -329,11 +331,11 @@ namespace Comma.Gameplay.Player
         }
         private void InitSpawn()
         {
-            var save = SaveSystem.GetPlayerData();
-            if (!save.IsNewData())
-            {
-                transform.position = save.GetLastPosition();
-            }
+            //var save = SaveSystem.GetPlayerData();
+            //if (!save.IsNewData())
+            //{
+            //    transform.position = save.GetLastPosition();
+            //}
 
             RaycastHit2D hit;
             // Check for ground[n]
@@ -348,13 +350,14 @@ namespace Comma.Gameplay.Player
                         // If found a layer, then use this
                         gameObject.layer = hit.collider.gameObject.layer;
                         _currentLayerIdx = i;
+                        _hasFoundLayerForLand = true;
                         return;
                     }
                 }
             }
 
             // If can't find a ground
-            SwapLayer(save.GetCurrentLayer());
+            //SwapLayer(save.GetCurrentLayer());
         }
         private void CheckPlayerSwap()
         {
@@ -365,6 +368,7 @@ namespace Comma.Gameplay.Player
                 {
                     if (SwapLayerPermit() && _wasPermitToSwap)
                     {
+                        _isTimeToSwapEdge = false;
                         SwapLayer();
                     }
                 }
@@ -413,13 +417,37 @@ namespace Comma.Gameplay.Player
                 // Don't do anything if the layer doesn't exist
             }
         }
+        private void EdgeSwapLayer()
+        {
+            RaycastHit2D hit;
+            int layerIdxToCheck = _currentLayerIdx == 0 ? 1 : 0;
+            hit = Physics2D.Raycast(_normalBtmChecker.position, Vector2.down, _checkRadius, _groundLayers[layerIdxToCheck]);
+            if (hit)
+            {
+                if (hit.collider.isTrigger) return;
+                gameObject.layer = _layerAfterConversion[layerIdxToCheck];
+                _currentLayerIdx = layerIdxToCheck;
+                _isTimeToSwapEdge = false;
+
+            }
+            
+        }
 
         // Edge Detection
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (collision.CompareTag("Edge"))
             {
-                SwapLayer();
+                //SwapLayer();
+                _isTimeToSwapEdge = true;
+            }
+        }
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Edge"))
+            {
+                //SwapLayer();
+                _isTimeToSwapEdge = false;
             }
         }
         #endregion
@@ -443,6 +471,12 @@ namespace Comma.Gameplay.Player
             // the opposite layer
             CheckPlayerSwap();
 
+            // Check player swap edge
+            if (_isTimeToSwapEdge)
+            {
+                EdgeSwapLayer();
+            }
+
             // Check and process sprite flip
             Flip();
 
@@ -452,9 +486,16 @@ namespace Comma.Gameplay.Player
             // Calculating character's vertical move
             Jump();
             Fall();
+
         }
         private void FixedUpdate()
         {
+            // Worst case if game save corrupted
+            // Search any ground until found a solid one
+            if (!_hasFoundLayerForLand)
+            {
+                InitSpawn();
+            }
             // Actually move the character based on the calculation
             // on Walk, Jump, Fall
             Move();
