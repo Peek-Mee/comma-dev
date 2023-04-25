@@ -33,6 +33,14 @@ namespace Comma.Gameplay.Player
         /// Get character movement for animation purpose
         /// </summary>
         public Vector2 Movement => _movement;
+        /// <summary>
+        /// Get character bottom/feet position in Vector2
+        /// </summary>
+        public Vector2 BottomPosition => _normalBtmChecker.transform.position;
+        /// <summary>
+        /// Get Character's grounded state
+        /// </summary>
+        public bool IsGrounded => _isGrounded;
         #endregion
 
         #region Initialization
@@ -124,6 +132,11 @@ namespace Comma.Gameplay.Player
         // Receive input message for SwapDown Event [<empty>]
         private void OnSwapDown(object message)
         {
+            // RND try to add a little jump for detail
+            // Before swapping layer
+            //var force = new Vector2((_isFaceRight ? 1 : 0) * _jumpForce * 10.0f , _jumpForce * 20.0f);
+            //_rigidbody.AddForce(force);
+
             SwapLayer();
         }
         #endregion

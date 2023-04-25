@@ -640,7 +640,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 578667299}
   m_LocalRotation: {x: 0, y: 0, z: -0.113896795, w: 0.9934926}
-  m_LocalPosition: {x: 48.79, y: 8.74, z: 0}
+  m_LocalPosition: {x: 49, y: 9.7, z: 0}
   m_LocalScale: {x: 17.144676, y: 1.7170848, z: 2.5291}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1847,7 +1847,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1237259584}
   m_LocalRotation: {x: -0, y: -0, z: 0.0698367, w: 0.9975584}
-  m_LocalPosition: {x: 10.95, y: 21.03, z: 0}
+  m_LocalPosition: {x: 10.8, y: 22.4, z: 0}
   m_LocalScale: {x: 17.144676, y: 1.7170848, z: 2.5291}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2853,7 +2853,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1788294479}
   m_LocalRotation: {x: -0, y: -0, z: 0.0698367, w: 0.9975584}
-  m_LocalPosition: {x: 9.7, y: 0.2, z: 0}
+  m_LocalPosition: {x: 9.6, y: 1.2, z: 0}
   m_LocalScale: {x: 17.144676, y: 1.7170848, z: 2.5291}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3075,7 +3075,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1813518859}
   m_LocalRotation: {x: 0, y: 0, z: -0.113896795, w: 0.9934926}
-  m_LocalPosition: {x: 39.7272, y: -10.2605, z: 0}
+  m_LocalPosition: {x: 40, y: -9.3, z: 0}
   m_LocalScale: {x: 32.691925, y: 1.7170848, z: 2.5291}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3346,8 +3346,8 @@ Camera:
   m_GameObject: {fileID: 2123347333}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3387,7 +3387,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2123347333}
-  m_LocalRotation: {x: -1.8962e-41, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -1.999e-41, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -40.9, y: 3.9, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3815,6 +3815,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e68cfd2c706fa7a42a89fd119e33885e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _swapDownLayer:
+    serializedVersion: 2
+    m_Bits: 4
 --- !u!61 &1874046906039118985
 BoxCollider2D:
   m_ObjectHideFlags: 0
