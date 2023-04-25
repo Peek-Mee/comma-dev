@@ -19,6 +19,7 @@ namespace Comma.Gameplay.UserInput
             _userInputManager.Player.Enable();
             _userInputManager.Player.Movement.performed += OnMoveInput;
             _userInputManager.Player.Movement.canceled += OnMoveInput;
+            _userInputManager.Player.SwapDown.performed += OnSwapDownInput;
             _userInputManager.Player.Jump.performed += OnJumpInput;
             //_userInputManager.Player.Jump.canceled += OnJumpInput;
             _userInputManager.Player.Interact.performed += OnInteractInput;
@@ -32,6 +33,7 @@ namespace Comma.Gameplay.UserInput
         {
             _userInputManager.Player.Movement.performed -= OnMoveInput;
             _userInputManager.Player.Movement.canceled -= OnMoveInput;
+            _userInputManager.Player.SwapDown.performed -= OnSwapDownInput;
             _userInputManager.Player.Jump.performed -= OnJumpInput;
             //_userInputManager.Player.Jump.canceled += OnJumpInput;
             _userInputManager.Player.Interact.performed -= OnInteractInput;
@@ -89,6 +91,14 @@ namespace Comma.Gameplay.UserInput
             {
                 EventConnector.Publish("OnPauseInput", 0);
             }
+        }
+        private void OnSwapDownInput(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                EventConnector.Publish("OnSwapDownInput", 0);
+            }
+
         }
     }
 }

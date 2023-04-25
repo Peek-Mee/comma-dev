@@ -73,6 +73,15 @@ namespace Comma.Gameplay.UserInput
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwapDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f0d9ea7-0c17-414f-86f5-816665e85284"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -86,28 +95,6 @@ namespace Comma.Gameplay.UserInput
                     ""action"": ""Movement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""dc92c317-3526-4684-b2ca-5f0233b6b4d0"",
-                    ""path"": ""<Keyboard>/#(W)"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""7cbfa1ba-67fc-4642-b0af-a45c9b2e54f6"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""left"",
@@ -174,6 +161,17 @@ namespace Comma.Gameplay.UserInput
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""42c62c3a-70d7-4f59-91ba-92f4a1d3e8bb"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwapDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -193,6 +191,7 @@ namespace Comma.Gameplay.UserInput
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+            m_Player_SwapDown = m_Player.FindAction("SwapDown", throwIfNotFound: true);
             // Menu
             m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         }
@@ -259,6 +258,7 @@ namespace Comma.Gameplay.UserInput
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Sprint;
         private readonly InputAction m_Player_Pause;
+        private readonly InputAction m_Player_SwapDown;
         public struct PlayerActions
         {
             private @UserInputManager m_Wrapper;
@@ -268,6 +268,7 @@ namespace Comma.Gameplay.UserInput
             public InputAction @Interact => m_Wrapper.m_Player_Interact;
             public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
             public InputAction @Pause => m_Wrapper.m_Player_Pause;
+            public InputAction @SwapDown => m_Wrapper.m_Player_SwapDown;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -292,6 +293,9 @@ namespace Comma.Gameplay.UserInput
                     @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                     @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                     @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                    @SwapDown.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapDown;
+                    @SwapDown.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapDown;
+                    @SwapDown.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapDown;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -311,6 +315,9 @@ namespace Comma.Gameplay.UserInput
                     @Pause.started += instance.OnPause;
                     @Pause.performed += instance.OnPause;
                     @Pause.canceled += instance.OnPause;
+                    @SwapDown.started += instance.OnSwapDown;
+                    @SwapDown.performed += instance.OnSwapDown;
+                    @SwapDown.canceled += instance.OnSwapDown;
                 }
             }
         }
@@ -347,6 +354,7 @@ namespace Comma.Gameplay.UserInput
             void OnInteract(InputAction.CallbackContext context);
             void OnSprint(InputAction.CallbackContext context);
             void OnPause(InputAction.CallbackContext context);
+            void OnSwapDown(InputAction.CallbackContext context);
         }
         public interface IMenuActions
         {

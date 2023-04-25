@@ -263,7 +263,8 @@ namespace Comma.Gameplay.Player
         {
             foreach (var contact in collision.contacts)
             {
-                if (!contact.collider.CompareTag("Ground")) continue;
+                if (contact.collider.isTrigger) continue;
+                //if (!contact.collider.CompareTag("Ground")) continue;
                 var temp = GroundedFromContact(contact);
                 if (temp)
                 {
@@ -277,7 +278,8 @@ namespace Comma.Gameplay.Player
             if (_isBottomCollided) return;
             foreach (var contact in collision.contacts)
             {
-                if (!contact.collider.CompareTag("Ground")) continue;
+                if (contact.collider.isTrigger) continue;
+                //if (!contact.collider.CompareTag("Ground")) continue;
                 var temp = GroundedFromContact(contact);
                 if (temp)
                 {

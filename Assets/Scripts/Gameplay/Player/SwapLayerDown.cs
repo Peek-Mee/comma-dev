@@ -11,18 +11,21 @@ namespace Comma.Gameplay.Player
 
         private void Start()
         {
-            EventConnector.Subscribe("OnPlayerMove", new(OnDownInput));
+            EventConnector.Subscribe("OnSwapDownInput", new(OnDownInput));
         }
 
         private void OnDisable()
         {
-            EventConnector.Unsubscribe("OnPlayerMove", new(Dummy.VoidAction));
+            EventConnector.Unsubscribe("OnSwapDownInput", new(Dummy.VoidAction));
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            
             if (collision.CompareTag("SwapLayerDown"))
             {
+                // Only use trigger from below
+                if (collision.transform.position.y >= transform.position.y) return;
                 _isPlaceToSwap = true;
             }
         }
@@ -31,14 +34,16 @@ namespace Comma.Gameplay.Player
         {
             if (collision.CompareTag("SwapLayerDown"))
             {
+                // Only use trigger from below
+                if (collision.transform.position.y >= transform.position.y) return;
                 _isPlaceToSwap = false;
             }
         }
         private void OnDownInput(object msg)
         {
             if (!_isPlaceToSwap) return;
-            OnPlayerMove move = (OnPlayerMove)msg;
-            if (move.Direction.y != -1) return;
+            //OnPlayerMove move = (OnPlayerMove)msg;
+            //if (move.Direction.y != -1) return;
             _isPlaceToSwap = false;
             EventConnector.Publish("OnPlayerSwapDown", new OnPlayerSwapDown());
         }
