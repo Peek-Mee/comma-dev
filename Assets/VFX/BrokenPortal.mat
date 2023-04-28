@@ -65,18 +65,18 @@ Material:
     - _Blend: 2
     - _CastShadows: 0
     - _Cull: 0
-    - _DissolveAmount: 1
+    - _DissolveAmount: 7.07
     - _DstBlend: 1
     - _EnableExternalAlpha: 0
     - _Opacity: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 0
-    - _Scale: 2.4
-    - _Speed: 0.5
+    - _Scale: 8.26
+    - _Speed: 0.05
     - _SrcBlend: 5
     - _Surface: 1
-    - _TwirlStrength: 6.49
+    - _TwirlStrength: 26.48
     - _WorkflowMode: 0
     - _ZTest: 4
     - _ZWrite: 0

@@ -52,9 +52,9 @@ Material:
     - _ScrollSpeed: 0.05
     - _SurfaceMovementSpeed: 0.05
     m_Colors:
-    - _BorderColor: {r: 0.13729031, g: 0.20941645, b: 0.532, a: 0}
+    - _BorderColor: {r: 0.30669802, g: 0.3184941, b: 0.376, a: 0}
     - _OutlineColor: {r: 2.6390157, g: 0.17352457, b: 0, a: 1}
-    - _TextureColor: {r: 0.24313726, g: 0.5568628, b: 1.4980392, a: 0.39215687}
+    - _TextureColor: {r: 1.3867924, g: 1.5400944, b: 2, a: 0.39215687}
   m_BuildTextureStacks: []
 --- !u!114 &1976429048404178272
 MonoBehaviour:
