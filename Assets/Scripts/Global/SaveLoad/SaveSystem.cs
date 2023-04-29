@@ -11,7 +11,7 @@ namespace Comma.Global.SaveLoad
 
         public static SaveSystem saveInstance;
         private static SaveSystem _saveSystem;
-        private bool _isNew;
+        //private bool _isNew;
         private static SaveSystem Instance
         {
             get
@@ -56,7 +56,7 @@ namespace Comma.Global.SaveLoad
             _videoSetting ??= new();
             _inputSetting ??= new();
 
-            if (!PlayerPrefs.HasKey("PlayerData")) _isNew = true;
+            //if (!PlayerPrefs.HasKey("PlayerData")) _isNew = true;
 
             InitiateData<PlayerSaveData>(ref _playerData, "PlayerData");
             InitiateData<AudioSaveData>(ref _audioSetting, "AudioData");
@@ -68,12 +68,14 @@ namespace Comma.Global.SaveLoad
         {
             if(!PlayerPrefs.HasKey(prefsName))
             {
-                //print($"{prefsName} hasn't been saved");
                 SaveData<T>(ref data, prefsName);
                 return;
             }
-            //print(PlayerPrefs.GetString(prefsName));
-            data = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
+            var testData = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
+            if (testData != null)
+            {
+                 data = testData;
+            }
         }
 
         private void SaveData<T>(ref T data, string prefsName)
@@ -180,12 +182,12 @@ namespace Comma.Global.SaveLoad
 
         public static bool IsNewPlayer()
         {
-            return Instance._isNew;
+           return Instance._playerData.IsNewData();
         }
         public static void ResetPlayerData()
         {
             Instance._playerData = new();
-            PlayerPrefs.SetString("PlayerData", "");
+            PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(Instance._playerData));
             PlayerPrefs.Save();
             //Instance.Init();
         }

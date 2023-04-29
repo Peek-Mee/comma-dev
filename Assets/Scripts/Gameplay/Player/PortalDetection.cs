@@ -14,10 +14,12 @@ namespace Comma.Gameplay.Player
         private IDetectable _portal;
         private int _currentInstanceId;
         private PlayerAnimationController _playerAnimator;
+        private PlayerMovement _playerMovement;
 
         private void Awake()
         {
             _playerAnimator= GetComponent<PlayerAnimationController>();
+            _playerMovement = GetComponent<PlayerMovement>();
         }
 
         private void Start()
@@ -49,6 +51,8 @@ namespace Comma.Gameplay.Player
         {
             var message = (OnPlayerUsePortal)msg;
             transform.position = message.Destination;
+            _playerMovement.SwapLayer(message.Layer);
+            //gameObject.layer= message.Layer;
         }
         private void OnInteractInput(object msg)
         {

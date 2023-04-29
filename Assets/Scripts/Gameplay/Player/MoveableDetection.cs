@@ -9,6 +9,8 @@ namespace Comma.Gameplay.Player
     [RequireComponent(typeof(Collider2D))]
     public class MoveableDetection : MonoBehaviour, IDebugger
     {
+        [SerializeField] private Collider2D _rightArm;
+        [SerializeField] private Collider2D _leftArm;
         private PlayerMovement _player;
         private PlayerAnimationController _playerAnimator;
         private Rigidbody2D _rigid;
@@ -23,7 +25,18 @@ namespace Comma.Gameplay.Player
         {
             
             EventConnector.Subscribe("OnPlayerInteract", new(OnInteract));
+            EnableArms(false, false);
 
+        }
+        private void EnableArms(bool condition = false, bool complete = true)
+        {
+            _rightArm.isTrigger = !condition;
+            _leftArm.isTrigger = !condition;
+            //if (!complete) return;
+            _rightArm.enabled = complete;
+            _leftArm.enabled = complete;
+            //_rightArm.SetActive(condition);
+            //_leftArm.SetActive(condition);
         }
 
         #region PubSub
@@ -38,6 +51,7 @@ namespace Comma.Gameplay.Player
             if (_isHoldMoveable)
             {
                 EjectMovable();
+                EnableArms(condition: false);
             }
             else if (_moveableObject != null)
             {
@@ -48,6 +62,7 @@ namespace Comma.Gameplay.Player
                 _moveableObject.Interact();
                 _playerAnimator.Push = true;
                 SfxPlayer.Instance.PlaySFX("InteractObject", true);
+                EnableArms(condition: true);
                 //SFXController.Instance.PlayInteractObjectSFX();
             }
         }
@@ -58,6 +73,7 @@ namespace Comma.Gameplay.Player
             _playerAnimator.Push = false;
             _playerAnimator.Pull = false;
             _moveableObject.UnInteract();
+            EnableArms(false, false);
             //SFXController.Instance.StopObjectSFX();
         }
         #endregion

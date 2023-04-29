@@ -36,6 +36,7 @@ namespace Gameplay.UI
         {
             _videoSetting = VideoSetting.Instance;
             _windowedToggle.isOn = !_videoSetting.IsFullScreen();
+            _brightnessSlider.value = _videoSetting.GetGameBrightness();
             ChangeResolutionText();
             OnWindowedToggle();
             OnBrightnessSlider();
@@ -80,7 +81,7 @@ namespace Gameplay.UI
         {
             _brightnessSlider.onValueChanged.AddListener(value =>
             {
-                // video setting change brightness
+                _videoSetting.ChangeGameBrightness(value);
             });
         }
         private void RemoveAllListeners()

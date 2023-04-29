@@ -73,16 +73,7 @@ namespace Comma.Home.UI
         {
             _transition.SetActive(true);
             BgmPlayer.Instance.PlayBgm(1);
-            if (SaveSystem.GetPlayerData().GetLastPosition() == Vector3.zero)
-            {
-                SaveSystem.ResetPlayerData();
-                SceneManager.LoadSceneAsync(_cutSceneProlog);
-            }
-            else
-            {
-
             SceneManager.LoadSceneAsync(_gameplaySceneName);
-            }
         }
         private void OnCreditsButton()
         {
