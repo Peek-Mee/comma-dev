@@ -9,12 +9,10 @@ namespace Comma.Utility.Collections
         /// </summary>
         /// <param name="col"></param>
         /// <param name="point"></param>
-        /// <param name="useRigidBody"></param>
         /// <returns></returns>
-        public static bool IsWithin(Collider2D col, Vector3 point, bool useRigidBody = false)
+        public static bool IsWithin(Collider2D col, Vector2 point)
         {
-
-            return false;
+            return col.ClosestPoint(point) == point;
         }
     }
 }

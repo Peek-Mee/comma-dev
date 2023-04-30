@@ -1,5 +1,6 @@
 ﻿using Comma.Global.PubSub;
 using Comma.Utility.Collections;
+using System.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -25,7 +26,7 @@ namespace Comma.Gameplay.Player
         private void Update()
         {
             if (!_isWaitToLand ) return;
-            _isWaitToLand = !_enhanceMovement.IsGrounded && _enhanceMovement.Movement.y <= 0;
+            //_isWaitToLand = !_enhanceMovement.IsGrounded && _enhanceMovement.Movement.y <= 0;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -36,14 +37,20 @@ namespace Comma.Gameplay.Player
                 // Only use trigger from below
                 RaycastHit2D hit;
                 hit = Physics2D.Raycast(_enhanceMovement.BottomPosition + new Vector2(0, 0.2f), Vector2.down, 0.4f, _swapDownLayer);
-                if (hit)
+                if (hit.collider != null)
                 {
-                    if (hit.point.y < transform.position.y)
+                    
+                    if (Checker.IsWithin(hit.collider, _enhanceMovement.BottomPosition))
                     {
-
                         _isPlaceToSwap = true;
                     }
+                    else
+                    {
+                        _isPlaceToSwap = false;
+                    }
+                    return;
                 }
+                _isPlaceToSwap = false;
             }
         }
         private void OnTriggerStay2D(Collider2D collision)
@@ -53,14 +60,21 @@ namespace Comma.Gameplay.Player
             if (!collision.CompareTag("SwapLayerDown")) return;
             // Only use trigger from below
             RaycastHit2D hit;
-            hit = Physics2D.Raycast(_enhanceMovement.BottomPosition + new Vector2(0, 0.2f), Vector3.forward, 0.4f, _swapDownLayer);
-            if (hit)
+            hit = Physics2D.Raycast(_enhanceMovement.BottomPosition + new Vector2(0, 0.2f), Vector2.down, 0.4f, _swapDownLayer);
+            if (hit.collider != null)
             {
-                if (hit.point.y < transform.position.y)
+
+                if (Checker.IsWithin(hit.collider, _enhanceMovement.BottomPosition))
                 {
                     _isPlaceToSwap = true;
                 }
+                else
+                {
+                    _isPlaceToSwap = false;
+                }
+                return;
             }
+            _isPlaceToSwap = false;
         }
 
         private void OnTriggerExit2D(Collider2D collision)
@@ -75,9 +89,18 @@ namespace Comma.Gameplay.Player
         {
             if (!_isPlaceToSwap) return;
             if (_isWaitToLand) return;
+            //_isPlaceToSwap = false;
+            //_isWaitToLand = true;
+            
+            StartCoroutine(WaitToLand());
+        }
+        IEnumerator WaitToLand()
+        {
+            EventConnector.Publish("OnPlayerSwapDown", new OnPlayerSwapDown());
             _isPlaceToSwap = false;
             _isWaitToLand = true;
-            EventConnector.Publish("OnPlayerSwapDown", new OnPlayerSwapDown());
+            yield return new WaitUntil(() => !_enhanceMovement.IsSwapDown);
+            _isWaitToLand = false;
         }
     }
 }
