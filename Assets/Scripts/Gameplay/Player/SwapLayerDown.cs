@@ -60,7 +60,8 @@ namespace Comma.Gameplay.Player
             if (!collision.CompareTag("SwapLayerDown")) return;
             // Only use trigger from below
             RaycastHit2D hit;
-            hit = Physics2D.Raycast(_enhanceMovement.BottomPosition + new Vector2(0, 0.2f), Vector2.down, 0.4f, _swapDownLayer);
+            //Vector3 detectionPoint = _enhanceMovement.BottomPosition + (Vector2.up * .2f);
+            hit = Physics2D.Raycast(_enhanceMovement.BottomPosition, Vector2.down, 0.05f, _swapDownLayer);
             if (hit.collider != null)
             {
 

@@ -1,10 +1,8 @@
 ﻿using Comma.Global.PubSub;
-using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -74,8 +72,6 @@ namespace Comma.Gameplay.Player
             _collider = GetComponent<Collider2D>();
             _sprite = GetComponent<SpriteRenderer>();
 
-            // Disable any simulation until preparations are all completed
-            _rigidbody.Sleep();
         }
         private void Start()
         {
@@ -93,8 +89,7 @@ namespace Comma.Gameplay.Player
             Physics2D.IgnoreLayerCollision(_layerAfterConversion[0],
                 _layerAfterConversion[1], true);
 
-            // Enable physics simulation
-            _rigidbody.WakeUp();
+
         }
         private void OnDisable()
         {
@@ -244,6 +239,7 @@ namespace Comma.Gameplay.Player
             for (int i = 0; i < _groundLayers.Length; i++)
             {
                 _layerAfterConversion.Add(Converter.BitToLayer(_groundLayers[i]));
+                if (_layerAfterConversion[i] == gameObject.layer) _currentLayerIdx = i;
             }
         }
        
@@ -280,7 +276,6 @@ namespace Comma.Gameplay.Player
                 gameObject.layer = _layerAfterConversion[layerIdxToCheck];
                 _currentLayerIdx = layerIdxToCheck;
                 _isTimeToSwapEdge = false;
-
             }
             
         }
@@ -375,6 +370,9 @@ namespace Comma.Gameplay.Player
                 Vector3 newPos = ray.Position + Vector3.right * .02f;
                 Gizmos.DrawLine(newPos, newPos - (2.0f * ray.RayLength * Vector3.up));
             }
+            // gizmos for swap down
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(_normalBtmChecker.position, _normalBtmChecker.position - new Vector3(0, .05f));
         }
         #endregion
         #region Layer Correction
@@ -398,6 +396,7 @@ namespace Comma.Gameplay.Player
                 _isSwappingDown = true;
                 var force = new Vector2((_isFaceRight ? 1 : -1) * _jumpForce * 15f, _jumpForce * 30.0f);
                 _rigidbody.AddForce(force);
+                yield return new WaitForFixedUpdate();
                 yield return new WaitUntil(() => { return _isGrounded; });
                 // Swap
                 StartCoroutine(SwapDownCharacter());
@@ -407,6 +406,7 @@ namespace Comma.Gameplay.Player
         private IEnumerator SwapDownCharacter()
         {
             SwapLayer();
+            yield return new WaitForFixedUpdate();
             yield return new WaitUntil(() => { return _isGrounded && !_wasGrounded; });
             _isSwappingDown = false;
         }
@@ -456,7 +456,7 @@ namespace Comma.Gameplay.Player
                 // ignore if the same layer
                 if (layer == gameObject.layer) continue;
                 // ignore if inside collider
-                if (Checker.IsWithin(hit.collider, detector.Position + Vector3.up * 0.02f)) continue;
+                if (Checker.IsWithin(hit.collider, detector.Position)) continue;
                 if (_movement.y > 0) continue;
                 // swap layer
                 _hasFoundLayerForLand = false;
