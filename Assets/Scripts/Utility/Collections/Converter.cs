@@ -50,5 +50,14 @@ namespace Comma.Utility.Collections
         {
             return (Mathf.CeilToInt(value) >= 0);
         }
+        /// <summary>
+        /// Convert boolean to number 0/1
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>(float) number</returns>
+        public static float BoolToNum(bool value)
+        {
+            return (value ? 1 : 0);
+        }
     }
 }

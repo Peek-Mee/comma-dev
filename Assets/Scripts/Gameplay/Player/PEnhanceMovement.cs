@@ -42,6 +42,8 @@ namespace Comma.Gameplay.Player
         /// Get Character's grounded state
         /// </summary>
         public bool IsGrounded => _isGrounded;
+        public bool IsRunning => _sprintInput;
+        public float MaxSpeed => _currentSpd;
         #endregion
 
         #region Initialization
