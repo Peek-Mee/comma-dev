@@ -1,5 +1,8 @@
 ﻿
 
+using System.Collections;
+using UnityEngine;
+
 namespace Comma.Utility.Collections
 {
     public class Dummy
@@ -8,5 +11,12 @@ namespace Comma.Utility.Collections
         {
             return;
         }
+        
+        public static IEnumerator DisableInputForSeconds(float time)
+        {
+
+            yield return new WaitForSeconds(time);
+        }
     }
+    
 }

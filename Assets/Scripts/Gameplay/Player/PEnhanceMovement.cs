@@ -21,11 +21,11 @@ namespace Comma.Gameplay.Player
         [SerializeField] private LayerMask[] _groundLayers;
         [SerializeField]
         [Range(0.2f, 0.35f)] private float _checkRadius = 0.25f;
-        [SerializeField]
-        [Range(0.2f, 1.0f)] private float _checkExpensiveRadius = 0.52f;
+        //[SerializeField]
+        //[Range(0.2f, 1.0f)] private float _checkExpensiveRadius = 0.52f;
         //[SerializeField] private GameObject _bottomChecker;
         [SerializeField] private Transform _normalBtmChecker;
-        [SerializeField] private Transform _expensiveBtmChecker;
+        //[SerializeField] private Transform _expensiveBtmChecker;
 
         #region ExternalBinding
         private Vector2 _movement;
@@ -42,14 +42,17 @@ namespace Comma.Gameplay.Player
         /// Get Character's grounded state
         /// </summary>
         public bool IsGrounded => _isGrounded;
+        public bool WasGrounded => _wasGrounded;
         public bool IsRunning => _sprintInput;
         public float MaxSpeed => _currentSpd;
+        public bool IsMoving => _isMovingInput;
+        public bool InputDisabled { get { return _isInputDisabled; }  set { _isInputDisabled = value; } }
         #endregion
 
         #region Initialization
         // Physics
         private Rigidbody2D _rigidbody;
-        private Collider2D _collider;
+        //private Collider2D _collider;
         private SpriteRenderer _sprite;
         private float _currentSpd;
         private Vector2 _platformVector;
@@ -60,25 +63,24 @@ namespace Comma.Gameplay.Player
         private bool _sprintInput = false;
         private bool _pauseInput = false;
         // Player States
+        private bool _isMovingInput = false;
         private bool _isWalking = false;
         private bool _isGrounded = false;
         private bool _wasGrounded = false;
         private bool _isFaceRight = true;
         private bool _isMoveAfterJump = false;
-        private bool _hasFoundLayerForLand = false;
-        int _layerDetectedBySwap;
+        private bool _isInputDisabled = false;
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
-            _collider = GetComponent<Collider2D>();
+            //_collider = GetComponent<Collider2D>();
             _sprite = GetComponent<SpriteRenderer>();
 
         }
         private void Start()
         {
             InitLayerConversion();
-            _layerDetectedBySwap = gameObject.layer;
 
             EventConnector.Subscribe("OnPlayerSwapDown", new(SwapCharacterDown));
             EventConnector.Subscribe("OnPlayerMove", new(OnMoveInput));
@@ -310,8 +312,9 @@ namespace Comma.Gameplay.Player
             // Don't process anything if is in cutscene
             if (InCutScene) return;
 
+            _isMovingInput = Mathf.Abs(_horizontalInput) > 0.01f;
             // Check if player input horizontal move
-            _isWalking = Mathf.Abs(_horizontalInput) > 0.01f;
+            _isWalking = !_isInputDisabled && _isMovingInput;
 
             // Set was grounded
             _wasGrounded = _isGrounded;
@@ -333,6 +336,7 @@ namespace Comma.Gameplay.Player
         }
         private void FixedUpdate()
         {
+            _movement = _rigidbody.velocity;
             // Set was grounded
             _wasGrounded = _isGrounded;
 
@@ -461,7 +465,6 @@ namespace Comma.Gameplay.Player
                 if (Checker.IsWithin(hit.collider, detector.Position)) continue;
                 if (_movement.y > 0) continue;
                 // swap layer
-                _hasFoundLayerForLand = false;
                 SwapLayer(layer);
                 _wasGrounded = true;
                 StartCoroutine(ChangingLayerNormal());

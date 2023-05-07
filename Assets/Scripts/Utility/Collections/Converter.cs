@@ -30,7 +30,7 @@ namespace Comma.Utility.Collections
         {
             float result;
             result = (value - min) / (max - min) * 1.0f;
-            return result;
+            return HasValue(result) ? result : 0.0f;
         }
         /// <summary>
         /// Convert number to boolean
@@ -58,6 +58,10 @@ namespace Comma.Utility.Collections
         public static float BoolToNum(bool value)
         {
             return (value ? 1 : 0);
+        }
+        public static bool HasValue (float value)
+        {
+            return !double.IsNaN(value) && !double.IsInfinity(value);
         }
     }
 }

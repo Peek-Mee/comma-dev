@@ -1,8 +1,16 @@
+using Comma.Global.PubSub;
 using Comma.Utility.Collections;
+using System.Collections;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
 {
+    public struct PEAnimationPrevFrame
+    {
+        public bool WasRunning { get; set; }
+        public bool WasGrounded { get; set; }
+        public bool WasMoving { get; set; }
+    }
     [RequireComponent(typeof(PEnhanceMovement))]
     public class PEnhanceAnimation : MonoBehaviour
     {
@@ -16,42 +24,139 @@ namespace Comma.Gameplay.Player
 
         // Animator controller
         [SerializeField] private Animator _animator;
+        private PEAnimationPrevFrame _prevFrame;
 
         private bool _isMoveInteract;
         private bool _isNonMoveInteract;
         private bool _portal;
         private bool _push;
+        private bool _waitForSingleLoopAnimation;
 
         private PEnhanceMovement _enhanceMovement;
         private void Start()
         {
             _enhanceMovement = GetComponent<PEnhanceMovement>();
-
         }
 
         private void Update()
         {
-            SetNormalAnimation();   
+            SetNormalAnimation();
+            SetLastAnimationState();
         }
-
+        private void FixedUpdate()
+        {
+            SetNormalAnimation();
+            SetLastAnimationState();
+        }
+        private void SetLastAnimationState()
+        {
+            _prevFrame.WasGrounded = _enhanceMovement.IsGrounded;
+            _prevFrame.WasRunning = _enhanceMovement.IsRunning;
+            _prevFrame.WasMoving = _enhanceMovement.IsMoving;
+        }
+        /// <summary>
+        /// Set all animation variables for non cutscene states
+        /// </summary>
         private void SetNormalAnimation()
         {
+            if (_waitForSingleLoopAnimation) return;
+
+            // Set Animation Type {0: normal; 1: MoveInteract; 2: NonMoveInteract; }
             _animator.SetFloat("Type", _isNonMoveInteract ? 2f : _isMoveInteract ? 1f : 0f);
+            // Set Is Grounded (float (0,1))
             _animator.SetFloat("Ground", Converter.BoolToNum(_enhanceMovement.IsGrounded));
             
-            var xSpeed = Converter.MinMaxNormalizer(0, _enhanceMovement.MaxSpeed,
-                Mathf.Abs(_enhanceMovement.Movement.x)) * (_enhanceMovement.IsRunning ? 2f : 1f);
-            _animator.SetFloat("XSpeed", xSpeed);
-            var ySpeed = _enhanceMovement.Movement.y;
-            _animator.SetFloat("YSpeed", ySpeed == 0 ? 0 : Mathf.Sign(ySpeed));
+            // Logic for horizontal movement
+            var xSpeed = 0f;
+            //if (!_prevFrame.WasMoving && _enhanceMovement.IsMoving)
+            //{
+            //    // Start moving Animation
+            //    if (_enhanceMovement.IsRunning)
+            //    {
+            //        // Case Running
+            //        xSpeed = -3f;
+            //        _animator.SetFloat("Ground", 1f);
+            //        StartCoroutine(DisableInputForSeconds(.25f));
+            //    }
+            //    else
+            //    {
+            //        // Case Walking
+            //        print("Start Walking");
+            //        xSpeed = -3f;
+            //        _animator.SetFloat("Ground", 1f);
+            //        StartCoroutine(DisableInputForSeconds(.167f));
+            //    }
+            //}
+            //else if (_prevFrame.WasMoving && _enhanceMovement.Movement.x == 0)
+            //{
+            //    // Stop moving animation
+            //    if ( _enhanceMovement.IsRunning)
+            //    {
+            //        // Case Running
+            //    }
+            //    else
+            //    {
+            //        // Case Walking
+            //    }
 
+            //}
+            //else
+            //{
+                // Moving Loop animation
+                xSpeed = (_enhanceMovement.Movement.x >= 0 ? 1f : -1f) * Converter.MinMaxNormalizer(0, _enhanceMovement.MaxSpeed,
+                Mathf.Abs(_enhanceMovement.Movement.x)) * (_enhanceMovement.IsRunning ? 2f : 1f);
+            //}
+
+            _animator.SetFloat("XSpeed", xSpeed);
+
+            // Logic for vertical movement
+            var ySpeed = _enhanceMovement.Movement.y;
+            if (!_prevFrame.WasGrounded && _enhanceMovement.IsGrounded && _enhanceMovement.Movement.y <= 0)
+            {
+                // Landing Animation
+                ySpeed = -2f;
+                _animator.SetFloat("Ground", 0f); 
+                StartCoroutine(DisableInputForSeconds(.667f));
+            }
+            else if (_prevFrame.WasGrounded && !_enhanceMovement.IsGrounded && _enhanceMovement.Movement.y >= 0)
+            {
+                // Start Jumping Animation
+                ySpeed = 2f;
+                _animator.SetFloat("Ground", 0f);
+                StartCoroutine(DisableInputForSeconds(.25f));
+            }
+            else
+            {
+                // Loop in the air while jumping/falling
+                ySpeed = ySpeed == 0 ? 0 : Mathf.Sign(ySpeed);
+            }
+            _animator.SetFloat("YSpeed", ySpeed);
+
+            // Set Portal variable (Only executed when type == 2)
             _animator.SetFloat("Portal", Converter.BoolToNum(_portal));
+            // Set push/pull variable (Only executed when type == 1)
             _animator.SetFloat("Push", Converter.BoolToNum(_push));
+        }
+        private void UpdateSingleLoopAnimation()
+        {
+
         }
 
         private void SetAnimationInCutscene(bool inCutscene)
         {
             _animator.enabled = !inCutscene;
+        }
+        IEnumerator DisableInputForSeconds(float time)
+        {
+            _waitForSingleLoopAnimation = true;
+            //print("Wait For Single Loop [Start]");
+            _enhanceMovement.InputDisabled = true;
+            //EventConnector.Publish("InputEnabled", false);
+            yield return new WaitForSeconds(time);
+            _enhanceMovement.InputDisabled = false;
+            //EventConnector.Publish("InputEnabled", true);
+            //print("Wait For Single Loop [End]");
+            _waitForSingleLoopAnimation = false;
         }
     }
 
