@@ -89,7 +89,7 @@ namespace Comma.Gameplay.UserInput
                     ""name"": ""Arrow/WASD"",
                     ""id"": ""857bb83f-2603-4a82-84e6-e13cc751b137"",
                     ""path"": ""2DVector"",
-                    ""interactions"": ""Press(behavior=2)"",
+                    ""interactions"": ""Press(pressPoint=1,behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Movement"",

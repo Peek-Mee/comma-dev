@@ -52,7 +52,7 @@ namespace Comma.Gameplay.Player
         {
             _prevFrame.WasGrounded = _enhanceMovement.IsGrounded;
             _prevFrame.WasRunning = _enhanceMovement.IsRunning;
-            _prevFrame.WasMoving = _enhanceMovement.IsMoving;
+            _prevFrame.WasMoving = Mathf.Abs(_enhanceMovement.Movement.x) > 0.1f;
         }
         /// <summary>
         /// Set all animation variables for non cutscene states
@@ -66,48 +66,24 @@ namespace Comma.Gameplay.Player
             // Set Is Grounded (float (0,1))
             _animator.SetFloat("Ground", Converter.BoolToNum(_enhanceMovement.IsGrounded));
             
+
             // Logic for horizontal movement
             var xSpeed = 0f;
-            //if (!_prevFrame.WasMoving && _enhanceMovement.IsMoving)
-            //{
-            //    // Start moving Animation
-            //    if (_enhanceMovement.IsRunning)
-            //    {
-            //        // Case Running
-            //        xSpeed = -3f;
-            //        _animator.SetFloat("Ground", 1f);
-            //        StartCoroutine(DisableInputForSeconds(.25f));
-            //    }
-            //    else
-            //    {
-            //        // Case Walking
-            //        print("Start Walking");
-            //        xSpeed = -3f;
-            //        _animator.SetFloat("Ground", 1f);
-            //        StartCoroutine(DisableInputForSeconds(.167f));
-            //    }
-            //}
-            //else if (_prevFrame.WasMoving && _enhanceMovement.Movement.x == 0)
-            //{
-            //    // Stop moving animation
-            //    if ( _enhanceMovement.IsRunning)
-            //    {
-            //        // Case Running
-            //    }
-            //    else
-            //    {
-            //        // Case Walking
-            //    }
-
-            //}
-            //else
-            //{
+            if (_prevFrame.WasRunning && !_enhanceMovement.IsRunning && !_enhanceMovement.IsMoving)
+            {
+                // Start moving Animation
+                xSpeed = 4f;
+                _animator.SetFloat("Ground", 1f);
+                StartCoroutine(DisableInputForSeconds(.45f));
+            }
+            else
+            {
                 // Moving Loop animation
                 xSpeed = (_enhanceMovement.Movement.x >= 0 ? 1f : -1f) * Converter.MinMaxNormalizer(0, _enhanceMovement.MaxSpeed,
                 Mathf.Abs(_enhanceMovement.Movement.x)) * (_enhanceMovement.IsRunning ? 2f : 1f);
-            //}
+        }
 
-            _animator.SetFloat("XSpeed", xSpeed);
+        _animator.SetFloat("XSpeed", xSpeed);
 
             // Logic for vertical movement
             var ySpeed = _enhanceMovement.Movement.y;
@@ -116,7 +92,7 @@ namespace Comma.Gameplay.Player
                 // Landing Animation
                 ySpeed = -2f;
                 _animator.SetFloat("Ground", 0f); 
-                StartCoroutine(DisableInputForSeconds(.667f));
+                StartCoroutine(DisableInputForSeconds(.5f));
             }
             else if (_prevFrame.WasGrounded && !_enhanceMovement.IsGrounded && _enhanceMovement.Movement.y >= 0)
             {

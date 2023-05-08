@@ -43,9 +43,9 @@ namespace Comma.Gameplay.Player
         /// </summary>
         public bool IsGrounded => _isGrounded;
         public bool WasGrounded => _wasGrounded;
-        public bool IsRunning => _sprintInput;
+        public bool IsRunning { get; set; }
         public float MaxSpeed => _currentSpd;
-        public bool IsMoving => _isMovingInput;
+        public bool IsMoving => Mathf.Abs(_movement.x) > 0.1f && _horizontalInput != 0f;
         public bool InputDisabled { get { return _isInputDisabled; }  set { _isInputDisabled = value; } }
         #endregion
 
@@ -159,7 +159,12 @@ namespace Comma.Gameplay.Player
                     // Run or walk
                     _ = _sprintInput ? _currentSpd = _runSpd :
                         _currentSpd = _walkSpd;
+                    _ = _sprintInput ? IsRunning = true : IsRunning = false;
                 }
+            }
+            else
+            {
+                IsRunning = false;
             }
         }
         private void Jump()
@@ -219,6 +224,7 @@ namespace Comma.Gameplay.Player
         #region Appearance
         private void Flip()
         {
+            if (!_isGrounded) return;
             if (_isFaceRight && _horizontalInput < 0)
             {
                 _isFaceRight = !_isFaceRight;
