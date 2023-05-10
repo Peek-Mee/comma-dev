@@ -8,11 +8,13 @@ namespace Comma.Gameplay.DetectableObject
         [SerializeField] private string _objectId;
         private bool _isInteracted;
         private Rigidbody2D _target;
+        private int _defLayer;
 
         private void Awake()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
+            _defLayer = gameObject.layer;
+            _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation ;
         }
 
         private void Start()
@@ -35,11 +37,13 @@ namespace Comma.Gameplay.DetectableObject
 
         public void Interact()
         {
+            gameObject.layer = 0;
             _rigidbody2D.constraints = RigidbodyConstraints2D.None | RigidbodyConstraints2D.FreezeRotation;
             _isInteracted = true;
         }
         public void UnInteract()
         {
+            gameObject.layer = _defLayer;
             _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
             SaveSystem.GetPlayerData().SetInteractedObject(_objectId, transform.position);
             _isInteracted = false;

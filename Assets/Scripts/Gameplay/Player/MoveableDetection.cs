@@ -11,14 +11,16 @@ namespace Comma.Gameplay.Player
     {
         [SerializeField] private Collider2D _rightArm;
         [SerializeField] private Collider2D _leftArm;
-        private PlayerMovement _player;
-        private PlayerAnimationController _playerAnimator;
+        //private PlayerMovement _player;
+        private PEnhanceMovement _enhanceMovement;
+        //private PlayerAnimationController _playerAnimator;
         private Rigidbody2D _rigid;
 
         private void Awake()
         {
-            _playerAnimator = GetComponent<PlayerAnimationController>();
-            _player = GetComponent<PlayerMovement>();
+            //_playerAnimator = GetComponent<PlayerAnimationController>();
+            //_player = GetComponent<PlayerMovement>();
+            _enhanceMovement = GetComponent<PEnhanceMovement>();
             _rigid= GetComponent<Rigidbody2D>();
         }
         private void Start()
@@ -57,10 +59,13 @@ namespace Comma.Gameplay.Player
             {
                 if (!_inGrabArea) return;
                 _isHoldMoveable = true;
-                _player.IsFlipProhibited = true;
+                //_player.IsFlipProhibited = true;
+                _enhanceMovement.IsFlipProhibited = true;
                 HandleMovable(1);
                 _moveableObject.Interact();
-                _playerAnimator.Push = true;
+                //_playerAnimator.Push = true;
+                Holded = true;
+                Push = true;
                 SfxPlayer.Instance.PlaySFX("InteractObject", true);
                 EnableArms(condition: true);
                 //SFXController.Instance.PlayInteractObjectSFX();
@@ -69,9 +74,12 @@ namespace Comma.Gameplay.Player
         private void EjectMovable()
         {
             _isHoldMoveable = false;
-            _player.IsFlipProhibited = false;
-            _playerAnimator.Push = false;
-            _playerAnimator.Pull = false;
+            //_player.IsFlipProhibited = false;
+            _enhanceMovement.IsFlipProhibited = false;
+            //_playerAnimator.Push = false;
+            //_playerAnimator.Pull = false;
+            Holded = false;
+            Push = false;
             _moveableObject.UnInteract();
             EnableArms(false, false);
             //SFXController.Instance.StopObjectSFX();
@@ -91,21 +99,24 @@ namespace Comma.Gameplay.Player
                 _objectOnRight = normal.x > 0;
             }
         }
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            if (collision.CompareTag("Moveable"))
-            {
-                _inGrabArea = false;
-                if (_isHoldMoveable)
-                {
-                    EjectMovable();
-                }
-            }
-        }
+        //private void OnTriggerExit2D(Collider2D collision)
+        //{
+        //    if (collision.CompareTag("Moveable"))
+        //    {
+        //        _inGrabArea = false;
+        //        if (_isHoldMoveable)
+        //        {
+        //            EjectMovable();
+        //        }
+        //    }
+        //}
+        public bool Push { get; set; }
+        public bool Holded { get; set; }
         private void ChangeAnimationState()
         {
             if (!_isHoldMoveable) return;
-            _direction = _player.GetInput;
+            //_direction = _player.GetInput;
+            _direction = _enhanceMovement.HorizontalInput;
             int normalizeDirection = (int) _direction * (_objectOnRight ? 1 : -1);
             PlayerFlip(_objectOnRight ? 1 : -1);
 
@@ -117,19 +128,24 @@ namespace Comma.Gameplay.Player
                     //SFXController.Instance.StopObjectSFX();
                     if (!_isHoldMoveable)
                     {
-                        _playerAnimator.Push = false; 
-                        _playerAnimator.Pull = false;
+                        //_playerAnimator.Push = false; 
+                        //_playerAnimator.Pull = false;
+                        Holded = false;
                     }
                     break;
                 case 1:
                     //SFXController.Instance.PlayPushSFX();
-                    _playerAnimator.Push = true;
-                    _playerAnimator.Pull = false;
+                    //_playerAnimator.Push = true;
+                    //_playerAnimator.Pull = false;
+                    Holded = true;
+                    Push = true;
                     break;
                 case -1:
                     //SFXController.Instance.PlayPullSFX();
-                    _playerAnimator.Push = false;
-                    _playerAnimator.Pull = true;
+                    //_playerAnimator.Push = false;
+                    //_playerAnimator.Pull = true;
+                    Holded = true;
+                    Push = false;
                     break;
             }
 

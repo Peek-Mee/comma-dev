@@ -24,6 +24,7 @@ namespace Comma.Gameplay.Player
 
         // Animator controller
         [SerializeField] private Animator _animator;
+        [SerializeField] private PEnhanceSound _playerSFX;
         private PEAnimationPrevFrame _prevFrame;
 
         private bool _isMoveInteract;
@@ -33,9 +34,11 @@ namespace Comma.Gameplay.Player
         private bool _waitForSingleLoopAnimation;
 
         private PEnhanceMovement _enhanceMovement;
+        private MoveableDetection _moveableDetection;
         private void Start()
         {
             _enhanceMovement = GetComponent<PEnhanceMovement>();
+            _moveableDetection = GetComponent<MoveableDetection>();
         }
 
         private void Update()
@@ -60,6 +63,8 @@ namespace Comma.Gameplay.Player
         private void SetNormalAnimation()
         {
             if (_waitForSingleLoopAnimation) return;
+            _isMoveInteract = _moveableDetection.Holded;
+            _push = _moveableDetection.Push;
 
             // Set Animation Type {0: normal; 1: MoveInteract; 2: NonMoveInteract; }
             _animator.SetFloat("Type", _isNonMoveInteract ? 2f : _isMoveInteract ? 1f : 0f);
@@ -81,6 +86,16 @@ namespace Comma.Gameplay.Player
                 // Moving Loop animation
                 xSpeed = (_enhanceMovement.Movement.x >= 0 ? 1f : -1f) * Converter.MinMaxNormalizer(0, _enhanceMovement.MaxSpeed,
                 Mathf.Abs(_enhanceMovement.Movement.x)) * (_enhanceMovement.IsRunning ? 2f : 1f);
+                
+                if (xSpeed == 0f && _enhanceMovement.IsGrounded)
+                {
+                    _playerSFX.StopWalkSFX();
+
+                }
+                else if (xSpeed != 0f && !_enhanceMovement.IsRunning && _enhanceMovement.IsGrounded)
+                {
+                    _playerSFX.PlayWalkSFX();
+                }
         }
 
         _animator.SetFloat("XSpeed", xSpeed);

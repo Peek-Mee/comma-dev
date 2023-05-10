@@ -47,6 +47,7 @@ namespace Comma.Gameplay.Player
         public float MaxSpeed => _currentSpd;
         public bool IsMoving => Mathf.Abs(_movement.x) > 0.1f && _horizontalInput != 0f;
         public bool InputDisabled { get { return _isInputDisabled; }  set { _isInputDisabled = value; } }
+        public float HorizontalInput => _horizontalInput;
         #endregion
 
         #region Initialization
@@ -222,8 +223,10 @@ namespace Comma.Gameplay.Player
         #endregion
 
         #region Appearance
+        public bool IsFlipProhibited { get; set; }
         private void Flip()
         {
+            if (IsFlipProhibited) return;
             if (!_isGrounded) return;
             if (_isFaceRight && _horizontalInput < 0)
             {
