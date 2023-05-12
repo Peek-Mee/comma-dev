@@ -10,36 +10,28 @@ namespace Comma.Gameplay.Environment
         [SerializeField] private GameObject _trigger;
         
         private GroundTrigger _groundTrigger;
-        private float _yActiveButton;
+        private float _yActiveButton, _initialyActiveButton;
 
         public bool isShouldHold = true;
         public event System.Action<bool> OnGroundButtonPush;
         void Start()
         {
-            _yActiveButton = _activeButton.transform.localPosition.y;
+            _initialyActiveButton = _activeButton.transform.localPosition.y;
+            _yActiveButton = _activeButton.transform.localScale.y;
             _groundTrigger = _trigger.GetComponent<GroundTrigger>();
         }
 
         void Update()
         {
             //make active button stop float on default location
-            if (_activeButton.transform.localPosition.y < _yActiveButton)
+            if (_activeButton.transform.localPosition.y <= _initialyActiveButton - _yActiveButton/2)
             {
-                if (isShouldHold)
+                if (!isShouldHold)
                 {
-                    _activeButton.gravityScale = -1;
+                    _activeButton.constraints = RigidbodyConstraints2D.FreezeAll;
                 }
             }
-            else
-            {
-                _activeButton.gravityScale = 0;
-                _activeButton.velocity = Vector3.zero;
-                _activeButton.angularVelocity = 0;
-            }
-            //Debug.Log(_activeButton.transform.localPosition.y+" compare "+_yActiveButton);
-            //Debug.Log(_groundTrigger.isTriggered);
-
-            //publish event if trigger is hit
+            
             OnGroundButtonPush?.Invoke(_groundTrigger.isTriggered);
         }
     }
