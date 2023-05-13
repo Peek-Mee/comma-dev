@@ -13,11 +13,17 @@ namespace Comma.Gameplay.Player
         private bool _isInPortalArea = false;
         private IDetectable _portal;
         private int _currentInstanceId;
-        private PlayerAnimationController _playerAnimator;
+        //private PlayerAnimationController _playerAnimator;
+        //private PlayerMovement _playerMovement;
+        private PEnhanceMovement _enhanceMovement;
+        private PEnhanceAnimation _enhanceAnimation;
 
         private void Awake()
         {
-            _playerAnimator= GetComponent<PlayerAnimationController>();
+            //_playerAnimator= GetComponent<PlayerAnimationController>();
+            //_playerMovement = GetComponent<PlayerMovement>();
+            _enhanceAnimation = GetComponent<PEnhanceAnimation>();
+            _enhanceMovement = GetComponent<PEnhanceMovement>();
         }
 
         private void Start()
@@ -49,14 +55,16 @@ namespace Comma.Gameplay.Player
         {
             var message = (OnPlayerUsePortal)msg;
             transform.position = message.Destination;
+            //_playerMovement.SwapLayer(message.Layer);
+            //gameObject.layer= message.Layer;
         }
         private void OnInteractInput(object msg)
         {
-            if (!_playerAnimator.Idle || _playerAnimator.Move || _playerAnimator.XSpeed != 0) return;
-            if (_playerAnimator.WaitInteract || _playerAnimator.PortalInteract) return;
-            if (_playerAnimator.StartJump || _playerAnimator.EndFall || _playerAnimator.YSpeed != 0) return;
+            //if (!_playerAnimator.Idle || _playerAnimator.Move || _playerAnimator.XSpeed != 0) return;
+            //if (_playerAnimator.WaitInteract || _playerAnimator.PortalInteract) return;
+            //if (_playerAnimator.StartJump || _playerAnimator.EndFall || _playerAnimator.YSpeed != 0) return;
             if (!_isInPortalArea || _portal == null) return;
-            _playerAnimator.PortalInteract = true;
+            //_playerAnimator.PortalInteract = true;
             //_portal.Interact();
             StartCoroutine(WaitAnimation());
             //SFXController.Instance.PlayInteractPortalSFX();
@@ -65,9 +73,10 @@ namespace Comma.Gameplay.Player
 
         IEnumerator WaitAnimation()
         {
-            _playerAnimator.WaitInteract = true;
-            yield return new WaitUntil(() => !_playerAnimator.PortalInteract);
-            SfxPlayer.Instance.PlaySFX("InteractPortal", true);
+            //_playerAnimator.WaitInteract = true;
+            //yield return new WaitUntil(() => !_playerAnimator.PortalInteract);            
+            yield return new WaitUntil(() => true);
+            //SfxPlayer.Instance.PlaySFX("InteractPortal", true);
             _portal.Interact();
         }
         public string ToDebug()

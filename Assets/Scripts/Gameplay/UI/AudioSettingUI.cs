@@ -21,6 +21,7 @@ namespace Comma.Gameplay.UI
         {
             _audioSetting = AudioSetting.Instance;
         }
+       
         private void OnEnable()
         {
             RemoveAllListener();
@@ -34,12 +35,12 @@ namespace Comma.Gameplay.UI
         
         private void InitAudioSetting()
         {
-            _musicToggle.isOn = !_audioSetting.GetCurrentMute(AudioDataType.MASTER);
-            _musicSlider.value = _audioSetting.GetCurrentVolume(AudioDataType.MASTER);
+            _musicToggle.isOn = !_audioSetting.GetCurrentMute(AudioDataType.BGM);
+            _musicSlider.value = _audioSetting.GetCurrentVolume(AudioDataType.BGM);
             sfxToggle.isOn = !_audioSetting.GetCurrentMute(AudioDataType.SFX);
             _sfxSlider.value = _audioSetting.GetCurrentVolume(AudioDataType.SFX);
             
-            OnChangedSettings(AudioDataType.MASTER,_musicToggle,_musicSlider);
+            OnChangedSettings(AudioDataType.BGM,_musicToggle,_musicSlider);
             OnChangedSettings(AudioDataType.SFX,sfxToggle,_sfxSlider);
         }
 
