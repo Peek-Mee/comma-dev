@@ -71,10 +71,24 @@ namespace Comma.Gameplay.Player
             // Set Is Grounded (float (0,1))
             _animator.SetFloat("Ground", Converter.BoolToNum(_enhanceMovement.IsGrounded));
             
+            if (!_enhanceMovement.IsMoving || !_enhanceMovement.IsGrounded)
+            {
+                _playerSFX.StopWalkSFX();
+            }else if (_enhanceMovement.IsMoving && _enhanceMovement.IsGrounded)
+            {
+                if (_enhanceMovement.IsRunning)
+                {
+
+                }
+                else
+                {
+                    _playerSFX.PlayWalkSFX();
+                }
+            }
 
             // Logic for horizontal movement
             var xSpeed = 0f;
-            if (_prevFrame.WasRunning && !_enhanceMovement.IsRunning && !_enhanceMovement.IsMoving)
+            if (_prevFrame.WasRunning && !_enhanceMovement.IsRunning && !_enhanceMovement.IsMoving && _enhanceMovement.IsGrounded)
             {
                 // Start moving Animation
                 xSpeed = 4f;
@@ -87,24 +101,25 @@ namespace Comma.Gameplay.Player
                 xSpeed = (_enhanceMovement.Movement.x >= 0 ? 1f : -1f) * Converter.MinMaxNormalizer(0, _enhanceMovement.MaxSpeed,
                 Mathf.Abs(_enhanceMovement.Movement.x)) * (_enhanceMovement.IsRunning ? 2f : 1f);
                 
-                if (xSpeed == 0f && _enhanceMovement.IsGrounded)
-                {
-                    _playerSFX.StopWalkSFX();
+                //if (xSpeed == 0f && _enhanceMovement.IsGrounded)
+                //{
+                //    _playerSFX.StopWalkSFX();
 
-                }
-                else if (xSpeed != 0f && !_enhanceMovement.IsRunning && _enhanceMovement.IsGrounded)
-                {
-                    _playerSFX.PlayWalkSFX();
-                }
-        }
+                //}
+                //else if (xSpeed != 0f && !_enhanceMovement.IsRunning && _enhanceMovement.IsGrounded)
+                //{
+                //    _playerSFX.PlayWalkSFX();
+                //}
+            }
 
-        _animator.SetFloat("XSpeed", xSpeed);
+            _animator.SetFloat("XSpeed", xSpeed);
 
             // Logic for vertical movement
             var ySpeed = _enhanceMovement.Movement.y;
             if (!_prevFrame.WasGrounded && _enhanceMovement.IsGrounded && _enhanceMovement.Movement.y <= 0)
             {
                 // Landing Animation
+                _playerSFX.PlayLandSFX();
                 ySpeed = -2f;
                 _animator.SetFloat("Ground", 0f); 
                 StartCoroutine(DisableInputForSeconds(.5f));
@@ -112,6 +127,7 @@ namespace Comma.Gameplay.Player
             else if (_prevFrame.WasGrounded && !_enhanceMovement.IsGrounded && _enhanceMovement.Movement.y >= 0)
             {
                 // Start Jumping Animation
+                _playerSFX.PlayJumpSFX();
                 ySpeed = 2f;
                 _animator.SetFloat("Ground", 0f);
                 StartCoroutine(DisableInputForSeconds(.25f));

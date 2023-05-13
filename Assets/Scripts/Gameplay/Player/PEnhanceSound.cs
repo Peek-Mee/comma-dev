@@ -34,22 +34,20 @@ public class PEnhanceSound : MonoBehaviour
     public void StopWalkSFX()
     {
         _isTimeToStopWalk = true;
-        _isWalkPlaying = false;
         StopSequenceSFX();
+        _isWalkPlaying = false;
+    }
+    public void PlayJumpSFX()
+    {
+        PlayOneShootSFX(_jumpClips);
+    }
+
+    public void PlayLandSFX()
+    {
+        PlayOneShootSFX(_landClips);
     }
     #endregion
 
-    private void PlayAnimationAudioInSequence(AudioClip[] clips, Func<bool> stopCondition)
-    {
-        while (!stopCondition())
-        {
-            if (_audioSource.isPlaying) continue;
-            var random = UnityEngine.Random.Range(0, clips.Length);
-            _audioSource.clip = clips[random];
-        }
-        _audioSource?.Stop();
-        _audioSource.clip = null;
-    }
     private void StopSequenceSFX()
     {
         _audioSource?.Stop();
@@ -67,21 +65,15 @@ public class PEnhanceSound : MonoBehaviour
         else
         {
             yield return new WaitUntil(()=> !_audioSource.isPlaying);
-            var random = UnityEngine.Random.Range(0, clips.Length-1);
+            var random = UnityEngine.Random.Range(0, clips.Length);
             _audioSource.clip = clips[random];
             _audioSource?.Play();
             StartCoroutine(PlaySequenceAnimationSFX(clips, stop));
         }
     }
-    private IEnumerator PlaySequenceSFXLoop(AudioClip clip, Func<bool> stop)
+    private void PlayOneShootSFX(AudioClip[] clips)
     {
-        if (stop()) yield return null;
-        else
-        {
-            yield return new WaitUntil( ()=> _audioSource.isPlaying);
-            _audioSource.loop = true;
-            _audioSource.clip = clip;
-            _audioSource?.Play();
-        }
+        var random = UnityEngine.Random.Range(0, clips.Length);
+        _audioSource.PlayOneShot(clips[random]);
     }
 }

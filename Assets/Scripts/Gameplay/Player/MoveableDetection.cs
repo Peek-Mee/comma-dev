@@ -35,8 +35,8 @@ namespace Comma.Gameplay.Player
             _rightArm.isTrigger = !condition;
             _leftArm.isTrigger = !condition;
             //if (!complete) return;
-            _rightArm.enabled = complete;
-            _leftArm.enabled = complete;
+            _rightArm.enabled = complete && _objectOnRight;
+            _leftArm.enabled = complete && !_objectOnRight;
             //_rightArm.SetActive(condition);
             //_leftArm.SetActive(condition);
         }
@@ -53,7 +53,7 @@ namespace Comma.Gameplay.Player
             if (_isHoldMoveable)
             {
                 EjectMovable();
-                EnableArms(condition: false);
+                EnableArms(condition: false, complete: false);
             }
             else if (_moveableObject != null)
             {
