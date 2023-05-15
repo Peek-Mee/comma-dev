@@ -305,7 +305,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 12.6
+  orthographic size: 2
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -932,7 +932,7 @@ MonoBehaviour:
   m_Follow: {fileID: 695645998941929883}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 12.6
+    OrthographicSize: 2
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -1444,6 +1444,7 @@ GameObject:
   - component: {fileID: 695645998941929883}
   - component: {fileID: 695645998941929882}
   - component: {fileID: 695645998941929884}
+  - component: {fileID: 695645998941929885}
   m_Layer: 0
   m_Name: Gameplay-M-Figure
   m_TagString: Untagged
@@ -1530,7 +1531,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: b6fd58f33f8ef024990c93a0667140b5, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 2
+  m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -1538,6 +1539,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &695645998941929885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695645998941929880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 445190e8e629efd4fb18caccb757fbf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 695645998941929884}
+  animationState: 0
+  grounded: 0
+  movement: 0
+  xMove: 0
+  maxStartRun: 0.75
 --- !u!1001 &1281723838529872445
 PrefabInstance:
   m_ObjectHideFlags: 0
