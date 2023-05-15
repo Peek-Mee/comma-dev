@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+
 public enum MF_AnimationState
 {
     Idle,
@@ -40,6 +42,7 @@ public class MF_AnimationController : MonoBehaviour
             case MF_AnimationState.Idle: IdleState(); break;
             case MF_AnimationState.Walk: WalkState(); break;
             case MF_AnimationState.Run: RunState(); break;
+            case MF_AnimationState.Jump: JumpState(); break;
         }
     }
 
@@ -58,5 +61,24 @@ public class MF_AnimationController : MonoBehaviour
         movement = 2;
         if(xMove <maxStartRun) xMove += Time.deltaTime * 1;
         else xMove = 2;
+    }
+
+    private void JumpState()
+    {
+        JumpAround();
+    }
+    
+    [Header("Jump Parameter")]
+    [SerializeField] private float jumpForce;
+    [SerializeField] bool groundedCheck;
+    [SerializeField] float groundDistance; 
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField]private Rigidbody2D rb;
+
+    private void JumpAround()
+    {
+        groundedCheck = Physics2D.Raycast(transform.position, Vector2.down, groundDistance, groundMask);
+        if (!groundedCheck) return;
+        rb.velocity = Vector2.up * jumpForce;
     }
 }
