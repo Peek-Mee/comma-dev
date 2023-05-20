@@ -1669,14 +1669,14 @@ MonoBehaviour:
   grounded: 0
   movement: 0
   xMove: 0
-  yMove: 0
+  yMove: 0.1
   maxStartRun: 0.75
   jumpForce: 3
   isAiring: 0
-  waitJump: 1.16
-  waitLand: 0.3
+  waitJump: 0.96
+  waitLand: 0.6
   groundedCheck: 0
-  groundDistance: 1.4
+  groundDistance: 1.3
   groundMask:
     serializedVersion: 2
     m_Bits: 8

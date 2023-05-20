@@ -32,6 +32,7 @@ public class MF_AnimationController : MonoBehaviour
 
     private void Update()
     {
+        groundedCheck = Physics2D.Raycast(transform.position, Vector2.down, groundDistance, groundMask);
         UpdateAnimationState();
         animator.SetFloat(groundedName, grounded);
         animator.SetFloat(movementName, movement);
@@ -93,7 +94,6 @@ public class MF_AnimationController : MonoBehaviour
 
     private void JumpAround()
     {
-        groundedCheck = Physics2D.Raycast(transform.position, Vector2.down, groundDistance, groundMask);
         // float min = 0;
         // float max = 1.52f;
         // float duration = 1f;
@@ -107,9 +107,9 @@ public class MF_AnimationController : MonoBehaviour
                 StartCoroutine(WaitLanding());
             }
             else
-            { 
-                yMove += Time.deltaTime * 1; 
+            {
                 StartCoroutine(WaitJump());
+                yMove += Time.deltaTime * 1;
             }
         }
         else
