@@ -60,7 +60,7 @@ namespace Comma.Gameplay.Environment
             float newRatio = Mathf.Clamp01(Mathf.Abs(_targetFollow.position.x - _xPositionStart) / _distance);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             if (!CheckAvailability()) return;
             _camera.m_Lens.OrthographicSize = CalculateNewOrthoSize();
