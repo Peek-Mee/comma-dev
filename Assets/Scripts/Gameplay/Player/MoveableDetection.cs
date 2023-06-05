@@ -49,7 +49,6 @@ namespace Comma.Gameplay.Player
         private void OnInteract(object msg)
         {
             
-
             if (_isHoldMoveable)
             {
                 EjectMovable();
@@ -61,6 +60,7 @@ namespace Comma.Gameplay.Player
                 _isHoldMoveable = true;
                 //_player.IsFlipProhibited = true;
                 _enhanceMovement.IsFlipProhibited = true;
+                _enhanceMovement.JumpDisabled = true;
                 HandleMovable(1);
                 _moveableObject.Interact();
                 //_playerAnimator.Push = true;
@@ -76,6 +76,7 @@ namespace Comma.Gameplay.Player
             _isHoldMoveable = false;
             //_player.IsFlipProhibited = false;
             _enhanceMovement.IsFlipProhibited = false;
+            _enhanceMovement.JumpDisabled = false;
             //_playerAnimator.Push = false;
             //_playerAnimator.Pull = false;
             Holded = false;
@@ -99,17 +100,17 @@ namespace Comma.Gameplay.Player
                 _objectOnRight = normal.x > 0;
             }
         }
-        //private void OnTriggerExit2D(Collider2D collision)
-        //{
-        //    if (collision.CompareTag("Moveable"))
-        //    {
-        //        _inGrabArea = false;
-        //        if (_isHoldMoveable)
-        //        {
-        //            EjectMovable();
-        //        }
-        //    }
-        //}
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Moveable"))
+            {
+                _inGrabArea = false;
+                if (_isHoldMoveable)
+                {
+                    EjectMovable();
+                }
+            }
+        }
         public bool Push { get; set; }
         public bool Holded { get; set; }
         private void ChangeAnimationState()

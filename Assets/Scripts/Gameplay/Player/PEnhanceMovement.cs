@@ -1,10 +1,8 @@
-﻿using Comma.Gameplay.Environment;
-using Comma.Global.PubSub;
+﻿using Comma.Global.PubSub;
 using Comma.Utility.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Comma.Gameplay.Player
@@ -21,13 +19,7 @@ namespace Comma.Gameplay.Player
 
         [Header("Collision Checkers")]
         [SerializeField] private LayerMask[] _groundLayers;
-        //[SerializeField]
-        //[Range(0.2f, 0.35f)] private float _checkRadius = 0.25f;
-        //[SerializeField]
-        //[Range(0.2f, 1.0f)] private float _checkExpensiveRadius = 0.52f;
-        //[SerializeField] private GameObject _bottomChecker;
         [SerializeField] private Transform _normalBtmChecker;
-        //[SerializeField] private Transform _expensiveBtmChecker;
 
         #region ExternalBinding
         private Vector2 _movement;
@@ -78,7 +70,6 @@ namespace Comma.Gameplay.Player
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
-            //_collider = GetComponent<Collider2D>();
             _sprite = GetComponent<SpriteRenderer>();
 
         }
@@ -93,10 +84,8 @@ namespace Comma.Gameplay.Player
             EventConnector.Subscribe("OnGamePause", new(OnGamePause));
 
             //InitSpawn();
-
             Physics2D.IgnoreLayerCollision(_layerAfterConversion[0],
                 _layerAfterConversion[1], true);
-
 
         }
         private void OnDisable()
@@ -147,7 +136,6 @@ namespace Comma.Gameplay.Player
 
         #region Physics
         // Physics variables
-        //private bool _isBottomCollided = false;
         // Walk
         private void Walk()
         {
@@ -172,17 +160,17 @@ namespace Comma.Gameplay.Player
             }
         }
         public bool PreviouslyJumping { get; set; } = false;
+        public bool JumpDisabled { get; set; } = false;
         private void Jump()
         {
             if (_jumpInput)
             {
                 _jumpInput = false;
-                if (_isGrounded)
+                if (_isGrounded && !JumpDisabled)
                 {
                     PreviouslyJumping = true;
                     var force = new Vector2(_rigidbody.velocity.x, _jumpForce * 50.0f);
                     _rigidbody.AddForce(force);
-                    //_isMoveAfterJump = true;
                 }
             }
         }
@@ -191,7 +179,6 @@ namespace Comma.Gameplay.Player
         {
             if (_isGrounded)
             {
-                //if (_isMoveAfterJump) _isMoveAfterJump = false;
                 return;
             }
             _rigidbody.velocity += _gravityRatio * Time.deltaTime * Physics2D.gravity;
@@ -250,7 +237,6 @@ namespace Comma.Gameplay.Player
         #region Swap Mechanism
         //Variables
         private int _currentLayerIdx;
-        private bool _isTimeToSwapEdge;
         // Check when first spawn
         private void InitLayerConversion()
         {
@@ -310,11 +296,6 @@ namespace Comma.Gameplay.Player
             //// the opposite layer
             ThreeDetectionLayerGround();
 
-            // Check player swap edge
-            //if (_isTimeToSwapEdge)
-            //{
-            //    EdgeSwapLayer();
-            //}
 
         }
         private void FixedUpdate()
@@ -426,15 +407,10 @@ namespace Comma.Gameplay.Player
                 if (hit.collider.isTrigger) continue;
                 _platformVector = hit.normal;
                 GroundDistance = hit.point.y;
-                //GroundDistance = GroundDistance < gap ? GroundDistance : gap;
-                //GroundDistance = float.IsPositiveInfinity(GroundDistance) ? gap : GroundDistance >= gap ? GroundDistance : gap;
-                //print($"Grounded: {GroundDistance}");
                 return true;
             }
             
             _platformVector = Vector3.up;
-            //GroundDistance = float.PositiveInfinity;
-            //print($"Fall: {GroundDistance}");
             return false;
         }
         private void ThreeDetectionLayerGround()
