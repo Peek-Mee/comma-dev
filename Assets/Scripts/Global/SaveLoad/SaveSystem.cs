@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 
 namespace Comma.Global.SaveLoad
 {
@@ -8,6 +10,7 @@ namespace Comma.Global.SaveLoad
         private AudioSaveData _audioSetting;
         private VideoSaveData _videoSetting;
         private InputSaveData _inputSetting;
+        private CommaSaveData _globalSave;
 
         public static SaveSystem saveInstance;
         private static SaveSystem _saveSystem;
@@ -49,40 +52,122 @@ namespace Comma.Global.SaveLoad
             DontDestroyOnLoad(gameObject);
         }
 
+        private void CreateCommaGameData()
+        {
+            _globalSave ??= new(1);
+            var temp = JsonUtility.ToJson(_globalSave);
+            BinaryFormatter bf = new();
+            FileStream file = File.Create(Application.persistentDataPath + "/Comma.save");
+            bf.Serialize(file, temp);
+            file.Close();
+            Debug.Log("New game data created!");
+        }
+        private void SaveCommaGameData()
+        {
+            var path = Application.persistentDataPath + "/Comma.save";
+
+            if (File.Exists(path))
+            {
+                _globalSave.UpdatePlayerSave(_playerData);
+                _globalSave.UpdateVideoSave(_videoSetting);
+                _globalSave.UpdateAudioSave(_audioSetting);
+                _globalSave.UpdateInputSave(_inputSetting);
+
+                try
+                {
+                    var temp = JsonUtility.ToJson(_globalSave);
+                    BinaryFormatter bf = new();
+                    FileStream file = File.OpenWrite(Application.persistentDataPath + "/Comma.save");
+                    bf.Serialize(file, temp);
+                    file.Close();
+                    Debug.Log("Data saved successfully!");
+                }
+                catch
+                {
+                    Debug.Log("There is an error occured when trying to save data");
+                }
+            }
+            else
+            {
+                CreateCommaGameData();
+                SaveCommaGameData();
+            }
+            
+        }
+        private void LoadCommaGameData()
+        {
+            var path = Application.persistentDataPath + "/Comma.save";
+            //print(path);
+            if (File.Exists(path))
+            {
+                try
+                {
+                    BinaryFormatter bf = new();
+                    FileStream file = File.OpenRead(path);
+                    var temp = JsonUtility.FromJson(bf.Deserialize(file).ToString(), typeof(CommaSaveData));
+                    _globalSave = (CommaSaveData)temp;
+                    file.Close();
+                    _playerData = _globalSave.GetPlayerSave();
+                    _inputSetting = _globalSave.GetInputSave();
+                    _audioSetting = _globalSave.GetAudioSave();
+                    _videoSetting = _globalSave.GetVideoSave();
+
+                    Debug.Log("Game data loaded successfully!");
+                }
+                catch
+                {
+                    CreateCommaGameData();
+                    LoadCommaGameData();
+                    Debug.Log("No valid save data is found! try");
+                }
+
+            }
+            else
+            {
+                CreateCommaGameData();
+                LoadCommaGameData();
+                Debug.Log("No valid save data is found! else");
+            }
+        }
+
         private void Init()
         {
-            _playerData ??= new();
-            _audioSetting ??= new();
-            _videoSetting ??= new();
-            _inputSetting ??= new();
+            // Old Save data
+            ////_playerData ??= new();
+            ////_audioSetting ??= new();
+            ////_videoSetting ??= new();
+            ////_inputSetting ??= new();
 
-            //if (!PlayerPrefs.HasKey("PlayerData")) _isNew = true;
+            //////if (!PlayerPrefs.HasKey("PlayerData")) _isNew = true;
 
-            InitiateData<PlayerSaveData>(ref _playerData, "PlayerData");
-            InitiateData<AudioSaveData>(ref _audioSetting, "AudioData");
-            InitiateData<VideoSaveData>(ref _videoSetting, "VideoData");
-            InitiateData<InputSaveData>(ref _inputSetting, "InputData");
+            ////InitiateData<PlayerSaveData>(ref _playerData, "PlayerData");
+            ////InitiateData<AudioSaveData>(ref _audioSetting, "AudioData");
+            ////InitiateData<VideoSaveData>(ref _videoSetting, "VideoData");
+            ////InitiateData<InputSaveData>(ref _inputSetting, "InputData");
+            
+            // New Save Data
+            LoadCommaGameData();
         }
 
-        private void InitiateData<T>(ref T data, string prefsName) 
-        {
-            if(!PlayerPrefs.HasKey(prefsName))
-            {
-                SaveData<T>(ref data, prefsName);
-                return;
-            }
-            var testData = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
-            if (testData != null)
-            {
-                 data = testData;
-            }
-        }
+        //private void InitiateData<T>(ref T data, string prefsName) 
+        //{
+        //    if(!PlayerPrefs.HasKey(prefsName))
+        //    {
+        //        SaveData<T>(ref data, prefsName);
+        //        return;
+        //    }
+        //    var testData = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefsName));
+        //    if (testData != null)
+        //    {
+        //         data = testData;
+        //    }
+        //}
 
-        private void SaveData<T>(ref T data, string prefsName)
-        {
-            PlayerPrefs.SetString(prefsName, JsonUtility.ToJson(data));
-            PlayerPrefs.Save();
-        }
+        //private void SaveData<T>(ref T data, string prefsName)
+        //{
+        //    PlayerPrefs.SetString(prefsName, JsonUtility.ToJson(data));
+        //    PlayerPrefs.Save();
+        //}
 
         private void ChangeDataAsObject<T>(ref T target, T newObject)
         {
@@ -91,10 +176,11 @@ namespace Comma.Global.SaveLoad
 
         private void SaveAllDataToDisk()
         {
-            SaveData<PlayerSaveData>(ref _playerData, "PlayerData");
-            SaveData<AudioSaveData>(ref _audioSetting, "AudioData");
-            SaveData<VideoSaveData>(ref _videoSetting, "VideoData");
-            SaveData<InputSaveData>(ref _inputSetting, "InputData");
+            //SaveData<PlayerSaveData>(ref _playerData, "PlayerData");
+            //SaveData<AudioSaveData>(ref _audioSetting, "AudioData");
+            //SaveData<VideoSaveData>(ref _videoSetting, "VideoData");
+            //SaveData<InputSaveData>(ref _inputSetting, "InputData");
+            SaveCommaGameData();
         }
 
         /// <summary>
@@ -186,10 +272,13 @@ namespace Comma.Global.SaveLoad
         }
         public static void ResetPlayerData()
         {
-            Instance._playerData = new();
-            PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(Instance._playerData));
-            PlayerPrefs.Save();
+            //Instance._playerData = new();
+            //PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(Instance._playerData));
+            //PlayerPrefs.Save();
             //Instance.Init();
+            Instance._playerData = new();
+            Instance.SaveCommaGameData();
         }
+
     }
 }

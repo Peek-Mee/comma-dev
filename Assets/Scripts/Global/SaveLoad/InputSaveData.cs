@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Comma.Global.SaveLoad
 {
+    [Serializable]
     public class InputSaveData : ICloneable
     {
         [SerializeField] private string _bindingOverride;
