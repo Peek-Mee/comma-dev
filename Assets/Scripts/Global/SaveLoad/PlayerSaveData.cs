@@ -14,6 +14,7 @@ namespace Comma.Global.SaveLoad
         [SerializeField] private List<string> _portalsCollection;
         [SerializeField] private List<string> _cutsceneCollection;
         [SerializeField] private float _lastCameraScale;
+        [SerializeField] private Vector3 _lastCameraOffset;
         [SerializeField] private bool _isNew;
         [SerializeField] private int _layer;
         [SerializeField] private StringVector3Dictionary _interactedObject;
@@ -26,6 +27,7 @@ namespace Comma.Global.SaveLoad
             _portalsCollection = new();
             _cutsceneCollection = new();
             _lastCameraScale= 1f;
+            _lastCameraOffset = Vector3.zero;
             _isNew = true;
             _layer = 1;
             _interactedObject = new();
@@ -106,6 +108,10 @@ namespace Comma.Global.SaveLoad
         {
             _lastCameraScale = scale;
         }
+        public void SetCameraOffset(Vector3 offset)
+        {
+            _lastCameraOffset = offset;
+        }
         /// <summary>
         /// Get the latest camera scale saved in the disk
         /// </summary>
@@ -113,6 +119,10 @@ namespace Comma.Global.SaveLoad
         public float GetCameraScale()
         {
             return _lastCameraScale;
+        }
+        public Vector3 GetCameraOffset()
+        {
+            return _lastCameraOffset;
         }
         public bool IsNewData()
         {

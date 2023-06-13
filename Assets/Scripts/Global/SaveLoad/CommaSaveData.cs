@@ -1,5 +1,4 @@
-﻿using Comma.Gameplay.Player;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace Comma.Global.SaveLoad

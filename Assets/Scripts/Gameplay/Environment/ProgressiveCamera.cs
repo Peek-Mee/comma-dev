@@ -52,17 +52,19 @@ namespace Comma.Gameplay.Environment
             EventConnector.Subscribe("OnOffsetCameraTrigger", new(EnterOffsetCameraTrigger));
             EventConnector.Subscribe("OnStopCameraMovement", new(EnterStopCameraTrigger));
             EventConnector.Subscribe("OnCameraTriggerExit", new(ExitCameraTrigger));
-            //PlayerSaveData data = SaveSystem.GetPlayerData();
-            //float savedScale;
-            //if (data == null)
-            //{
-            //    savedScale = 1f;
-            //}
-            //else
-            //{
-            //    savedScale = data.GetCameraScale();
-            //}
-            //_camera.m_Lens.OrthographicSize = savedScale * _defaultOrthoSize;
+
+            PlayerSaveData data = SaveSystem.GetPlayerData();
+            var savedScale = 1f;
+            var tempOff = Vector3.zero;
+
+
+            if (data != null)
+            {
+                savedScale = data.GetCameraScale();
+                tempOff = data.GetCameraOffset();
+            }
+            _camera.m_Lens.OrthographicSize = savedScale * _defaultOrthoSize;
+            _cameraTransposer.m_FollowOffset = tempOff;
         }
         private void OnDisable()
         {
@@ -74,15 +76,6 @@ namespace Comma.Gameplay.Environment
 
         }
         #region PubSub
-        //private void EnterCameraTrigger(object msg)
-        //{
-        //    OnEnterCameraTrigger message = (OnEnterCameraTrigger)msg;
-        //    _orthoSizeStart = _defaultOrthoSize * message.StartScale;
-        //    _orthoSizeFinish= _defaultOrthoSize * message.FinishScale;
-        //    _distance = message.Distance;
-        //    _xPositionStart = _targetFollow.position.x;
-        //    _isTransition = true;
-        //}
         private void EnterZoomCameraTrigger(object msg)
         {
             OnZoomCameraTrigger message = (OnZoomCameraTrigger)msg;
@@ -129,9 +122,6 @@ namespace Comma.Gameplay.Environment
                     
                     break;
             }
-            //_isTransition = false;
-            
-            //float newRatio = Mathf.Clamp01(Mathf.Abs(_targetFollow.position.x - _xPositionStart) / _distance);
         }
 
         private void LateUpdate()
@@ -191,6 +181,10 @@ namespace Comma.Gameplay.Environment
         public float GetCurrentScale()
         {
             return _camera.m_Lens.OrthographicSize/_defaultOrthoSize;
+        }
+        public Vector3 GetCurrentOffset()
+        {
+            return _cameraTransposer.m_FollowOffset;
         }
         public string ToDebug()
         {

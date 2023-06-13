@@ -1,4 +1,3 @@
-using Cinemachine;
 using Comma.Gameplay.Player;
 using Comma.Global.SaveLoad;
 using System.Collections;
@@ -33,14 +32,16 @@ namespace Comma.Gameplay.Environment
 
         IEnumerator RunAutoSave()
         {
+            yield return new WaitForSeconds(_timeAutoSave);
             PlayerSaveData saveData = SaveSystem.GetPlayerData();
             
             saveData.SetLastPosition(_playerToTrack.position);
             saveData.SetLastLayer(_playerToTrack.gameObject.layer);
             saveData.SetCameraScale(_cameraToTrack.GetCurrentScale());
+            saveData.SetCameraOffset(_cameraToTrack.GetCurrentOffset());
             saveData.SetOldData();
             SaveSystem.SaveDataToDisk();
-            yield return new WaitForSeconds(_timeAutoSave);
+            
             StartCoroutine(RunAutoSave());
         }
     }
