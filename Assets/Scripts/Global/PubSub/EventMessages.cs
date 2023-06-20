@@ -53,15 +53,15 @@ namespace Comma.Global.PubSub
     public struct OnZoomCameraTrigger
     {
         public int MoveToLeft {  get; private set; }
-        public float StartScale { get; private set; }
-        public float FinishScale { get; private set; }
+        public float StartOrthoSize { get; private set; }
+        public float FinishOrthoSize { get; private set; }
         public float Distance { get; private set; }
         public LeanTweenType Easing { get; private set; }
-        public OnZoomCameraTrigger(int moveToLeft, float startScale, float finishScale, float distance, LeanTweenType easing)
+        public OnZoomCameraTrigger(int moveToLeft, float startOrthoSize, float finishOrthoSize, float distance, LeanTweenType easing)
         {
             MoveToLeft = moveToLeft; 
-            StartScale = startScale;
-            FinishScale = finishScale;
+            StartOrthoSize = startOrthoSize;
+            FinishOrthoSize = finishOrthoSize;
             Distance = distance;
             Easing = easing;
         }

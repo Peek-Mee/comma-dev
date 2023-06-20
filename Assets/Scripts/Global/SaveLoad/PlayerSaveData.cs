@@ -13,7 +13,7 @@ namespace Comma.Global.SaveLoad
         [SerializeField] private int _orbsInHand;
         [SerializeField] private List<string> _portalsCollection;
         [SerializeField] private List<string> _cutsceneCollection;
-        [SerializeField] private float _lastCameraScale;
+        [SerializeField] private float _lastOrthoSize;
         [SerializeField] private Vector3 _lastCameraOffset;
         [SerializeField] private bool _isNew;
         [SerializeField] private int _layer;
@@ -26,7 +26,7 @@ namespace Comma.Global.SaveLoad
             _orbsInHand = 0;
             _portalsCollection = new();
             _cutsceneCollection = new();
-            _lastCameraScale= 1f;
+            _lastOrthoSize= 1f;
             _lastCameraOffset = Vector3.zero;
             _isNew = true;
             _layer = 1;
@@ -104,9 +104,9 @@ namespace Comma.Global.SaveLoad
         /// Set latest player camera scale
         /// </summary>
         /// <param name="scale"></param>
-        public void SetCameraScale(float scale)
+        public void SetOrthoSize(float scale)
         {
-            _lastCameraScale = scale;
+            _lastOrthoSize = scale;
         }
         public void SetCameraOffset(Vector3 offset)
         {
@@ -116,9 +116,9 @@ namespace Comma.Global.SaveLoad
         /// Get the latest camera scale saved in the disk
         /// </summary>
         /// <returns></returns>
-        public float GetCameraScale()
+        public float GetOrthoSize()
         {
-            return _lastCameraScale;
+            return _lastOrthoSize;
         }
         public Vector3 GetCameraOffset()
         {

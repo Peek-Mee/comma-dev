@@ -54,16 +54,16 @@ namespace Comma.Gameplay.Environment
             EventConnector.Subscribe("OnCameraTriggerExit", new(ExitCameraTrigger));
 
             PlayerSaveData data = SaveSystem.GetPlayerData();
-            var savedScale = 1f;
-            var tempOff = Vector3.zero;
+            var savedOrthoSize = _defaultOrthoSize;
+            var tempOff = _defaultOffset;
 
 
-            if (data != null)
+            if (data != null && !data.IsNewData())
             {
-                savedScale = data.GetCameraScale();
+                savedOrthoSize = data.GetOrthoSize();
                 tempOff = data.GetCameraOffset();
             }
-            _camera.m_Lens.OrthographicSize = savedScale * _defaultOrthoSize;
+            _camera.m_Lens.OrthographicSize = savedOrthoSize;
             _cameraTransposer.m_FollowOffset = tempOff;
         }
         private void OnDisable()
@@ -79,8 +79,8 @@ namespace Comma.Gameplay.Environment
         private void EnterZoomCameraTrigger(object msg)
         {
             OnZoomCameraTrigger message = (OnZoomCameraTrigger)msg;
-            _orthoSizeStart = _defaultOrthoSize * message.StartScale;
-            _orthoSizeFinish = _defaultOrthoSize * message.FinishScale;
+            _orthoSizeStart = message.StartOrthoSize;
+            _orthoSizeFinish = message.FinishOrthoSize;
             _zoomDistance = message.Distance;
             _zoomXStart= _defaultFollowedPlayer.position.x;
             _zoomEasing = message.Easing;
@@ -178,9 +178,9 @@ namespace Comma.Gameplay.Environment
         }
         #endregion
 
-        public float GetCurrentScale()
+        public float GetCurrentOrthoSize()
         {
-            return _camera.m_Lens.OrthographicSize/_defaultOrthoSize;
+            return _camera.m_Lens.OrthographicSize;
         }
         public Vector3 GetCurrentOffset()
         {

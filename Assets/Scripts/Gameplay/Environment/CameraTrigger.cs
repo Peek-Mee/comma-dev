@@ -22,8 +22,8 @@ namespace Comma.Gameplay.Environment
         [SerializeField] private LeanTweenType _easingType;
         [Header("Zoom Out")]
         //[SerializeField, HideInInspector] private LeanTweenType _zoomEasingType;
-        [SerializeField, HideInInspector] private float _startZoomScale;
-        [SerializeField, HideInInspector] private float _finishZoomScale;
+        [SerializeField, HideInInspector] private float _startOrthoSize;
+        [SerializeField, HideInInspector] private float _finishOrthoSize;
         [Header("Offset Change")]
         //[SerializeField, HideInInspector] private LeanTweenType _offsetEasingType;
         [SerializeField, HideInInspector] private Vector2 _startOffset;
@@ -49,8 +49,8 @@ namespace Comma.Gameplay.Environment
                 case CameraTriggerType.Zoom:
                     var zoomMessage = new OnZoomCameraTrigger(
                         _rightToLeft ? 1 : -1,
-                        _rightToLeft == checkPlayerFromLeft ? _startZoomScale : _finishZoomScale,
-                        _rightToLeft == checkPlayerFromLeft ? _finishZoomScale : _startZoomScale,
+                        _rightToLeft == checkPlayerFromLeft ? _startOrthoSize : _finishOrthoSize,
+                        _rightToLeft == checkPlayerFromLeft ? _finishOrthoSize : _startOrthoSize,
                         _distance + (other.bounds.size.x / 2f),
                         _easingType
                         );
@@ -106,8 +106,8 @@ namespace Comma.Gameplay.Environment
     {
         private SerializedProperty _triggerType;
         
-        private SerializedProperty _startZoomScale;
-        private SerializedProperty _finishZoomScale;
+        private SerializedProperty _startOrthoSize;
+        private SerializedProperty _finishOrthoSize;
         
         private SerializedProperty _startOffset;
         private SerializedProperty _finishOffset;
@@ -118,8 +118,8 @@ namespace Comma.Gameplay.Environment
         private void OnEnable()
         {
             _triggerType = serializedObject.FindProperty("_triggerType");
-            _startZoomScale = serializedObject.FindProperty("_startZoomScale");
-            _finishZoomScale = serializedObject.FindProperty("_finishZoomScale");
+            _startOrthoSize = serializedObject.FindProperty("_startOrthoSize");
+            _finishOrthoSize = serializedObject.FindProperty("_finishOrthoSize");
             _startOffset = serializedObject.FindProperty("_startOffset");
             _finishOffset = serializedObject.FindProperty("_finishOffset");
             _stopCameraMovement = serializedObject.FindProperty("_stopCameraMovement");
@@ -138,8 +138,20 @@ namespace Comma.Gameplay.Environment
             {
                 case 0:
                     EditorGUILayout.LabelField("<color=white><b>Zoom Out Camera Trigger</b></color>", _style);
-                    _startZoomScale.floatValue = EditorGUILayout.FloatField("Start Zoom Scale" ,_startZoomScale.floatValue);
-                    _finishZoomScale.floatValue =  EditorGUILayout.FloatField("Finish Zoom Scale", _finishZoomScale.floatValue);
+                    _startOrthoSize.floatValue = EditorGUILayout.FloatField("Start Ortho Size" ,_startOrthoSize.floatValue);
+                    //var buttonStart = GUILayout.Button("Set Current Ortho Size As Start");
+                    _finishOrthoSize.floatValue =  EditorGUILayout.FloatField("Finish Ortho Size", _finishOrthoSize.floatValue);
+                    //var buttonFinish = GUILayout.Button("Set Current Ortho Size As Finish");
+                    //if (buttonStart)
+                    //{
+                    //    var orthoSize = Camera.main.orthographicSize;
+                    //    _startOrthoSize.floatValue = orthoSize;
+                    //}
+                    //if (buttonFinish)
+                    //{
+                    //    var orthoSize = Camera.main.orthographicSize;
+                    //    _finishOrthoSize.floatValue = orthoSize;
+                    //}
                     break;
                 case 1:
                     EditorGUILayout.LabelField("<color=white><b>Offset Camera Trigger</b></color>", _style);
