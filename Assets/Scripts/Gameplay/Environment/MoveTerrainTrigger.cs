@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using Comma.Global.SaveLoad;
-using Comma.Utility.Collections;
-using Comma.Gameplay.DetectableObject;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -18,7 +16,6 @@ namespace Comma.Gameplay.Environment
         [SerializeField] private float _moveTime;
         [SerializeField] private float _delayTime;
         [SerializeField] private LeanTweenType _easing;
-        [SerializeField] private bool _shakeCamera;
 
         public GameObject MovingTerrain => _movingTerrain;
         public Vector3 InitialPosition => _initialPosition;
@@ -26,11 +23,12 @@ namespace Comma.Gameplay.Environment
         public float MoveTime => _moveTime;
         public float DelayTime => _delayTime;
         public LeanTweenType Easing => _easing;
-        public bool ShakeCamera => _shakeCamera;
     }
     public class MoveTerrainTrigger : MonoBehaviour
     {
         [SerializeField] private string _triggerId;
+        [SerializeField] private bool _enableCameraShake = false;
+        [SerializeField] private bool _onlyTriggerFromPlayer = true;
         [SerializeField, HideInInspector] private MovingTerrainInfo[] _terrains;
         private bool _moved = false;
 
@@ -47,7 +45,7 @@ namespace Comma.Gameplay.Environment
             // Get the state of the trigger
             var temp = _saveData.GetObjectPosition(_triggerId);
             // Since the saved data is in Vector3, we need to convert it first
-            var state = temp.y > 0 ? TriggerState.UP : TriggerState.DOWN;
+            var state = temp.z > 0 ? TriggerState.UP : TriggerState.DOWN;
 
             // If the terrain is UP from the last saved data
             // Then move it up without 
@@ -63,9 +61,11 @@ namespace Comma.Gameplay.Environment
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (_moved) { return; }
+            if (!collision.CompareTag("Player") && _onlyTriggerFromPlayer) return;
+            _saveData.SetInteractedObject(_triggerId, Vector3.forward);
             foreach (var terrain in _terrains)
             {
-                MoveTerrain(terrain.MovingTerrain, terrain.TargetPosition, terrain.MoveTime, 0f, false);
+                MoveTerrain(terrain.MovingTerrain, terrain.TargetPosition, terrain.MoveTime, 0f, false, easing: terrain.Easing);
             }
             _moved = true;
 

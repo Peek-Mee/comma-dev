@@ -689,7 +689,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 433416198}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -54.3, y: -29.9, z: 0}
+  m_LocalPosition: {x: -54.3, y: 35.6, z: 0}
   m_LocalScale: {x: 6.036479, y: 30.938726, z: 2.5291}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2395,7 +2395,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!61 &1176077693
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3951,8 +3951,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1771651532}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -54.3, y: -25, z: 1.4975412}
-  m_LocalScale: {x: 3.1670423, y: 7.5284786, z: 2.5291}
+  m_LocalPosition: {x: -56.8647, y: -25, z: 1.4975412}
+  m_LocalScale: {x: 1.4375205, y: 7.5284786, z: 2.5291}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1287347390}
@@ -3971,6 +3971,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerId: MVT01
+  _enableCameraShake: 0
+  _onlyTriggerFromPlayer: 0
   _terrains:
   - _movingTerrain: {fileID: 701117557}
     _initialPosition: {x: -48.3486, y: -29.9, z: 0}
@@ -3978,28 +3980,24 @@ MonoBehaviour:
     _moveTime: 2
     _delayTime: 0
     _easing: 4
-    _shakeCamera: 0
   - _movingTerrain: {fileID: 433416198}
-    _initialPosition: {x: -54.3, y: -29.9, z: 0}
-    _targetPosition: {x: -54.3, y: -16.7, z: 0}
-    _moveTime: 2.1
-    _delayTime: 0.1
+    _initialPosition: {x: -54.3, y: 35.6, z: 0}
+    _targetPosition: {x: -54.3, y: 24.8, z: 0}
+    _moveTime: 3
+    _delayTime: 2
     _easing: 13
-    _shakeCamera: 0
   - _movingTerrain: {fileID: 246600593}
     _initialPosition: {x: -60.3, y: -29.8, z: 0}
     _targetPosition: {x: -60.3, y: -18, z: 0}
     _moveTime: 2.2
     _delayTime: 0.2
     _easing: 20
-    _shakeCamera: 0
   - _movingTerrain: {fileID: 913548383}
     _initialPosition: {x: -40.9209, y: -29.9, z: 0}
     _targetPosition: {x: -40.9209, y: -23.3, z: 0}
-    _moveTime: 2
+    _moveTime: 3
     _delayTime: 0
-    _easing: 20
-    _shakeCamera: 0
+    _easing: 31
 --- !u!61 &1771651535
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4366,7 +4364,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!61 &1859089876
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4475,8 +4473,8 @@ MonoBehaviour:
   _triggerType: 1
   _rightToLeft: 0
   _easingType: 0
-  _startOrthoSize: 0
-  _finishOrthoSize: 0
+  _startOrthoSize: 17.1
+  _finishOrthoSize: 25
   _startOffset: {x: 0, y: 0}
   _finishOffset: {x: 40, y: 20}
   _newFollow: {fileID: 0}
@@ -4516,7 +4514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1926568881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4532,8 +4530,8 @@ MonoBehaviour:
   _triggerType: 2
   _rightToLeft: 0
   _easingType: 0
-  _startOrthoSize: 0
-  _finishOrthoSize: 0
+  _startOrthoSize: 17.1
+  _finishOrthoSize: 25
   _startOffset: {x: 0, y: 0}
   _finishOffset: {x: 0, y: 0}
   _newFollow: {fileID: 1638643695}
@@ -5067,7 +5065,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2123347333}
-  m_LocalRotation: {x: -9.376e-42, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -1.0695e-41, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.3, y: -10.1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
