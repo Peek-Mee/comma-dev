@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Comma.Utility.Collections;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
@@ -56,6 +57,7 @@ namespace Comma.Global.SaveLoad
         {
             _globalSave ??= new(1);
             var temp = JsonUtility.ToJson(_globalSave);
+            temp = SimpleEncryption.Encrypt(temp);
             BinaryFormatter bf = new();
             FileStream file = File.Create(Application.persistentDataPath + "/Comma.save");
             bf.Serialize(file, temp);
@@ -76,6 +78,7 @@ namespace Comma.Global.SaveLoad
                 try
                 {
                     var temp = JsonUtility.ToJson(_globalSave);
+                    temp = SimpleEncryption.Encrypt(temp);
                     BinaryFormatter bf = new();
                     FileStream file = File.OpenWrite(Application.persistentDataPath + "/Comma.save");
                     bf.Serialize(file, temp);
@@ -104,7 +107,7 @@ namespace Comma.Global.SaveLoad
                 {
                     BinaryFormatter bf = new();
                     FileStream file = File.OpenRead(path);
-                    var temp = JsonUtility.FromJson(bf.Deserialize(file).ToString(), typeof(CommaSaveData));
+                    var temp = JsonUtility.FromJson(SimpleEncryption.Decrypt(bf.Deserialize(file).ToString()), typeof(CommaSaveData));
                     _globalSave = (CommaSaveData)temp;
                     file.Close();
                     _playerData = _globalSave.GetPlayerSave();
