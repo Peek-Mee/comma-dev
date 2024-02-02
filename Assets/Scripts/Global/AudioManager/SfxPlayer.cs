@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using PMFramework;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -15,7 +16,7 @@ namespace Comma.Global.AudioManager
         public AudioClip AudioClip => _audioClip;
         public float Volume => _defaultVolume;
     }
-    public class SfxPlayer : MonoBehaviour
+    public class SfxPlayer : Singleton<SfxPlayer>
     {
         [SerializeField] private SfxClip[] _sfxClips;
         [SerializeField] private AudioMixerGroup _mixer;
@@ -23,22 +24,19 @@ namespace Comma.Global.AudioManager
         private Dictionary<string, SfxClip> _sfxBank;
         private AudioSource _source;
 
-        public static SfxPlayer Instance { get; private set; }
+        public static SfxPlayer Instance { get { return m_Instance; } }
 
-        private void Awake()
+        protected override void OnInitialize()
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                Instance = this;
-            }
+            Init();
+            base.OnInitialize();
+        }
+
+        private void Init()
+        {
             _sfxBank = new();
 
-            for (int i =0; i < _sfxClips.Length; i++)
+            for (int i = 0; i < _sfxClips.Length; i++)
             {
                 _sfxBank.Add(_sfxClips[i].Name, _sfxClips[i]);
             }
@@ -59,8 +57,21 @@ namespace Comma.Global.AudioManager
             source.loop = true;
             source.outputAudioMixerGroup = _mixer;
             _source = source;
-
         }
+        //private void Awake()
+        //{
+        //    if (Instance != null && Instance != this)
+        //    {
+        //        Destroy(gameObject);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        Instance = this;
+        //    }
+            
+
+        //}
 
         private string _playedLoop = "";
         public void PlaySFX(string audioName, bool oneShoot = false)

@@ -2,10 +2,11 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using PMFramework;
 
 namespace Comma.Global.SaveLoad
 {
-    public class SaveSystem : MonoBehaviour
+    public class SaveSystem : Singleton<SaveSystem>
     {
         private PlayerSaveData _playerData;
         private AudioSaveData _audioSetting;
@@ -14,44 +15,51 @@ namespace Comma.Global.SaveLoad
         private CommaSaveData _globalSave;
 
         public static SaveSystem saveInstance;
-        private static SaveSystem _saveSystem;
+        //private static SaveSystem _saveSystem;
         //private bool _isNew;
         private static SaveSystem Instance
         {
-            get
-            {
-                if (!_saveSystem)
-                {
-                    _saveSystem = FindObjectOfType<SaveSystem>();
-                    if (_saveSystem == null)
-                    {
-                        GameObject temp = new("Save System");
-                        _saveSystem = temp.AddComponent<SaveSystem>();
-                    }
-                    _saveSystem.Init();
-                }
+            //get
+            //{
+            //    if (!_saveSystem)
+            //    {
+            //        _saveSystem = FindObjectOfType<SaveSystem>();
+            //        if (_saveSystem == null)
+            //        {
+            //            GameObject temp = new("Save System");
+            //            _saveSystem = temp.AddComponent<SaveSystem>();
+            //        }
+            //        _saveSystem.Init();
+            //    }
                 
-                return _saveSystem;
-            }
+            //    return _saveSystem;
+            //}
+            get { return m_Instance; }
+        }
+        protected override void OnInitialize()
+        {
+            Init();
+            base.OnInitialize();
+            
         }
 
-        private void Awake()
-        {
-            if (saveInstance != null && saveInstance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                saveInstance = this;
-                Init();
-            }
+        //private void Awake()
+        //{
+        //    if (saveInstance != null && saveInstance != this)
+        //    {
+        //        Destroy(gameObject);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        saveInstance = this;
+        //        Init();
+        //    }
             
 
-            // Make this object persistent once it's instantiated
-            DontDestroyOnLoad(gameObject);
-        }
+        //    // Make this object persistent once it's instantiated
+        //    DontDestroyOnLoad(gameObject);
+        //}
 
         private void CreateCommaGameData()
         {

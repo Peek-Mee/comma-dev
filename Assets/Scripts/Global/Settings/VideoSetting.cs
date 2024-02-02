@@ -1,33 +1,39 @@
 ﻿using System;
 using Comma.Global.SaveLoad;
+using PMFramework;
 using UnityEngine;
 
 namespace Comma.Global.Settings
 {
-    public class VideoSetting : MonoBehaviour
+    public class VideoSetting : Singleton<VideoSetting>
     {
         private VideoSaveData _currentVideoSaveData;
         private VideoSaveData _newVideoSaveData;
-        public static VideoSetting Instance { get; private set; }
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                Instance = this;
-            }
+        public static VideoSetting Instance { get { return m_Instance; } }
+        //private void Awake()
+        //{
+        //    if (Instance != null && Instance != this)
+        //    {
+        //        Destroy(gameObject);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        Instance = this;
+        //    }
 
-            DontDestroyOnLoad(gameObject);
-        }
-
-        private void Start()
+        //    DontDestroyOnLoad(gameObject);
+        //}
+        protected override void OnInitialize()
         {
             InitVideoSetting();
+            base.OnInitialize();
         }
+
+        //private void Start()
+        //{
+        //    InitVideoSetting();
+        //}
 
         private void InitVideoSetting()
         {
@@ -41,7 +47,7 @@ namespace Comma.Global.Settings
         }
         private void ChangeScreenResolution(VideoResolution resolution, bool isFullScreen)
         {
-            Screen.SetResolution(resolution.Width, resolution.Height, isFullScreen,60);
+            Screen.SetResolution(resolution.Width, resolution.Height, isFullScreen ? FullScreenMode.FullScreenWindow: FullScreenMode.Windowed );
         }
         public void ChangeDisplayResolution(VideoResolutionType type)
         {

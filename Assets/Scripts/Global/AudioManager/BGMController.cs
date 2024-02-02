@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using PMFramework;
+using System.Collections;
 using UnityEngine;
 
 namespace Comma.Global.AudioManager
 {
-    public class BGMController : MonoBehaviour
+    public class BGMController : Singleton<BGMController>
     {
         [SerializeField] private AudioSource _audioSourceBGM;
         [SerializeField] private AudioClip _homeClip;
@@ -15,25 +16,30 @@ namespace Comma.Global.AudioManager
         [SerializeField] private float _homeAudioDelay;
         [SerializeField] private float _gameplayAudioDelay;
 
-        public static BGMController Instance { get; private set; }
+        public static BGMController Instance { get { return m_Instance; } }
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                Instance = this;
-            }
-            DontDestroyOnLoad(gameObject);
-        }
-        private void Start()
+        //private void Awake()
+        //{
+        //    if (Instance != null && Instance != this)
+        //    {
+        //        Destroy(gameObject);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        Instance = this;
+        //    }
+        //    DontDestroyOnLoad(gameObject);
+        //}
+        protected override void OnInitialize()
         {
             StartCoroutine(PlayHomeAudio());
+            base.OnInitialize();
         }
+        //private void Start()
+        //{
+        //    StartCoroutine(PlayHomeAudio());
+        //}
 
         private IEnumerator PlayHomeAudio()
         {
