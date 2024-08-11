@@ -42,6 +42,7 @@ namespace Comma.Gameplay.Environment
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (_startOrthoSize <= 0 || _finishOrthoSize <= 0) return;
             if (!other.CompareTag("Player")) return;
             bool checkPlayerFromLeft = IsPlayerFromLeft(other);
             switch (_triggerType)

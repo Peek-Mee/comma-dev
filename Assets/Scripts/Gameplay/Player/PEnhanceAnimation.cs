@@ -35,7 +35,7 @@ namespace Comma.Gameplay.Player
         [SerializeField] private float _startJump = 0.1f;
         [SerializeField] private float _land = .35f;
 
-
+        public bool _deactivateAnimation;
 
         private PEAnimationPrevFrame _prevFrame;
 
@@ -55,14 +55,21 @@ namespace Comma.Gameplay.Player
 
         private void Update()
         {
+            if (_deactivateAnimation)
+            {
+                _animator.SetFloat("Type", 0);
+                _animator.SetFloat("XSpeed", 0);
+                return;
+            }
+
             SetNormalAnimation();
             SetLastAnimationState();
         }
-        private void FixedUpdate()
-        {
-            SetNormalAnimation();
-            SetLastAnimationState();
-        }
+        //private void FixedUpdate()
+        //{
+        //    SetNormalAnimation();
+        //    SetLastAnimationState();
+        //}
         private void SetLastAnimationState()
         {
             _prevFrame.WasGrounded = _enhanceMovement.IsGrounded;
@@ -122,22 +129,22 @@ namespace Comma.Gameplay.Player
 
             // ==SFX==
 
-            if (!_enhanceMovement.IsMoving || !_enhanceMovement.IsGrounded)
-            {
-                _playerSFX.StopRunSFX();
-                _playerSFX.StopWalkSFX();
-            }
-            else if (_enhanceMovement.IsMoving && _enhanceMovement.IsGrounded)
-            {
-                if (_enhanceMovement.IsRunning)
-                {
-                    _playerSFX.PlayRunSFX();
-                }
-                else
-                {
-                    _playerSFX.PlayWalkSFX();
-                }
-            }
+            //if (!_enhanceMovement.IsMoving || !_enhanceMovement.IsGrounded)
+            //{
+            //    _playerSFX.StopRunSFX();
+            //    _playerSFX.StopWalkSFX();
+            //}
+            //else if (_enhanceMovement.IsMoving && _enhanceMovement.IsGrounded)
+            //{
+            //    if (_enhanceMovement.IsRunning)
+            //    {
+            //        _playerSFX.PlayRunSFX();
+            //    }
+            //    else
+            //    {
+            //        _playerSFX.PlayWalkSFX();
+            //    }
+            //}
 
             // ==WALK/RUN==
             /*
@@ -146,37 +153,37 @@ namespace Comma.Gameplay.Player
              * Previously not moving and is currently moving
              * Not pressing run button
              */
-            if (_enhanceMovement.IsGrounded && !_prevFrame.WasMoving && 
-                _enhanceMovement.IsMoving && !_enhanceMovement.IsRunning)
-            {
-                xSpeed = -3f;
-                _animator.SetFloat("Ground", 1f);
-                StartCoroutine(DisableInputForSeconds(_startWalk, Dummy.VoidFunction));
-            }
+            //if (_enhanceMovement.IsGrounded && !_prevFrame.WasMoving && 
+            //    _enhanceMovement.IsMoving && !_enhanceMovement.IsRunning)
+            //{
+            //    xSpeed = -3f;
+            //    _animator.SetFloat("Ground", 1f);
+            //    StartCoroutine(DisableInputForSeconds(_startWalk, Dummy.VoidFunction));
+            //}
             /*
              * END RUN
              * Grounded
              * Previously running (and moving)
              * Currently not moving
              */
-            else if (_enhanceMovement.IsGrounded && (_prevFrame.WasMoving && _prevFrame.WasRunning) &&
-                !_enhanceMovement.IsMoving)
-            {
-                xSpeed = 3f;
-                _animator.SetFloat("Ground", 1f);
-                StartCoroutine(DisableInputForSeconds(_endRun, Dummy.VoidFunction));
-            }
+            //else if (_enhanceMovement.IsGrounded && (_prevFrame.WasMoving && _prevFrame.WasRunning) &&
+            //    !_enhanceMovement.IsMoving)
+            //{
+            //    xSpeed = 3f;
+            //    _animator.SetFloat("Ground", 1f);
+            //    StartCoroutine(DisableInputForSeconds(_endRun, Dummy.VoidFunction));
+            //}
             /*
              * WALK/RUN LOOP
              * Grounded
              * Is currently moving (walk/run)
              */
-            else
-            {
+            //else
+            //{
                 xSpeed = (_enhanceMovement.Movement.x > 0 ? 1f : -1f) * 
                     Converter.MinMaxNormalizer(0, _enhanceMovement.MaxSpeed, 
                     Mathf.Abs(_enhanceMovement.Movement.x)) * (_enhanceMovement.IsRunning ? 2f : 1f);
-            }
+            //}
 
             _animator.SetFloat("XSpeed", xSpeed);
         }
@@ -197,48 +204,50 @@ namespace Comma.Gameplay.Player
              */
 
             // ==START JUMP==
-            if (_prevFrame.WasGrounded && !_enhanceMovement.IsGrounded && _enhanceMovement.Movement.y >= 0)
-            {
-                _playerSFX.PlayJumpSFX(); // Play START JUMP SFX
-                ySpeed = 2f;
-                _animator.SetFloat("Ground", 0f); // Anticipation if player still detected
-                StartCoroutine(DisableInputForSeconds(_startJump, Dummy.VoidFunction));
-            }
+            //if (_prevFrame.WasGrounded && !_enhanceMovement.IsGrounded && _enhanceMovement.Movement.y >= 0)
+            //{
+            //    _playerSFX.PlayJumpSFX(); // Play START JUMP SFX
+            //    ySpeed = 2f;
+            //    _animator.SetFloat("Ground", 0f); // Anticipation if player still detected
+            //    StartCoroutine(DisableInputForSeconds(_startJump, Dummy.VoidFunction));
+            //}
             // ==LANDING==
-            else if (!_prevFrame.WasGrounded && _enhanceMovement.IsGrounded && _enhanceMovement.Movement.y <= 0)
-            {
-                // Free fall condition
-                if (!_prevFrame.WasJumping && Mathf.Abs(_prevFrame.GroundGap - _enhanceMovement.GroundDistance) < _minJumpThreshold) 
-                {
-                    // Don't play jump animation if the gap is too small
-                    _animator.SetFloat("YSpeed", 0);
-                    _animator.SetFloat("Ground", 1f);
-                    return; 
-                }
-                // Normal landing condition
-                _playerSFX.PlayLandSFX();
-                ySpeed = -2f;
-                _animator.SetFloat("Ground", 0f);
-                // Make sure landing animation finish before receive next input
-                // by disabling player input for a few miliseconds
-                StartCoroutine(DisableInputForSeconds(_land, () =>
-                {
-                    _enhanceMovement.PreviouslyJumping = false;
-                    return true;
-                }));
-            }
+            //else if (!_prevFrame.WasGrounded && _enhanceMovement.IsGrounded && _enhanceMovement.Movement.y <= 0)
+            //{
+            //    // Free fall condition
+            //    if (!_prevFrame.WasJumping && Mathf.Abs(_prevFrame.GroundGap - _enhanceMovement.GroundDistance) < _minJumpThreshold) 
+            //    {
+            //        // Don't play jump animation if the gap is too small
+            //        _animator.SetFloat("YSpeed", 0);
+            //        _animator.SetFloat("Ground", 1f);
+            //        return; 
+            //    }
+            //    // Normal landing condition
+            //    _playerSFX.PlayLandSFX();
+            //    ySpeed = -2f;
+            //    _animator.SetFloat("Ground", 0f);
+            //    // Make sure landing animation finish before receive next input
+            //    // by disabling player input for a few miliseconds
+            //    _enhanceMovement.PreviouslyJumping = false;
+            //    //StartCoroutine(DisableInputForSeconds(_land, () =>
+            //    //{
+            //    //    _enhanceMovement.PreviouslyJumping = false;
+            //    //    return true;
+            //    //}));
+            //}
             // ==JUMP IN AIR==
-            else
-            {
-                if (!_prevFrame.WasJumping && _enhanceMovement.GroundDistance < _minJumpThreshold)
-                {
-                    _animator.SetFloat("YSpeed", 0);
-                    _animator.SetFloat("Ground", 1f);
-                    return;
-                }
+            //else
+            //{
+                //if (!_prevFrame.WasJumping && _enhanceMovement.GroundDistance < _minJumpThreshold)
+                //{
+                //    _animator.SetFloat("YSpeed", 0);
+                //    _animator.SetFloat("Ground", 1f);
+                //    _enhanceMovement.PreviouslyJumping = false;
+                //    return;
+                //}
 
                 ySpeed = ySpeed == 0 ? 0 : Mathf.Sign(ySpeed);
-            }
+            //}
 
             // Set animation parameter
             _animator.SetFloat("YSpeed", ySpeed); 

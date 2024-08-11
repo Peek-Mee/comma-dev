@@ -2,11 +2,12 @@ using PMFramework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using USceneManager = UnityEngine.SceneManagement.SceneManager;
+//using USceneManager = UnityEngine.SceneManagement.SceneManager;
 
 public class Bootstrap : MonoBehaviour
 {
-    [SerializeField] private string m_mainMenu;
+    //[SerializeField] private string m_mainMenu;
+    [SerializeField] private SceneTransition m_sceneTransition;
 
     private void Awake()
     {
@@ -16,6 +17,6 @@ public class Bootstrap : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         yield return new WaitUntil(() => SingletonManager.m_Isntance.IsAllSetup);
-        USceneManager.LoadScene(m_mainMenu);
+        SceneManager.m_Instance.LoadSceneWithLoading(m_sceneTransition);
     }
 }

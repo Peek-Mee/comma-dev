@@ -164,6 +164,17 @@ namespace Comma.Gameplay.UserInput
                 },
                 {
                     ""name"": """",
+                    ""id"": ""dd6edc1f-aab6-4dfa-b182-4735cdce561a"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""42c62c3a-70d7-4f59-91ba-92f4a1d3e8bb"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": ""Press"",
@@ -172,6 +183,39 @@ namespace Comma.Gameplay.UserInput
                     ""action"": ""SwapDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Arrow"",
+                    ""id"": ""084ea7c8-b3bb-41b2-aa83-fcec9ac73537"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": ""Press(pressPoint=1,behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""e2fde160-0e1b-41ac-a1b6-026b5f90912c"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""236ffbe1-f50e-4e7c-9d87-048b54d7ff88"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
