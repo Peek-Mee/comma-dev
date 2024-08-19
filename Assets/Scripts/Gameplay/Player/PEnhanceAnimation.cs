@@ -36,6 +36,7 @@ namespace Comma.Gameplay.Player
         [SerializeField] private float _land = .35f;
 
         public bool _deactivateAnimation;
+        public bool _getUpAnimation;
 
         private PEAnimationPrevFrame _prevFrame;
 
@@ -57,8 +58,17 @@ namespace Comma.Gameplay.Player
         {
             if (_deactivateAnimation)
             {
-                _animator.SetFloat("Type", 0);
-                _animator.SetFloat("XSpeed", 0);
+                if (_getUpAnimation)
+                {
+                    _animator.SetBool("GetUp", true);
+                }
+                else
+                {
+                    _animator.SetBool("GetUp", false);
+                    _animator.SetFloat("Type", 0);
+                    _animator.SetFloat("XSpeed", 0);
+                }
+                
                 return;
             }
 

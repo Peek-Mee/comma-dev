@@ -1,4 +1,5 @@
 ﻿using Comma.Global.PubSub;
+using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections;
@@ -132,12 +133,31 @@ namespace Comma.Gameplay.Player
         {
             bool ctx = (bool)message;
             _pauseInput = ctx;
-            //_horizontalInput = 0;
-            //_jumpInput = false;
-            //_sprintInput = false;
+            _horizontalInput = 0;
+            _jumpInput = false;
+            _sprintInput = false;
             // Don't simulate physics on pause
             _rigidbody.simulated = !_pauseInput;
         }
+
+        public void CutSceneSimulatePhysics(bool simulated)
+        {
+            _rigidbody.simulated = simulated;
+        }
+        public void CutSceneWalk(bool facingRight)
+        {
+            _horizontalInput = facingRight ? 1 : -1;
+        }
+        public void CutSceneRun(bool run)
+        {
+            _sprintInput = run;
+        }
+        public void CutSceneStop()
+        {
+            _horizontalInput = 0;
+            _sprintInput = false;
+        }
+
         private void SwapCharacterDown(object message)
         {
             if (_isSwappingDown) return;

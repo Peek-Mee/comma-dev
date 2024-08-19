@@ -4099,6 +4099,22 @@ PrefabInstance:
       propertyPath: _gameplaySceneName
       value: Prolog
       objectReference: {fileID: 0}
+    - target: {fileID: 7630263240951764929, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
+      propertyPath: _gameplayScene.m_loadingUI
+      value: 
+      objectReference: {fileID: 21389993}
+    - target: {fileID: 7630263240951764929, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
+      propertyPath: _gameplayScene.m_LoadingScene
+      value: BootstrapLoading
+      objectReference: {fileID: 0}
+    - target: {fileID: 7630263240951764929, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
+      propertyPath: _gameplayScene.m_minLoadingTime
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7630263240951764929, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
+      propertyPath: _gameplayScene.m_destinationScene
+      value: Prolog
+      objectReference: {fileID: 0}
     - target: {fileID: 7630263240951764943, guid: d4e80d30dc7e0ce41953819bf055cb50, type: 3}
       propertyPath: m_Name
       value: New Game Warn

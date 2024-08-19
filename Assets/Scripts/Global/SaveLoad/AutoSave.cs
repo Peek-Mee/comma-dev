@@ -16,7 +16,7 @@ namespace Comma.Global.SaveLoad
         {
             if (_playerToTrack == null)
             {
-                _playerToTrack = FindObjectOfType<PlayerMovement>()?.gameObject.transform;
+                _playerToTrack = FindObjectOfType<PEnhanceMovement>()?.gameObject.transform;
             }
 
             if (_cameraToTrack == null)
