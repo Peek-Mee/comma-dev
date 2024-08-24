@@ -60,7 +60,7 @@ namespace Comma.Gameplay.Environment
             float newRatio = Mathf.Clamp01(Mathf.Abs(_targetFollow.position.x - _xPositionStart) / _distance);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             if (!CheckAvailability()) return;
             _camera.m_Lens.OrthographicSize = CalculateNewOrthoSize();
@@ -79,6 +79,17 @@ namespace Comma.Gameplay.Environment
             float newOrthoSize = _orthoSizeStart + (newRatio * (_orthoSizeFinish - _orthoSizeStart));
             return newOrthoSize;
         }
+        //private Vector2 CalculateNewOffset()
+        //{
+        //    Vector2 offset = new Vector2(0, 0);
+
+        //    float currentPosition = _targetFollow.position.x;
+        //    float newRatio = Mathf.Clamp01(Mathf.Abs(currentPosition - _xPositionStart) / _distance);
+
+        //    if ()
+
+        //    return offset;
+        //}
         #endregion
 
         public float GetCurrentScale()
