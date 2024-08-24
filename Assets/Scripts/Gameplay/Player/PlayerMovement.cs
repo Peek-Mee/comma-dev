@@ -86,7 +86,9 @@ namespace Comma.Gameplay.Player
             var data = SaveSystem.GetPlayerData();
             if (!data.IsNewData())
             {
-                transform.position = data.GetLastPosition();
+                var lastPosition = data.GetLastPosition() + new Vector3(0, 0.2f, 0);
+
+                transform.position = lastPosition;
                 SwapLayer(data.GetCurrentLayer());
             }
 
@@ -190,14 +192,16 @@ namespace Comma.Gameplay.Player
             ChangePlayerState();
             OnWalk();
             OnFlip();
-            OnJump();
-            OnFall();
+            //OnJump();
+            //OnFall();
             _wasGrounded = _isGrounded;
         }
 
         private void FixedUpdate()
         {
             OnMove();
+            OnJump();
+            OnFall();
         }
         private void ChangePlayerState()
         {
