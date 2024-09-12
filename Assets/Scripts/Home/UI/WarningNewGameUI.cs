@@ -1,4 +1,5 @@
-﻿using Comma.Global.SaveLoad;
+﻿using Comma.Global.AudioManager;
+using Comma.Global.SaveLoad;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -41,6 +42,7 @@ namespace Comma.Home.UI
         {
             SaveSystem.ResetPlayerData();
             SceneManager.LoadScene(_gameplaySceneName);
+            BgmPlayer.Instance.PlayBgm(1);
         }
         private void OnNoButton()
         {

@@ -8,22 +8,32 @@ namespace Comma.Global.PubSub
     {
         private Dictionary<string, UnityEvent<object>> _eventDictionary;
         public static EventConnector EventInstance;
-        private static EventConnector _eventConnector;
+        //private static EventConnector _eventConnector;
         private static EventConnector Instance
         {
             get
             {
-                _ = !_eventConnector ? _eventConnector = FindObjectOfType<EventConnector>() : null;
-                _eventConnector?.Init();
+                if (EventInstance == null)
+                {
+                    EventInstance = FindObjectOfType<EventConnector>();
+                    EventInstance?.Init();
+                }
+                //_ = !_eventConnector ? _eventConnector = FindObjectOfType<EventConnector>() : null;
+                //_eventConnector?.Init();
 
-                return _eventConnector;
+                return EventInstance;
             }
         }
 
         private void Awake()
         {
             if (EventInstance != null && EventInstance != this) Destroy(gameObject);
-            else EventInstance = this;
+            else
+            {
+                EventInstance = this;
+                Init();
+            }
+
             
             // Make this object persistent once it's instantiated
             DontDestroyOnLoad(gameObject);
@@ -31,6 +41,7 @@ namespace Comma.Global.PubSub
 
         private void Init()
         {
+            Debug.Log("EVENT CONNECTOR - INIT!");
             _eventDictionary ??= new();
         }
 

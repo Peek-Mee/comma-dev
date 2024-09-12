@@ -29,12 +29,14 @@ namespace Comma.Global.SaveLoad
         [SerializeField] private VideoResolution _displayResolution;
         [SerializeField] private bool _fullScreen;
         [SerializeField] private VideoResolutionType _resolutionType;
+        [SerializeField] private float _brightness;
 
         public VideoSaveData()
         {
             _displayResolution = new(1920, 1080, 60);
             _resolutionType = VideoResolutionType.P1080;
             _fullScreen = true;
+            _brightness = 1;
         }
 
         /// <summary>
@@ -67,7 +69,8 @@ namespace Comma.Global.SaveLoad
         /// </summary>
         /// <returns></returns>
         public VideoResolutionType GetResolutionType() { return _resolutionType; }
-
+        public void SetBrightness(float brightness) { _brightness = brightness; }
+        public float GetBrightness() { return _brightness;}
         public object Clone()
         {
             return (VideoSaveData)this.MemberwiseClone();

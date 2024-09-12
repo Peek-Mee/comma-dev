@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Comma.Global.SaveLoad;
+using UnityEngine;
 
 namespace Comma.Gameplay.DetectableObject
 {
@@ -14,6 +15,14 @@ namespace Comma.Gameplay.DetectableObject
             _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
         }
 
+        private void Start()
+        {
+            if (SaveSystem.GetPlayerData().IsObjectInteracted(_objectId))
+            {
+                transform.position = SaveSystem.GetPlayerData().GetObjectPosition(_objectId);
+            }
+        }
+
         public string GetObjectId()
         {
             return _objectId;
@@ -26,12 +35,13 @@ namespace Comma.Gameplay.DetectableObject
 
         public void Interact()
         {
-            _rigidbody2D.constraints = RigidbodyConstraints2D.None ;
+            _rigidbody2D.constraints = RigidbodyConstraints2D.None | RigidbodyConstraints2D.FreezeRotation;
             _isInteracted = true;
         }
         public void UnInteract()
         {
             _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
+            SaveSystem.GetPlayerData().SetInteractedObject(_objectId, transform.position);
             _isInteracted = false;
             GetDetection(null, 0);
         }
@@ -51,6 +61,7 @@ namespace Comma.Gameplay.DetectableObject
         private void FixedUpdate()
         {
             if (!_isInteracted) return;
+            if (_target == null) return;
 
             Vector2 newVel = new(_target.velocity.x, _rigidbody2D.velocity.y);
             _rigidbody2D.velocity = newVel;

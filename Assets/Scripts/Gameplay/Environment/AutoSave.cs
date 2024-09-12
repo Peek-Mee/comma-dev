@@ -33,12 +33,14 @@ namespace Comma.Gameplay.Environment
 
         IEnumerator RunAutoSave()
         {
-            yield return new WaitForSeconds(_timeAutoSave);
             PlayerSaveData saveData = SaveSystem.GetPlayerData();
+            
             saveData.SetLastPosition(_playerToTrack.position);
+            saveData.SetLastLayer(_playerToTrack.gameObject.layer);
             saveData.SetCameraScale(_cameraToTrack.GetCurrentScale());
+            saveData.SetOldData();
             SaveSystem.SaveDataToDisk();
-            print("Auto Save");
+            yield return new WaitForSeconds(_timeAutoSave);
             StartCoroutine(RunAutoSave());
         }
     }

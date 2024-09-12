@@ -83,6 +83,15 @@ namespace Comma.Gameplay.Player
         }
         private void Start()
         {
+            var data = SaveSystem.GetPlayerData();
+            if (!data.IsNewData())
+            {
+                var lastPosition = data.GetLastPosition() + new Vector3(0, 0.2f, 0);
+
+                transform.position = lastPosition;
+                SwapLayer(data.GetCurrentLayer());
+            }
+
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _playerSprite = GetComponent<SpriteRenderer>();
             //init layer value
@@ -91,11 +100,13 @@ namespace Comma.Gameplay.Player
                 _layerValue.Add(Converter.BitToLayer(layer));
             }
 
+
             // PubSub Area
             EventConnector.Subscribe("OnPlayerSwapDown", new(OnPlayerSwapDown));
             EventConnector.Subscribe("OnPlayerMove", new(OnMoveInput));
             EventConnector.Subscribe("OnPlayerJump", new(OnJumpInput));
             EventConnector.Subscribe("OnPlayerSprint", new(OnSprintInput));
+            EventConnector.Subscribe("OnGamePause", new(OnGamePause));
         }
 
         #region PubSub
@@ -107,19 +118,31 @@ namespace Comma.Gameplay.Player
         // User Input
         private void OnMoveInput(object message)
         {
+            if (_isPaused) return;
             OnPlayerMove msg = (OnPlayerMove)message;
             _horizontalUserInput = msg.Direction.x;
             
         }
         private void OnJumpInput(object message)
         {
+            if (_isPaused) return;
             _isPressJump = true;
         }
         private void OnSprintInput(object message)
         {
+            if (_isPaused) return;
             OnPlayerSprint msg = (OnPlayerSprint)message;
             _isHoldSprint = msg.Sprint;
 
+        }
+        private bool _isPaused = false;
+        private void OnGamePause(object message)
+        {
+            bool msg = (bool)message;
+            _isPaused = msg;
+            _horizontalUserInput = 0;
+            _isPressJump = false;
+            _isHoldSprint = false;
         }
         /////////////////////////////
         #endregion
@@ -158,8 +181,6 @@ namespace Comma.Gameplay.Player
                 if (_playerAnimator.Move)
                 {
                     _playerAnimator.Idle = false;
-                    //_playerAnimator.PortalInteract = false;
-                    //_playerAnimator.WaitInteract = false;
                 }
             }
             else
@@ -171,14 +192,16 @@ namespace Comma.Gameplay.Player
             ChangePlayerState();
             OnWalk();
             OnFlip();
-            OnJump();
-            OnFall();
+            //OnJump();
+            //OnFall();
             _wasGrounded = _isGrounded;
         }
 
         private void FixedUpdate()
         {
             OnMove();
+            OnJump();
+            OnFall();
         }
         private void ChangePlayerState()
         {
@@ -244,6 +267,13 @@ namespace Comma.Gameplay.Player
            
         }
 
+        private float GetAirSpeed(bool isRun)
+        {
+            if (_rigidbody2D.velocity.x <= .01f) return _normalSpeed * .5f;
+            if (isRun) return _runSpeed * .5f;
+            return _normalSpeed * .5f;
+        }
+
         private void OnWalk()
         {
             if (_playerAnimator.PortalInteract || _playerAnimator.WaitInteract) return;
@@ -258,7 +288,7 @@ namespace Comma.Gameplay.Player
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 2f;
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
-                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _runSpeed;
+                        _currentSpeed = GetAirSpeed(true) : _currentSpeed = _runSpeed;
                 }
                 else
                 {
@@ -269,7 +299,7 @@ namespace Comma.Gameplay.Player
                     _playerAnimator.Idle = false;
                     _playerAnimator.XSpeed = 1f;
                     _ = _playerState == PlayerState.Jump || _playerState == PlayerState.Fall ?
-                        _currentSpeed = _normalSpeed * 0.5f : _currentSpeed = _normalSpeed;
+                        _currentSpeed = GetAirSpeed(false) : _currentSpeed = _normalSpeed;
                 }
             }
             else
@@ -387,7 +417,14 @@ namespace Comma.Gameplay.Player
 
             gameObject.layer = Converter.BitToLayer(_groundLayers[_currentLayer]);
         }
-
+        public void SwapLayer(int dataLayer)
+        {
+            int crtLayer = Converter.BitToLayer(_groundLayers[_currentLayer]);
+            if (crtLayer != dataLayer)
+            {
+                SwapLayer();
+            }
+        }
         private void OnLayerEdge()
         {
             SwapLayer();
@@ -402,6 +439,7 @@ namespace Comma.Gameplay.Player
         }
         #endregion
 
+        bool _useRaycast;
         private bool IsGrounded()
         {
 
@@ -410,6 +448,7 @@ namespace Comma.Gameplay.Player
             if (normalChecker)
             {
                 _currentPlatformDegree = normalChecker.normal;
+                _useRaycast = true;
                 if (!normalChecker.collider.isTrigger) return true;
             }
             else
@@ -417,7 +456,10 @@ namespace Comma.Gameplay.Player
                 _currentPlatformDegree = new(0, 1);
             }
 
-
+            _useRaycast= false;
+            // If slope >45deg
+            RaycastHit2D normalExtended = IsCollide(_normalChecker.position, Vector2.down, 2 * _checkRadius);
+            _currentPlatformDegree = normalExtended.normal;
 
             // Checking Ground
             Collider2D[] overlaps = Physics2D.OverlapCircleAll(_ground.position, _circleForGround, _groundLayers[_currentLayer]);
@@ -470,6 +512,7 @@ namespace Comma.Gameplay.Player
             
             string returner = "\n<b>Player Movement</b>\n";
             returner += "Facing: <i>" + (_isFacingRight ? "Right" : "Left") +"</i>\n";
+            returner += $"Use Raycast: <i>{_useRaycast}</i>\n";
             returner += $"In Ground: <i>{_isGrounded}</i>\n";
             returner += $"Velocity: <i>{_rigidbody2D.velocity}</i>\n";
             returner += $"Position: <i>{transform.position}</i>\n";

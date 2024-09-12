@@ -5,10 +5,12 @@ namespace Comma.Global.PubSub
     public struct OnPlayerUsePortal
     {
         public Vector2 Destination { get; private set; }
+        public int Layer { get; private set; }
 
-        public OnPlayerUsePortal(Vector2 destination)
+        public OnPlayerUsePortal(Vector2 destination, int layer)
         {
             Destination = destination;
+            Layer = layer;
         }
     }
     public struct OnPlayerMove

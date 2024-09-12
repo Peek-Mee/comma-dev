@@ -37,6 +37,7 @@ namespace Comma.Global.Settings
             var resolution = _currentVideoSaveData.GetDisplayResolution();
             var isFullScreen= _currentVideoSaveData.IsFullScreen();
             ChangeScreenResolution(resolution, isFullScreen);
+            ChangeGameBrightness(_currentVideoSaveData.GetBrightness());
         }
         private void ChangeScreenResolution(VideoResolution resolution, bool isFullScreen)
         {
@@ -66,6 +67,12 @@ namespace Comma.Global.Settings
             _newVideoSaveData.SetFullScreen(isFullScreen);
             Screen.fullScreen = isFullScreen;
         }
+        
+        public void ChangeGameBrightness(float newValue)
+        {
+            _newVideoSaveData.SetBrightness(newValue);
+            Screen.brightness = newValue;
+        }
         public void AcceptVideoSetting()
         {
             _currentVideoSaveData = (VideoSaveData) _newVideoSaveData.Clone();
@@ -87,6 +94,10 @@ namespace Comma.Global.Settings
         public VideoResolutionType GetVideoResolutionType()
         {
             return _newVideoSaveData.GetResolutionType();
+        }
+        public float GetGameBrightness()
+        {
+            return _newVideoSaveData.GetBrightness();
         }
     }
 }
