@@ -17,6 +17,10 @@ namespace Comma.Utility.Collections
 
             yield return new WaitForSeconds(time);
         }
+        public static bool VoidFunction()
+        {
+            return true;
+        }
     }
     
 }

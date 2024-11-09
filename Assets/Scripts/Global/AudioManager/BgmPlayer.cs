@@ -1,3 +1,4 @@
+using PMFramework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -12,7 +13,7 @@ namespace Comma.Global.AudioManager
         public AudioClip Clip => audioClip;
         public float StartVolume => _startVolume;
     }
-    public class BgmPlayer : MonoBehaviour
+    public class BgmPlayer : Singleton<BgmPlayer>
     {
         [SerializeField] private AudioMixerGroup _bgmMixer;
         [SerializeField] private AudioConfig[] _bgmList;
@@ -25,25 +26,15 @@ namespace Comma.Global.AudioManager
 
         private List<AudioSource> _audioSources;
 
-        public static BgmPlayer Instance { get; private set; }
+        public static BgmPlayer Instance { get { return m_Instance; } }
 
-        private void Awake()
+        protected override void OnInitialize()
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                Instance = this;
-            }
-
             _audioSources = new List<AudioSource>();
             for (int i = 0; i < _bgmList.Length; i++)
             {
                 var audioSource = gameObject.AddComponent<AudioSource>();
-                audioSource.playOnAwake= false;
+                audioSource.playOnAwake = false;
                 audioSource.outputAudioMixerGroup = _bgmMixer;
                 audioSource.clip = _bgmList[i].Clip;
                 audioSource.volume = 0f;
@@ -52,9 +43,36 @@ namespace Comma.Global.AudioManager
                 _audioSources.Add(audioSource);
 
             }
-
-            DontDestroyOnLoad(gameObject);
+            base.OnInitialize();
         }
+        //private void Awake()
+        //{
+        //    if (Instance != null && Instance != this)
+        //    {
+        //        Destroy(gameObject);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        Instance = this;
+        //    }
+
+        //    _audioSources = new List<AudioSource>();
+        //    for (int i = 0; i < _bgmList.Length; i++)
+        //    {
+        //        var audioSource = gameObject.AddComponent<AudioSource>();
+        //        audioSource.playOnAwake= false;
+        //        audioSource.outputAudioMixerGroup = _bgmMixer;
+        //        audioSource.clip = _bgmList[i].Clip;
+        //        audioSource.volume = 0f;
+        //        audioSource.loop = true;
+        //        audioSource.mute = true;
+        //        _audioSources.Add(audioSource);
+
+        //    }
+
+        //    DontDestroyOnLoad(gameObject);
+        //}
 
         public void PlayBgm(int index, bool isFirst = false)
         {

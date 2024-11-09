@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7297331662854283413}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 960, y: 369.99997, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7297331662854283414
 MonoBehaviour:
@@ -44,7 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a3d7303ec9546f39d2ada9433a2f2bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _videoSaveData:
-    _fullScreen: 1
-    _videoResolutionType: 3
-  _videoResolutionType: 3
+  m_executionOrder: 6
+  m_destroyOnLoad: 0

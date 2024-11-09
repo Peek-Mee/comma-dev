@@ -1,5 +1,6 @@
 using Comma.Gameplay.Player;
 using Comma.Global.AudioManager;
+using Comma.Global.PubSub;
 using Comma.Global.SaveLoad;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,20 +36,21 @@ namespace Comma.CutScene
 
         public void OnEnterCutscene()
         {
-            
-            _playerMovement.InCutScene = true;
-            _playerRigid.isKinematic= true;
+            EventConnector.Publish("OnGamePause", true);
+            //_playerMovement.InCutScene = true;
+            //_playerRigid.isKinematic= true;
             _playerColl.enabled = false;
-            SetDefaultAnimator();
+            //SetDefaultAnimator();
             SaveSystem.GetPlayerData().AddCutsceneToCollection(_cutsceneId);
             SaveSystem.SaveDataToDisk();
         }
         public void OnExitCutscene()
         {
-            _playerMovement.InCutScene= false;
-            _playerRigid.isKinematic= false;
+            EventConnector.Publish("OnGamePause", false);
+            //_playerMovement.InCutScene= false;
+            //_playerRigid.isKinematic= false;
             _playerColl.enabled = true;
-            SetDefaultAnimator();
+            //SetDefaultAnimator();
             SaveSystem.GetPlayerData().AddCutsceneToCollection(_cutsceneId);
             SaveSystem.SaveDataToDisk();
             gameObject.SetActive(false);

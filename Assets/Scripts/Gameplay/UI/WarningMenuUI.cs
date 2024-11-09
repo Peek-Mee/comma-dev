@@ -1,6 +1,7 @@
 ﻿using Comma.Global.AudioManager;
+using PMFramework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Comma.Gameplay.UI
@@ -14,6 +15,7 @@ namespace Comma.Gameplay.UI
         
         [Header("Scene Management")]
         [SerializeField] private string _gameplaySceneName = "Gameplay";
+        [SerializeField] private SceneTransition _gameplayScene;
         
         private void OnEnable()
         {
@@ -34,7 +36,8 @@ namespace Comma.Gameplay.UI
         private void OnYesButton()
         {
             //BGMController.Instance.StartCourotineGameplay();
-            SceneManager.LoadScene(_gameplaySceneName);
+            //SceneManager.LoadScene(_gameplaySceneName);
+            SceneManager.m_Instance.LoadSceneWithLoading(_gameplayScene);
             BgmPlayer.Instance.PlayBgm(0);
         }
         private void OnNoButton()

@@ -1,32 +1,38 @@
 ﻿using Comma.Global.AudioManager;
 using Comma.Global.SaveLoad;
+using PMFramework;
 using UnityEngine;
 
 namespace Comma.Global.Settings
 {
-    public class AudioSetting : MonoBehaviour
+    public class AudioSetting : Singleton<AudioSetting>
     {
         private AudioSaveData _currentAudioSaveData;
         private AudioSaveData _newAudioSaveData;
-        public static AudioSetting Instance { get; private set; }
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                Instance = this;
-            }
-            DontDestroyOnLoad(gameObject);
-        }
-
-        private void Start()
+        public static AudioSetting Instance { get { return m_Instance; } }
+        //private void Awake()
+        //{
+        //    if (Instance != null && Instance != this)
+        //    {
+        //        Destroy(gameObject);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        Instance = this;
+        //    }
+        //    DontDestroyOnLoad(gameObject);
+        //}
+        protected override void OnInitialize()
         {
             InitAudioSetting();
+            base.OnInitialize();
         }
+
+        //private void Start()
+        //{
+        //    InitAudioSetting();
+        //}
         
         private void InitAudioSetting()
         {

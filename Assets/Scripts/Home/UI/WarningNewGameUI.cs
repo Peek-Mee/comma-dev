@@ -1,7 +1,8 @@
 ﻿using Comma.Global.AudioManager;
 using Comma.Global.SaveLoad;
+using PMFramework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Comma.Home.UI
@@ -17,6 +18,7 @@ namespace Comma.Home.UI
 
         [Header("Scene Management")]
         [SerializeField] private string _gameplaySceneName = "Prolog";
+        [SerializeField] private SceneTransition _gameplayScene;
 
         private void Awake()
         {
@@ -41,7 +43,8 @@ namespace Comma.Home.UI
         private void OnYesButton()
         {
             SaveSystem.ResetPlayerData();
-            SceneManager.LoadScene(_gameplaySceneName);
+            //SceneManager.LoadScene(_gameplaySceneName);
+            SceneManager.m_Instance.LoadSceneWithLoading(_gameplayScene);
             BgmPlayer.Instance.PlayBgm(1);
         }
         private void OnNoButton()

@@ -1,4 +1,5 @@
 ﻿using Comma.Global.PubSub;
+using Comma.Global.SaveLoad;
 using Comma.Utility.Collections;
 using System;
 using System.Collections;
@@ -19,13 +20,7 @@ namespace Comma.Gameplay.Player
 
         [Header("Collision Checkers")]
         [SerializeField] private LayerMask[] _groundLayers;
-        [SerializeField]
-        [Range(0.2f, 0.35f)] private float _checkRadius = 0.25f;
-        //[SerializeField]
-        //[Range(0.2f, 1.0f)] private float _checkExpensiveRadius = 0.52f;
-        //[SerializeField] private GameObject _bottomChecker;
         [SerializeField] private Transform _normalBtmChecker;
-        //[SerializeField] private Transform _expensiveBtmChecker;
 
         #region ExternalBinding
         private Vector2 _movement;
@@ -48,6 +43,7 @@ namespace Comma.Gameplay.Player
         public bool IsMoving => Mathf.Abs(_movement.x) > 0.1f && _horizontalInput != 0f;
         public bool InputDisabled { get { return _isInputDisabled; }  set { _isInputDisabled = value; } }
         public float HorizontalInput => _horizontalInput;
+        public float GroundDistance { get; private set; }
         #endregion
 
         #region Initialization
@@ -74,14 +70,20 @@ namespace Comma.Gameplay.Player
 
         private void Awake()
         {
-            _rigidbody = GetComponent<Rigidbody2D>();
-            //_collider = GetComponent<Collider2D>();
-            _sprite = GetComponent<SpriteRenderer>();
+            // Use a safer way to get component
+            if(!TryGetComponent(out _rigidbody))
+            {
+                Debug.LogError("ALERT!!! EnhanceMovement need RigidBody2D to works. Can't find in current Game Object");
+            }
+            if(!TryGetComponent(out _sprite))
+            {
+                Debug.LogError("ALERT!!! EnhanceMovement need SpriteRenderer to works. Can't find in current Game Object");
+            }
 
         }
         private void Start()
         {
-            InitLayerConversion();
+            InitLayerConversion(); 
 
             EventConnector.Subscribe("OnPlayerSwapDown", new(SwapCharacterDown));
             EventConnector.Subscribe("OnPlayerMove", new(OnMoveInput));
@@ -90,10 +92,9 @@ namespace Comma.Gameplay.Player
             EventConnector.Subscribe("OnGamePause", new(OnGamePause));
 
             //InitSpawn();
-
-            Physics2D.IgnoreLayerCollision(_layerAfterConversion[0],
-                _layerAfterConversion[1], true);
-
+            // Ignored because we will use a single layer with one-way effector
+            //Physics2D.IgnoreLayerCollision(_layerAfterConversion[0],
+            //    _layerAfterConversion[1], true);
 
         }
         private void OnDisable()
@@ -110,17 +111,20 @@ namespace Comma.Gameplay.Player
         // Receive input message for horizontal move [<int>]
         private void OnMoveInput(object message)
         {
+            if (_pauseInput) return;
             OnPlayerMove ctx = (OnPlayerMove)message;
             _horizontalInput = ctx.Direction.x;
         }
         // Receive input message for jump [<empty>]
         private void OnJumpInput(object message)
         {
+            if (_pauseInput) return;
             _jumpInput = true;
         }
         // Receive input message for sprint [<bool>]
         private void OnSprintInput(object message)
         {
+            if (_pauseInput) return;
             OnPlayerSprint ctx = (OnPlayerSprint)message;
             _sprintInput = ctx.Sprint;
         }
@@ -135,6 +139,25 @@ namespace Comma.Gameplay.Player
             // Don't simulate physics on pause
             _rigidbody.simulated = !_pauseInput;
         }
+
+        public void CutSceneSimulatePhysics(bool simulated)
+        {
+            _rigidbody.simulated = simulated;
+        }
+        public void CutSceneWalk(bool facingRight)
+        {
+            _horizontalInput = facingRight ? 1 : -1;
+        }
+        public void CutSceneRun(bool run)
+        {
+            _sprintInput = run;
+        }
+        public void CutSceneStop()
+        {
+            _horizontalInput = 0;
+            _sprintInput = false;
+        }
+
         private void SwapCharacterDown(object message)
         {
             if (_isSwappingDown) return;
@@ -144,7 +167,6 @@ namespace Comma.Gameplay.Player
 
         #region Physics
         // Physics variables
-        private bool _isBottomCollided = false;
         // Walk
         private void Walk()
         {
@@ -168,16 +190,19 @@ namespace Comma.Gameplay.Player
                 IsRunning = false;
             }
         }
+        public bool PreviouslyJumping { get; set; } = false;
+        public bool JumpDisabled { get; set; } = false;
         private void Jump()
         {
             if (_jumpInput)
             {
                 _jumpInput = false;
-                if (_isGrounded)
+                if (_isGrounded && !JumpDisabled )
                 {
+                    PreviouslyJumping = true;
+                    _isGrounded = false;
                     var force = new Vector2(_rigidbody.velocity.x, _jumpForce * 50.0f);
                     _rigidbody.AddForce(force);
-                    //_isMoveAfterJump = true;
                 }
             }
         }
@@ -186,7 +211,7 @@ namespace Comma.Gameplay.Player
         {
             if (_isGrounded)
             {
-                //if (_isMoveAfterJump) _isMoveAfterJump = false;
+                //PreviouslyJumping = false;
                 return;
             }
             _rigidbody.velocity += _gravityRatio * Time.deltaTime * Physics2D.gravity;
@@ -195,15 +220,16 @@ namespace Comma.Gameplay.Player
         // Move
         private void Move()
         {
-            if (!_isWalking && _isGrounded && _hasLandedAfterSwap )
+
+            if (!_isWalking && _isGrounded && _hasLandedAfterSwap)
             {
                 _rigidbody.velocity = Vector2.zero;
                 return;
             }
-            else if(_isWalking && !_isGrounded && _isMoveAfterJump)
-            {
-                _isMoveAfterJump = false;
-            }
+            //else if(_isWalking && !_isGrounded && _isMoveAfterJump)
+            //{
+            //    _isMoveAfterJump = false;
+            //}
             else if (!_isWalking || !_isGrounded || !_hasLandedAfterSwap) return;
 
             Vector2 velocity = _rigidbody.velocity;
@@ -245,7 +271,6 @@ namespace Comma.Gameplay.Player
         #region Swap Mechanism
         //Variables
         private int _currentLayerIdx;
-        private bool _isTimeToSwapEdge;
         // Check when first spawn
         private void InitLayerConversion()
         {
@@ -278,45 +303,14 @@ namespace Comma.Gameplay.Player
                 // Don't do anything if the layer doesn't exist
             }
         }
-        private void EdgeSwapLayer()
-        {
-            RaycastHit2D hit;
-            int layerIdxToCheck = _currentLayerIdx == 0 ? 1 : 0;
-            hit = Physics2D.Raycast(_normalBtmChecker.position, Vector2.down, _checkRadius, _groundLayers[layerIdxToCheck]);
-            if (hit)
-            {
-                if (hit.collider.isTrigger) return;
-                gameObject.layer = _layerAfterConversion[layerIdxToCheck];
-                _currentLayerIdx = layerIdxToCheck;
-                _isTimeToSwapEdge = false;
-            }
-            
-        }
 
-        // Edge Detection
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            if (collision.CompareTag("Edge"))
-            {
-                //SwapLayer();
-                _isTimeToSwapEdge = true;
-            }
-        }
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (collision.CompareTag("Edge"))
-            {
-                //SwapLayer();
-                _isTimeToSwapEdge = false;
-            }
-        }
         #endregion
 
         #region Execution
         private void Update()
         {
             // set movement variable for animation purpose
-            _movement = _rigidbody.velocity;
+            _movement = _rigidbody.velocity; 
 
             // Don't process anything if is in cutscene
             if (InCutScene) return;
@@ -326,46 +320,42 @@ namespace Comma.Gameplay.Player
             _isWalking = !_isInputDisabled && _isMovingInput;
 
             // Set was grounded
-            _wasGrounded = _isGrounded;
-
-            // Check player grounded
-            _isGrounded = ThreeDetectionGround();
+            
 
 
             //// Check the possibility of player stepping into 
             //// the opposite layer
-            ThreeDetectionLayerGround();
-
-            // Check player swap edge
-            if (_isTimeToSwapEdge)
-            {
-                EdgeSwapLayer();
-            }
-
+            //ThreeDetectionLayerGround();
+            // Check and process sprite flip
+            Flip();
+            // Calculating character's horizontal move
+            Walk();
+            // Calculating character's vertical move
+            Jump();
         }
         private void FixedUpdate()
         {
-            _movement = _rigidbody.velocity;
-            // Set was grounded
             _wasGrounded = _isGrounded;
 
             // Check player grounded
             _isGrounded = ThreeDetectionGround();
+            //_movement = _rigidbody.velocity; // this should be only in Update
+            Fall();
+            // Set was grounded
+            //_wasGrounded = _isGrounded;
+
+            //// Check player grounded
+            //_isGrounded = ThreeDetectionGround();
 
 
             //// Check the possibility of player stepping into 
             //// the opposite layer
-            ThreeDetectionLayerGround();
+            //ThreeDetectionLayerGround();
 
-            // Check and process sprite flip
-            Flip();
+            
 
-            // Calculating character's horizontal move
-            Walk();
+            
 
-            // Calculating character's vertical move
-            Jump();
-            Fall();
 
             // Actually move the character based on the calculation
             Move();
@@ -381,9 +371,9 @@ namespace Comma.Gameplay.Player
             {
                 Gizmos.color = Color.red;
                 Gizmos.DrawLine(ray.Position, ray.Position - (Vector3.up * ray.RayLength));
-                Gizmos.color = Color.blue;
-                Vector3 newPos = ray.Position + Vector3.right * .02f;
-                Gizmos.DrawLine(newPos, newPos - (2.0f * ray.RayLength * Vector3.up));
+                //Gizmos.color = Color.blue;
+                //Vector3 newPos = ray.Position + Vector3.right * .02f;
+                //Gizmos.DrawLine(ray.Position, ray.Position - (2.0f * ray.RayLength * Vector3.up));
             }
             // gizmos for swap down
             Gizmos.color = Color.cyan;
@@ -411,6 +401,7 @@ namespace Comma.Gameplay.Player
                 _isSwappingDown = true;
                 var force = new Vector2((_isFaceRight ? 1 : -1) * _jumpForce * 15f, _jumpForce * 30.0f);
                 _rigidbody.AddForce(force);
+                PreviouslyJumping = true;
                 yield return new WaitForFixedUpdate();
                 yield return new WaitUntil(() => { return _isGrounded; });
                 // Swap
@@ -444,41 +435,49 @@ namespace Comma.Gameplay.Player
             RaycastHit2D hit;
             foreach(GroundVariable detector in _detectors)
             {
-                hit = Physics2D.Raycast(detector.Position, Vector2.down, detector.RayLength, _groundLayers[_currentLayerIdx]);
+                hit = Physics2D.Raycast(detector.Position, Vector2.down, detector.RayLength, _allGroundLayers);
                 // in case not ground detected
                 if (hit.collider == null) continue;
                 // ignore trigger collider
                 if (hit.collider.isTrigger) continue;
                 _platformVector = hit.normal;
+                GroundDistance = hit.point.y;
                 return true;
             }
-
+            
             _platformVector = Vector3.up;
             return false;
         }
-        private void ThreeDetectionLayerGround()
-        {
-            if (_isSwappingDown) return;
-            RaycastHit2D hit;
-            foreach (GroundVariable detector in _detectors)
-            {
-                hit = Physics2D.Raycast(detector.Position, Vector2.down, detector.RayLength * 2.0f, _allGroundLayers);
-                // in case not ground detected
-                if (hit.collider == null) continue;
-                // ignore trigger collider
-                if (hit.collider.isTrigger) continue;
-                int layer = hit.collider.gameObject.layer;
-                // ignore if the same layer
-                if (layer == gameObject.layer) continue;
-                // ignore if inside collider
-                if (Checker.IsWithin(hit.collider, detector.Position)) continue;
-                if (_movement.y > 0) continue;
-                // swap layer
-                SwapLayer(layer);
-                _wasGrounded = true;
-                StartCoroutine(ChangingLayerNormal());
-            }
-        }
+        // Wont be using this since we will use one-way
+        //private void ThreeDetectionLayerGround()
+        //{
+        //    if (_isSwappingDown) return;
+        //    RaycastHit2D hit;
+        //    var check = 0;
+        //    foreach (GroundVariable detector in _detectors)
+        //    {
+        //        hit = Physics2D.Raycast(detector.Position, Vector2.down, detector.RayLength * 2.0f, _allGroundLayers);
+        //        // in case not ground detected
+        //        if (hit.collider == null) continue;
+        //        // ignore trigger collider
+        //        if (hit.collider.isTrigger) continue;
+        //        int layer = hit.collider.gameObject.layer;
+        //        // ignore if the same layer
+        //        if (layer == gameObject.layer) continue;
+        //        // ignore if inside collider
+        //        if (Checker.IsWithin(hit.collider, detector.Position)) continue;
+        //        check++;
+        //        //if (check < 2) continue;
+        //        if (_movement.y > 0) continue;
+                
+        //        // swap layer
+        //        SwapLayer(layer);
+        //        _wasGrounded = true;
+        //        _isGrounded = true;
+        //        StartCoroutine(ChangingLayerNormal());
+        //    }
+        //}
+        
         IEnumerator ChangingLayerNormal()
         {
             yield return new WaitUntil(() => _isGrounded && !_wasGrounded);

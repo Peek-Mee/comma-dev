@@ -1,8 +1,8 @@
 ﻿using Comma.Global.SaveLoad;
+using PMFramework;
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Rendering;
 
 namespace Comma.Global.AudioManager
 {
@@ -19,7 +19,7 @@ namespace Comma.Global.AudioManager
         
     }
 
-    public class AudioController : MonoBehaviour
+    public class AudioController : Singleton<AudioController>
     {
         [SerializeField] private MixerPair[] _mixerPairs;
         
@@ -29,40 +29,45 @@ namespace Comma.Global.AudioManager
         {
             get
             {
-                if (!_audioController)
-                {
-                    _audioController = FindObjectOfType<AudioController>();
-                    if (_audioController == null)
-                    {
-                        GameObject temp = new("Audio Controller"); 
-                        _audioController = temp.AddComponent<AudioController>();
-                    }
-                    _audioController.Init();
-                }
-                return _audioController;
+                //if (!_audioController)
+                //{
+                //    _audioController = FindObjectOfType<AudioController>();
+                //    if (_audioController == null)
+                //    {
+                //        GameObject temp = new("Audio Controller"); 
+                //        _audioController = temp.AddComponent<AudioController>();
+                //    }
+                //    _audioController.Init();
+                //}
+                return m_Instance;
             }
         }
-
-        private void Awake()
-        {
-            if (audioControllerInstance != null && audioControllerInstance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                audioControllerInstance = this;
-                //Init();
-            }
-
-
-            DontDestroyOnLoad(gameObject);
-        }
-        private void Start()
+        protected override void OnInitialize()
         {
             Init();
+            base.OnInitialize();
         }
+
+        //private void Awake()
+        //{
+        //    if (audioControllerInstance != null && audioControllerInstance != this)
+        //    {
+        //        Destroy(gameObject);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        audioControllerInstance = this;
+        //        //Init();
+        //    }
+
+
+        //    DontDestroyOnLoad(gameObject);
+        //}
+        //private void Start()
+        //{
+        //    Init();
+        //}
 
         private void Init()
         {

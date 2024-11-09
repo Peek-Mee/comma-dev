@@ -1,7 +1,8 @@
 using Comma.Global.AudioManager;
 using Comma.Global.SaveLoad;
+using PMFramework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Comma.Home.UI
@@ -20,6 +21,8 @@ namespace Comma.Home.UI
         [Header("Scene Management")]
         [SerializeField] private string _cutSceneProlog = "Prolog";
         [SerializeField] private string _gameplaySceneName = "Gameplay";
+        [SerializeField] private SceneTransition _cutsceneProlog;
+        [SerializeField] private SceneTransition _gameplayScene;
 
         [Header("Home Menu Pop Up")]
         [SerializeField] private GameObject _creditsPopUp;
@@ -65,7 +68,8 @@ namespace Comma.Home.UI
             else
             {
                 SaveSystem.ResetPlayerData();
-                SceneManager.LoadSceneAsync(_cutSceneProlog);
+                //SceneManager.LoadSceneAsync(_cutSceneProlog);
+                SceneManager.m_Instance.LoadSceneWithLoading(_cutsceneProlog);
                 BgmPlayer.Instance.PlayBgm(1);
             } 
         }
@@ -73,7 +77,8 @@ namespace Comma.Home.UI
         {
             _transition.SetActive(true);
             BgmPlayer.Instance.PlayBgm(1);
-            SceneManager.LoadSceneAsync(_gameplaySceneName);
+            SceneManager.m_Instance.LoadSceneWithLoading(_gameplayScene);
+            //SceneManager.LoadSceneAsync(_gameplaySceneName);
         }
         private void OnCreditsButton()
         {

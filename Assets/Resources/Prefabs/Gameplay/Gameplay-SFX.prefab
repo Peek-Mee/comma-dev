@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9077957719226998291}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9077957719226998288
 MonoBehaviour:
@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 484db1f9f7906714ca6ff710884fa4fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_executionOrder: 8
+  m_destroyOnLoad: 0
   _sfxClips:
   - _name: Walk
     _audioClip: {fileID: 8300000, guid: 68ee5609ace0bf64d83285d4e6f36f4c, type: 3}

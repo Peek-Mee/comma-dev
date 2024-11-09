@@ -1,32 +1,38 @@
+using PMFramework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Comma.Global.PubSub
 {
-    public class EventConnector : MonoBehaviour
+    public class EventConnector : Singleton<EventConnector>
     {
         private Dictionary<string, UnityEvent<object>> _eventDictionary;
         public static EventConnector EventInstance;
-        private static EventConnector _eventConnector;
+        //private static EventConnector _eventConnector;
         private static EventConnector Instance
         {
             get
             {
-                _ = !_eventConnector ? _eventConnector = FindObjectOfType<EventConnector>() : null;
-                _eventConnector?.Init();
+                //_ = !_eventConnector ? _eventConnector = FindObjectOfType<EventConnector>() : null;
+                //_eventConnector?.Init();
 
-                return _eventConnector;
+                return m_Instance;
             }
         }
 
-        private void Awake()
+        //private void Awake()
+        //{
+        //    if (EventInstance != null && EventInstance != this) Destroy(gameObject);
+        //    else EventInstance = this;
+
+        //    // Make this object persistent once it's instantiated
+        //    DontDestroyOnLoad(gameObject);
+        //}
+        protected override void OnInitialize()
         {
-            if (EventInstance != null && EventInstance != this) Destroy(gameObject);
-            else EventInstance = this;
-            
-            // Make this object persistent once it's instantiated
-            DontDestroyOnLoad(gameObject);
+            Init();
+            base.OnInitialize();
         }
 
         private void Init()
